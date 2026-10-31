@@ -38,20 +38,61 @@
       </form>
     </div>
 
-    <!-- BOT DE ENRIQUECIMENTO OPENSTREETMAP (MACEIÓ) -->
+    <!-- BOT DE ENRIQUECIMENTO OPENSTREETMAP COM LISTAGEM E CONFIRMAÇÃO -->
     <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 class="text-sm font-bold text-amber-300 uppercase tracking-wide">2. Bot de Enriquecimento de Dados (OSM)</h2>
           <p class="text-xs text-slate-300 mt-1 max-w-xl">
-            Acione o minerador para consultar a Overpass API em Maceió e inserir novas unidades de saúde automaticamente no PostgreSQL.
+            Pesquise novos postos de saúde no OpenStreetMap (Maceió). O sistema listará os resultados para conferência antes de salvar no PostgreSQL.
           </p>
         </div>
-        <button onclick="triggerOsmBot()" id="btn-bot" class="text-xs font-bold py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow whitespace-nowrap">
-          Executar Bot OSM
+        <button onclick="previewOsmBot()" id="btn-bot" class="text-xs font-bold py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow whitespace-nowrap flex items-center gap-1.5 justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Pesquisar no OSM
         </button>
       </div>
+      
       <div id="bot-feedback" class="text-xs mt-3 hidden font-mono"></div>
+
+      <!-- LISTA DE RESULTADOS DA PESQUISA COM CHECKBOXES -->
+      <div id="osm-results-container" class="mt-4 hidden border-t border-slate-700 pt-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-semibold text-slate-200">
+            Postos Encontrados: <span id="osm-count" class="text-cyan-400 font-bold">0</span> (selecione os que deseja salvar)
+          </span>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleSelectAllOsm(true)" type="button" class="text-[11px] px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200">Marcar Todos</button>
+            <button onclick="toggleSelectAllOsm(false)" type="button" class="text-[11px] px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200">Desmarcar</button>
+          </div>
+        </div>
+
+        <div id="osm-table-wrapper" class="max-h-72 overflow-y-auto border border-slate-700 rounded-lg bg-slate-900">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 sticky top-0 border-b border-slate-800">
+              <tr>
+                <th class="p-2.5 w-10 text-center">Salvar</th>
+                <th class="p-2.5">Nome do Posto</th>
+                <th class="p-2.5">Bairro</th>
+                <th class="p-2.5">Endereço</th>
+              </tr>
+            </thead>
+            <tbody id="osm-results-tbody" class="divide-y divide-slate-800">
+              <!-- Linhas preenchidas via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <span class="text-xs text-slate-400">
+            * Ao confirmar, os postos selecionados serão salvos com as vacinas padrão do calendário.
+          </span>
+          <button onclick="confirmAndSaveOsm()" id="btn-confirm-save" class="text-xs font-bold py-2.5 px-5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition shadow flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Confirmar e Salvar Selecionados
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- FORMULÁRIO DE CADASTRO MANUAL (POST /admin/vaccination-points) -->
@@ -107,6 +148,7 @@
 
 <script>
   let authToken = localStorage.getItem("access_token");
+  let currentOsmResults = [];
 
   if (authToken) {
     document.getElementById("auth-label").innerText = "Sessão Ativa (JWT Presente)";
@@ -184,28 +226,123 @@
     }
   }
 
-  async function triggerOsmBot() {
+  // 1. Pesquisa os postos no OpenStreetMap e exibe na lista para conferência
+  async function previewOsmBot() {
     if (!authToken) {
-      alert("Realize o login antes de disparar o bot de dados!");
+      alert("Realize o login antes de pesquisar no OpenStreetMap!");
       return;
     }
 
+    const btn = document.getElementById("btn-bot");
     const fb = document.getElementById("bot-feedback");
+    const container = document.getElementById("osm-results-container");
+    const tbody = document.getElementById("osm-results-tbody");
+    const countSpan = document.getElementById("osm-count");
+
+    btn.disabled = true;
+    btn.innerText = "Pesquisando no OSM...";
     fb.className = "text-xs mt-3 block text-cyan-300 font-mono";
-    fb.innerText = "Consultando Overpass API (OpenStreetMap) em Maceió... Aguarde.";
+    fb.innerText = "Consultando OpenStreetMap para unidades em Maceió... Aguarde.";
 
     try {
-      const res = await fetch("/admin/enrichment/sync-osm", {
-        method: "POST",
+      const res = await fetch("/admin/enrichment/preview-osm", {
+        method: "GET",
         headers: { "Authorization": `Bearer ${authToken}` }
       });
 
+      if (!res.ok) throw new Error("Falha na consulta ao bot");
       const data = await res.json();
-      fb.innerText = data.message;
-      fb.className = "text-xs mt-3 block text-emerald-400 font-mono";
+      currentOsmResults = data.results || [];
+
+      countSpan.innerText = currentOsmResults.length;
+      tbody.innerHTML = "";
+
+      if (currentOsmResults.length === 0) {
+        fb.innerText = "Nenhum novo posto encontrado no OpenStreetMap no momento.";
+        fb.className = "text-xs mt-3 block text-amber-400 font-mono";
+        container.classList.add("hidden");
+      } else {
+        currentOsmResults.forEach((pt, idx) => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-800 transition";
+          tr.innerHTML = `
+            <td class="p-2.5 text-center">
+              <input type="checkbox" id="osm-chk-${idx}" value="${idx}" checked class="osm-item-checkbox rounded border-slate-600 text-emerald-500">
+            </td>
+            <td class="p-2.5 font-medium text-white">${pt.name}</td>
+            <td class="p-2.5 text-slate-300">${pt.neighborhood || "Maceió"}</td>
+            <td class="p-2.5 text-slate-400">${pt.address || "Endereço via OSM"}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        container.classList.remove("hidden");
+        fb.innerText = `Pesquisa concluída! ${currentOsmResults.length} postos encontrados. Marque os que deseja salvar e clique em confirmar.`;
+        fb.className = "text-xs mt-3 block text-emerald-400 font-mono";
+      }
     } catch (err) {
-      fb.innerText = "Erro ao executar o bot ou serviço Overpass temporariamente indisponível.";
+      fb.innerText = "Erro ao buscar dados do OpenStreetMap. Verifique se o servidor está ativo.";
       fb.className = "text-xs mt-3 block text-red-400 font-mono";
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> Pesquisar no OSM`;
+    }
+  }
+
+  function toggleSelectAllOsm(checkState) {
+    document.querySelectorAll(".osm-item-checkbox").forEach(cb => {
+      cb.checked = checkState;
+    });
+  }
+
+  // 2. Confirmação do usuário e salvamento dos selecionados no banco
+  async function confirmAndSaveOsm() {
+    if (!authToken) {
+      alert("Sessão expirada. Faça login novamente.");
+      return;
+    }
+
+    const checkboxes = Array.from(document.querySelectorAll(".osm-item-checkbox:checked"));
+    if (checkboxes.length === 0) {
+      alert("Selecione pelo menos um posto da lista para salvar no banco de dados.");
+      return;
+    }
+
+    const selectedPoints = checkboxes.map(cb => currentOsmResults[parseInt(cb.value)]);
+
+    const confirmMsg = `Deseja realmente salvar ${selectedPoints.length} postos de vacinação selecionados no PostgreSQL?`;
+    if (!confirm(confirmMsg)) {
+      return;
+    }
+
+    const btnSave = document.getElementById("btn-confirm-save");
+    const fb = document.getElementById("bot-feedback");
+    btnSave.disabled = true;
+    btnSave.innerText = "Salvando no PostgreSQL...";
+
+    try {
+      const res = await fetch("/admin/enrichment/confirm-save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ points: selectedPoints })
+      });
+
+      if (!res.ok) throw new Error("Falha ao salvar no banco");
+      const data = await res.json();
+
+      alert(data.message);
+      fb.innerText = data.message;
+      fb.className = "text-xs mt-3 block text-emerald-400 font-mono font-bold";
+      
+      document.getElementById("osm-results-container").classList.add("hidden");
+    } catch (err) {
+      alert("Erro ao salvar no banco de dados.");
+    } finally {
+      btnSave.disabled = false;
+      btnSave.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Confirmar e Salvar Selecionados`;
     }
   }
 </script>
