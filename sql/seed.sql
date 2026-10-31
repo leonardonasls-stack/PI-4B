@@ -49,8 +49,8 @@ ON CONFLICT DO NOTHING;
 -- 6. Administrador Inicial Padrão (username: admin / senha: admin123)
 -- Hash Bcrypt gerado para 'admin123'
 INSERT INTO admin_users (id, username, hashed_password) VALUES
-(1, 'admin', '$2b$12$6t3kP1k7Pj1yVv9jE6vGueT8qN4yvA0gL6mJp4/rIqkYQ1wU9T3n2')
-ON CONFLICT (username) DO NOTHING;
+(1, 'admin', '$2b$12$Dgb8lfETvVgFGLb6zDUTrugLqz5G0uX1CzXZ5Pb2pjBgEXLzLFcYO')
+ON CONFLICT (username) DO UPDATE SET hashed_password = EXCLUDED.hashed_password;
 
 -- Ajusta as sequências dos IDs gerados automaticamente
 SELECT setval('states_id_seq', (SELECT COALESCE(MAX(id), 1) FROM states));
