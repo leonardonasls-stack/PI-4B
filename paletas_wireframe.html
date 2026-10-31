@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vacina Alagoas — Paletas com Densidade Visual e Contraste Sólido (WCAG 2.1 AA)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body id="body-bg" class="bg-slate-200 text-slate-800 font-sans antialiased min-h-screen transition-colors duration-200">
+
+  <!-- BARRA DE CONTROLE / SELETOR DE PALETAS (STICKY SUPERIOR) -->
+  <header class="sticky top-0 z-50 bg-slate-900 text-white border-b border-slate-700 shadow-lg py-3 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <h1 class="text-lg font-bold tracking-tight flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-blue-600 text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+            </svg>
+          </span>
+          Vacina Alagoas · Paletas com Fundo Encorpado (Sem Excesso de Branco)
+        </h1>
+        <p class="text-xs text-slate-400">Camadas sólidas, seções escuras em azul, cards definidos e contraste WCAG AA</p>
+      </div>
+
+      <!-- BOTÕES DE SELEÇÃO DA PALETA -->
+      <nav aria-label="Seletor de Paleta" class="flex flex-wrap gap-2">
+        <button 
+          onclick="setTheme('navy')" 
+          id="btn-navy"
+          class="theme-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border-2 transition-all bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+          aria-pressed="false"
+        >
+          1. Azul Marinho & Aço
+        </button>
+        <button 
+          onclick="setTheme('petroleo')" 
+          id="btn-petroleo"
+          class="theme-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border-2 transition-all shadow bg-cyan-700 text-white border-cyan-400"
+          aria-pressed="true"
+        >
+          2. Azul Petróleo & Platina (Escolhida)
+        </button>
+        <button 
+          onclick="setTheme('cobalto')" 
+          id="btn-cobalto"
+          class="theme-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border-2 transition-all bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+          aria-pressed="false"
+        >
+          3. Azul Noturno & Cinza Médio
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAINEL DESCRITIVO DA PALETA ATIVA -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-8 pt-5">
+    <div id="palette-info-card" class="bg-white border rounded-xl p-5 shadow-sm border-slate-300 transition-all">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <span id="palette-tag" class="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded bg-blue-100 text-blue-900 border border-blue-300">
+            Paleta 1 Ativa
+          </span>
+          <h2 id="palette-title" class="text-lg font-bold text-slate-900 mt-1.5">
+            Opção 1: Azul Marinho Corporativo & Fundo Cinza Aço
+          </h2>
+          <p id="palette-desc" class="text-xs text-slate-700 mt-1 max-w-3xl leading-relaxed">
+            Elimina o ofuscamento de fundos 100% brancos. Utiliza fundo cinza aço estruturado, cabeçalho e Hero em azul marinho profundo, e cards em branco com bordas escuras nítidas para delimitar cada posto com clareza.
+          </p>
+        </div>
+
+        <!-- AMOSTRAS HEXADECIMAIS -->
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="text-center">
+            <div id="swatch-1" class="w-9 h-9 rounded-md border border-slate-400 shadow-inner bg-[#E2E8F0]"></div>
+            <span class="text-[9px] text-slate-600 font-mono mt-0.5 block">Fundo</span>
+          </div>
+          <div class="text-center">
+            <div id="swatch-2" class="w-9 h-9 rounded-md shadow-sm bg-[#1E3A8A]"></div>
+            <span class="text-[9px] text-slate-600 font-mono mt-0.5 block">Hero/Navy</span>
+          </div>
+          <div class="text-center">
+            <div id="swatch-3" class="w-9 h-9 rounded-md shadow-sm bg-[#2563EB]"></div>
+            <span class="text-[9px] text-slate-600 font-mono mt-0.5 block">Azul Ação</span>
+          </div>
+          <div class="text-center">
+            <div id="swatch-4" class="w-9 h-9 rounded-md shadow-sm bg-[#047857]"></div>
+            <span class="text-[9px] text-slate-600 font-mono mt-0.5 block">Destaque</span>
+          </div>
+          <div class="text-center">
+            <div id="swatch-5" class="w-9 h-9 rounded-md shadow-sm bg-[#0F172A]"></div>
+            <span class="text-[9px] text-slate-600 font-mono mt-0.5 block">Texto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÁREA DE DEMONSTRAÇÃO DO WIREFRAME -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6">
+    <div id="app-container" class="rounded-2xl border shadow-xl overflow-hidden bg-slate-100 border-slate-400 transition-all">
+
+      <!-- NAVBAR DA APLICAÇÃO (ESCURA E SÓLIDA) -->
+      <nav id="app-navbar" class="px-6 py-4 flex items-center justify-between bg-slate-900 border-b border-slate-700 text-white">
+        <div class="flex items-center gap-3">
+          <div id="logo-badge" class="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-600 text-white shadow">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-base leading-tight block text-white tracking-wide">Vacina Alagoas</span>
+            <span class="text-[11px] text-slate-400">Secretaria de Estado da Saúde de Alagoas</span>
+          </div>
+        </div>
+
+        <div>
+          <a href="#admin-box" id="admin-badge-btn" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 transition">
+            Área Administrativa
+          </a>
+        </div>
+      </nav>
+
+      <!-- HERO SECTION COM COR ESCURA / ENCORPADA -->
+      <section id="hero-block" class="py-10 px-6 sm:px-12 text-white bg-blue-900 border-b border-blue-950 transition-colors">
+        <div class="max-w-4xl mx-auto text-center">
+          <span id="hero-chip" class="inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 bg-blue-950 text-blue-200 border border-blue-700">
+            Dados Oficiais · Maceió & Arapiraca
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+            Consulta a Postos de Vacinação em Alagoas
+          </h2>
+          <p class="text-sm mt-2 max-w-xl mx-auto text-blue-100">
+            Consulte as unidades de saúde ativas, horários de atendimento e vacinas disponíveis por município.
+          </p>
+
+          <!-- SELETOR DE MUNICÍPIO INTEGRADO -->
+          <div class="mt-6 max-w-md mx-auto text-left">
+            <label for="city-select" class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-blue-100">
+              Selecione o Município:
+            </label>
+            <div class="relative">
+              <select 
+                id="city-select"
+                class="w-full text-sm font-semibold py-3 px-4 rounded-xl border-2 cursor-pointer shadow-lg bg-white text-slate-900 border-blue-400 focus:ring-4 focus:ring-blue-500 focus:outline-none"
+                onchange="handleCityFilter(this.value)"
+              >
+                <option value="1" selected>Maceió (Capital - 3 postos cadastrados)</option>
+                <option value="2">Arapiraca (Agreste - 1 posto cadastrado)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÁREA DE CARDS DE PONTOS DE VACINAÇÃO COM FUNDO CINZA SÓLIDO -->
+      <section id="cards-container-bg" class="p-6 sm:p-10 bg-slate-200 transition-colors">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 gap-2 border-b border-slate-300 mb-6">
+          <div>
+            <h3 class="text-xl font-black text-slate-900">
+              Unidades de Saúde Encontradas
+            </h3>
+            <p class="text-xs text-slate-600 mt-0.5">Selecione uma unidade para conferir a disponibilidade de imunobiológicos</p>
+          </div>
+          <span id="count-pill" class="self-start sm:self-auto text-xs font-bold px-3 py-1.5 rounded-lg border bg-slate-900 text-white border-slate-800">
+            3 unidades disponíveis
+          </span>
+        </div>
+
+        <!-- GRID DE CARDS COM DEFINIÇÃO FORTE -->
+        <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <!-- CARD 1: JACINTINHO -->
+          <article class="unit-card rounded-xl border-2 p-5 flex flex-col justify-between shadow-md transition-all bg-white border-slate-300 hover:border-blue-600">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h4 class="font-extrabold text-base text-slate-900">UBS Jacintinho</h4>
+                <span class="city-pill text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200">Maceió</span>
+              </div>
+              <p class="neighborhood-tag text-xs font-bold mb-1 text-blue-800">Bairro Jacintinho</p>
+              <p class="text-xs text-slate-700 mb-4 flex items-center gap-1">
+                <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Av. Cleto Campelo, s/n
+              </p>
+            </div>
+
+            <div class="border-t border-slate-200 pt-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-2">Doses em Estoque:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Pólio</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Sarampo</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Covid-19</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- CARD 2: PAM SALGADINHO -->
+          <article class="unit-card rounded-xl border-2 p-5 flex flex-col justify-between shadow-md transition-all bg-white border-slate-300 hover:border-blue-600">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h4 class="font-extrabold text-base text-slate-900">PAM Salgadinho</h4>
+                <span class="city-pill text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200">Maceió</span>
+              </div>
+              <p class="neighborhood-tag text-xs font-bold mb-1 text-blue-800">Bairro Poço</p>
+              <p class="text-xs text-slate-700 mb-4 flex items-center gap-1">
+                <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Rua Mizael Domingues, s/n
+              </p>
+            </div>
+
+            <div class="border-t border-slate-200 pt-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-2">Doses em Estoque:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">BCG</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Hepatite B</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Febre Amarela</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Influenza</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- CARD 3: USF PONTA VERDE -->
+          <article class="unit-card rounded-xl border-2 p-5 flex flex-col justify-between shadow-md transition-all bg-white border-slate-300 hover:border-blue-600">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h4 class="font-extrabold text-base text-slate-900">USF Ponta Verde</h4>
+                <span class="city-pill text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200">Maceió</span>
+              </div>
+              <p class="neighborhood-tag text-xs font-bold mb-1 text-blue-800">Bairro Ponta Verde</p>
+              <p class="text-xs text-slate-700 mb-4 flex items-center gap-1">
+                <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Rua Dep. José Lages, 240
+              </p>
+            </div>
+
+            <div class="border-t border-slate-200 pt-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-2">Doses em Estoque:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Covid-19</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Influenza</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- MÓDULO ADMINISTRATIVO (CARD ESCURO COM DESTAQUE) -->
+      <section id="admin-box" class="p-6 sm:p-10 bg-slate-800 text-white border-t border-slate-700">
+        <div class="max-w-3xl">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded bg-amber-400 text-slate-900">
+              Área Restrita (JWT)
+            </span>
+            <span class="text-xs text-slate-400">Endpoint: POST /admin/vaccination-points</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Adicionar Novo Ponto de Vacinação</h3>
+          <p class="text-xs text-slate-300 mt-1 mb-5">
+            Cadastre novos postos no PostgreSQL com preenchimento de endereço e seleção de vacinas.
+          </p>
+
+          <form onsubmit="event.preventDefault();" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="adm-cidade" class="block text-xs font-semibold text-slate-300 mb-1">Cidade:</label>
+                <input type="text" id="adm-cidade" value="Maceió (ID: 1)" disabled class="w-full text-xs py-2 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-300 cursor-not-allowed">
+              </div>
+              <div>
+                <label for="adm-nome" class="block text-xs font-semibold text-slate-300 mb-1">Nome da Unidade:</label>
+                <input type="text" id="adm-nome" placeholder="Ex: UBS Bebedouro" class="w-full text-xs py-2 px-3 rounded-lg border border-slate-600 bg-slate-900 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+              </div>
+            </div>
+
+            <fieldset>
+              <legend class="text-xs font-semibold text-slate-300 mb-1.5">Vacinas Ofertadas:</legend>
+              <div class="flex flex-wrap gap-4 text-xs font-medium text-slate-200">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="rounded border-slate-500 text-blue-500 focus:ring-blue-400"> Pólio
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="rounded border-slate-500 text-blue-500 focus:ring-blue-400"> Sarampo
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" class="rounded border-slate-500 text-blue-500 focus:ring-blue-400"> BCG
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked class="rounded border-slate-500 text-blue-500 focus:ring-blue-400"> Covid-19
+                </label>
+              </div>
+            </fieldset>
+
+            <button type="submit" id="admin-submit-btn" class="text-xs font-bold px-4 py-2 rounded-lg text-white shadow-md bg-blue-600 hover:bg-blue-500 transition">
+              Salvar Ponto de Atendimento
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- RODAPÉ SÓLIDO -->
+      <footer class="p-4 text-center text-xs bg-slate-950 text-slate-400 border-t border-slate-800">
+        Projeto Integrador IV-B · Consulta Pública de Vacinação em Alagoas · WCAG 2.1 AA Compliant
+      </footer>
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT DE ALTERNÂNCIA DAS 3 PALETAS ESCURAS/ENCORPADAS -->
+  <script>
+    // Inicia diretamente no Padrão 2 escolhido pelo usuário
+    window.addEventListener('DOMContentLoaded', () => {
+      setTheme('petroleo');
+    });
+
+    const darkPalettes = {
+      navy: {
+        tag: "Paleta 1 Ativa",
+        tagClass: "bg-blue-100 text-blue-900 border-blue-300",
+        title: "Opção 1: Azul Marinho Corporativo & Fundo Cinza Aço",
+        desc: "Fundo cinza aço (#E2E8F0) sem ofuscamento branco. Hero em Azul Marinho Profundo (#1E3A8A), cards brancos delimitados por bordas fortes (#CBD5E1) e badges verde esmeralda (#047857).",
+        swatches: ['#E2E8F0', '#1E3A8A', '#2563EB', '#047857', '#0F172A'],
+        btnClass: "bg-blue-600 text-white border-blue-400",
+        bodyBg: "bg-slate-300",
+        heroBg: "bg-blue-900 border-blue-950",
+        heroChip: "bg-blue-950 text-blue-200 border-blue-700",
+        containerBg: "bg-slate-200",
+        cardBorderHover: "hover:border-blue-600",
+        cityPill: "bg-blue-100 text-blue-900 border-blue-200",
+        neighborhoodText: "text-blue-800",
+        vaxTag: "bg-emerald-100 text-emerald-900 border-emerald-300",
+        actionBtn: "bg-blue-600 hover:bg-blue-500"
+      },
+      petroleo: {
+        tag: "Paleta 2 Ativa",
+        tagClass: "bg-cyan-100 text-cyan-900 border-cyan-300",
+        title: "Opção 2: Azul Petróleo & Platina Metálica",
+        desc: "Fundo cinza platina (#D1D5DB). Hero e Navbar em Azul Petróleo Escuro (#0F4C5C / #164E63), cards com bordas acinzentadas firmes e detalhes em tom âmbar suave (#B45309).",
+        swatches: ['#D1D5DB', '#164E63', '#0891B2', '#B45309', '#082F49'],
+        btnClass: "bg-cyan-700 text-white border-cyan-400",
+        bodyBg: "bg-gray-300",
+        heroBg: "bg-cyan-950 border-cyan-900",
+        heroChip: "bg-cyan-900 text-cyan-200 border-cyan-700",
+        containerBg: "bg-gray-200",
+        cardBorderHover: "hover:border-cyan-600",
+        cityPill: "bg-cyan-100 text-cyan-900 border-cyan-300",
+        neighborhoodText: "text-cyan-800",
+        vaxTag: "bg-amber-100 text-amber-900 border-amber-300",
+        actionBtn: "bg-cyan-700 hover:bg-cyan-600"
+      },
+      cobalto: {
+        tag: "Paleta 3 Ativa",
+        tagClass: "bg-indigo-100 text-indigo-900 border-indigo-300",
+        title: "Opção 3: Azul Noturno Profundo & Grafite Escuro",
+        desc: "Máxima solidez visual: Fundo cinza frio médio (#CBD5E1), Hero em Azul Índigo Noturno (#1E1B4B), cards em fundo cinza claríssimo (#F1F5F9) com bordas grafite e tags em azul royal (#1D4ED8).",
+        swatches: ['#CBD5E1', '#1E1B4B', '#4338CA', '#1D4ED8', '#030712'],
+        btnClass: "bg-indigo-700 text-white border-indigo-400",
+        bodyBg: "bg-slate-400",
+        heroBg: "bg-indigo-950 border-indigo-900",
+        heroChip: "bg-indigo-900 text-indigo-200 border-indigo-700",
+        containerBg: "bg-slate-300",
+        cardBorderHover: "hover:border-indigo-600",
+        cityPill: "bg-indigo-100 text-indigo-900 border-indigo-300",
+        neighborhoodText: "text-indigo-900",
+        vaxTag: "bg-blue-100 text-blue-900 border-blue-300",
+        actionBtn: "bg-indigo-700 hover:bg-indigo-600"
+      }
+    };
+
+    function setTheme(name) {
+      const p = darkPalettes[name];
+
+      // Atualiza botões
+      ['navy', 'petroleo', 'cobalto'].forEach(k => {
+        const b = document.getElementById(`btn-${k}`);
+        if (k === name) {
+          b.className = `theme-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border-2 transition-all shadow ${p.btnClass}`;
+          b.setAttribute('aria-pressed', 'true');
+        } else {
+          b.className = `theme-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border-2 transition-all bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700`;
+          b.setAttribute('aria-pressed', 'false');
+        }
+      });
+
+      // Atualiza painel informativo
+      document.getElementById('palette-tag').className = `text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded border ${p.tagClass}`;
+      document.getElementById('palette-tag').innerText = p.tag;
+      document.getElementById('palette-title').innerText = p.title;
+      document.getElementById('palette-desc').innerText = p.desc;
+
+      // Atualiza swatches
+      p.swatches.forEach((c, idx) => {
+        document.getElementById(`swatch-${idx+1}`).style.backgroundColor = c;
+      });
+
+      // Aplica classes visuais
+      document.getElementById('body-bg').className = `${p.bodyBg} text-slate-800 font-sans antialiased min-h-screen transition-colors duration-200`;
+      document.getElementById('hero-block').className = `py-10 px-6 sm:px-12 text-white border-b transition-colors ${p.heroBg}`;
+      document.getElementById('hero-chip').className = `inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 border ${p.heroChip}`;
+      document.getElementById('cards-container-bg').className = `p-6 sm:p-10 transition-colors ${p.containerBg}`;
+      document.getElementById('admin-submit-btn').className = `text-xs font-bold px-4 py-2 rounded-lg text-white shadow-md transition ${p.actionBtn}`;
+
+      document.querySelectorAll('.neighborhood-tag').forEach(el => {
+        el.className = `neighborhood-tag text-xs font-bold mb-1 ${p.neighborhoodText}`;
+      });
+
+      document.querySelectorAll('.city-pill').forEach(el => {
+        el.className = `city-pill text-[10px] font-bold px-2 py-0.5 rounded border ${p.cityPill}`;
+      });
+
+      document.querySelectorAll('.tag-vax').forEach(el => {
+        el.className = `tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded border ${p.vaxTag}`;
+      });
+    }
+
+    function handleCityFilter(cityId) {
+      const grid = document.getElementById('posts-grid');
+      const pill = document.getElementById('count-pill');
+      
+      if (cityId === "2") {
+        pill.innerText = "1 unidade disponível";
+        grid.innerHTML = `
+          <article class="unit-card rounded-xl border-2 p-5 flex flex-col justify-between shadow-md transition-all bg-white border-slate-300 hover:border-blue-600">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h4 class="font-extrabold text-base text-slate-900">UBS Primavera Arapiraca</h4>
+                <span class="city-pill text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200">Arapiraca</span>
+              </div>
+              <p class="neighborhood-tag text-xs font-bold mb-1 text-blue-800">Bairro Primavera</p>
+              <p class="text-xs text-slate-700 mb-4 flex items-center gap-1">
+                <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Rua Brasília, 100
+              </p>
+            </div>
+            <div class="border-t border-slate-200 pt-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-2">Doses em Estoque:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Pólio</span>
+                <span class="tag-vax text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">Influenza</span>
+              </div>
+            </div>
+          </article>
+        `;
+      } else {
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

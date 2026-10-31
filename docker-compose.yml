@@ -1,0 +1,71 @@
+services:
+  # 1. Serviço de Banco de Dados Relacional (PostgreSQL 16)
+  db:
+    image: postgres:16-alpine
+    container_name: vacinacao_pg_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-vacinacao_al}
+    ports:
+      - "5435:5432" # Porta externa 5435 livre de conflitos
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./sql/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    networks:
+      - vacinacao-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-vacinacao_al}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Serviço do Backend (API RESTful FastAPI / Uvicorn)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vacinacao_backend_api
+    restart: always
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-vacinacao_al}
+      SYNC_DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-vacinacao_al}
+      SECRET_KEY: ${SECRET_KEY:-superchavejwtseguraprojetointegrador2026}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+    ports:
+      - "8085:8000" # Porta externa 8085 livre de conflitos
+    volumes:
+      - ./backend/src:/app/src
+      - ./sql:/app/sql
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - vacinacao-network
+
+  # 3. Serviço do Frontend (Nginx Alpine servindo a Web UI)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vacinacao_frontend_web
+    restart: always
+    ports:
+      - "3005:80" # Porta externa 3005 livre de conflitos (3000, 3010, 3012 ocupadas)
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html
+    depends_on:
+      - backend
+    networks:
+      - vacinacao-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  vacinacao-network:
+    driver: bridge

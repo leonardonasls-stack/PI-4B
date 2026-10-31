@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vacina Alagoas — Painel Administrativo</title>
+  <!-- Tailwind CSS via CDN oficial -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-300 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- NAVBAR DA APLICAÇÃO -->
+  <header class="bg-slate-900 border-b border-cyan-950 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-cyan-700 text-white shadow group-hover:bg-cyan-600 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-extrabold text-base leading-tight block text-white tracking-wide">Vacina Alagoas</span>
+          <span class="text-[11px] text-cyan-200">Painel de Gestão Administrativa</span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:text-white transition">
+          Voltar para Consulta
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+    <div class="bg-slate-900 text-white rounded-2xl border border-slate-700 p-6 sm:p-8 shadow-xl">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded bg-amber-400 text-slate-900">
+            Módulo Restrito
+          </span>
+          <h1 class="text-xl font-bold text-white mt-1.5">Painel de Gestão & Inserção de Dados</h1>
+        </div>
+        <div id="auth-status" class="text-xs text-slate-400">
+          Status: <span id="auth-label" class="text-red-400 font-bold">Não Autenticado</span>
+        </div>
+      </div>
+
+      <!-- 1. LOGIN ADMINISTRATIVO (POST /auth/login) -->
+      <div id="login-box" class="bg-slate-800 p-5 rounded-xl border border-slate-700 mb-8">
+        <h2 class="text-sm font-bold text-cyan-300 uppercase tracking-wide mb-3">1. Autenticação Administrativa (JWT)</h2>
+        <form onsubmit="handleLogin(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Usuário:</label>
+            <input type="text" id="username" value="admin" class="w-full text-xs py-2 px-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Senha:</label>
+            <input type="password" id="password" value="admin123" class="w-full text-xs py-2 px-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-cyan-400">
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full text-xs font-bold py-2.5 px-4 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white transition shadow">
+              Autenticar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 2. BOT DE ENRIQUECIMENTO OPENSTREETMAP (MACEIÓ) -->
+      <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-amber-300 uppercase tracking-wide">2. Bot de Enriquecimento de Dados (OSM)</h2>
+            <p class="text-xs text-slate-300 mt-1 max-w-xl">
+              Acione o minerador para consultar a Overpass API em Maceió e inserir novas unidades de saúde automaticamente no PostgreSQL.
+            </p>
+          </div>
+          <button onclick="triggerOsmBot()" id="btn-bot" class="text-xs font-bold py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow whitespace-nowrap">
+            Executar Bot OSM
+          </button>
+        </div>
+        <div id="bot-feedback" class="text-xs mt-3 hidden font-mono"></div>
+      </div>
+
+      <!-- 3. FORMULÁRIO DE CADASTRO MANUAL (POST /admin/vaccination-points) -->
+      <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+        <h2 class="text-sm font-bold text-cyan-300 uppercase tracking-wide mb-3">3. Cadastro Manual de Ponto de Vacinação</h2>
+        <form onsubmit="handleCreatePoint(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1">Município:</label>
+              <select id="new-city-id" class="w-full text-xs py-2 px-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-cyan-400">
+                <option value="1">Maceió</option>
+                <option value="2">Arapiraca</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1">Nome da Unidade:</label>
+              <input type="text" id="new-point-name" required placeholder="Ex: UBS Bebedouro" class="w-full text-xs py-2 px-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-cyan-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1">Bairro:</label>
+              <input type="text" id="new-point-neighborhood" placeholder="Ex: Bebedouro" class="w-full text-xs py-2 px-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1">Endereço Completo:</label>
+              <input type="text" id="new-point-address" placeholder="Ex: Rua Principal, 12" class="w-full text-xs py-2 px-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-cyan-400">
+            </div>
+          </div>
+
+          <fieldset>
+            <legend class="text-xs font-semibold text-slate-300 mb-2">Selecione as Vacinas Disponíveis:</legend>
+            <div class="flex flex-wrap gap-4 text-xs font-medium text-slate-200">
+              <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="vax" value="1" checked class="rounded border-slate-600 text-cyan-600"> Pólio</label>
+              <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="vax" value="2" checked class="rounded border-slate-600 text-cyan-600"> Sarampo</label>
+              <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="vax" value="3" checked class="rounded border-slate-600 text-cyan-600"> Covid-19</label>
+              <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="vax" value="4" checked class="rounded border-slate-600 text-cyan-600"> Influenza</label>
+              <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="vax" value="5" class="rounded border-slate-600 text-cyan-600"> BCG</label>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="text-xs font-bold py-2.5 px-5 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white transition shadow">
+            Salvar Unidade no Banco
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RODAPÉ SÓLIDO -->
+  <footer class="bg-slate-950 text-slate-400 border-t border-slate-800 text-xs py-5 px-4 text-center">
+    Projeto Integrador IV-B · Frontend desacoplado servido via Nginx
+  </footer>
+
+  <script>
+    const API_URL = "http://localhost:8085";
+    let authToken = localStorage.getItem("access_token");
+
+    if (authToken) {
+      document.getElementById("auth-label").innerText = "Sessão Ativa (JWT Presente)";
+      document.getElementById("auth-label").className = "text-emerald-400 font-bold";
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById("username").value;
+      const p = document.getElementById("password").value;
+
+      const body = new URLSearchParams();
+      body.append("username", u);
+      body.append("password", p);
+
+      try {
+        const res = await fetch(`${API_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body
+        });
+
+        if (!res.ok) throw new Error("Credenciais inválidas");
+        const data = await res.json();
+        
+        authToken = data.access_token;
+        localStorage.setItem("access_token", authToken);
+
+        document.getElementById("auth-label").innerText = "Autenticado com Sucesso!";
+        document.getElementById("auth-label").className = "text-emerald-400 font-bold";
+        alert("Autenticação realizada com sucesso!");
+      } catch (err) {
+        alert("Erro ao autenticar: Usuário ou senha incorretos.");
+      }
+    }
+
+    async function handleCreatePoint(e) {
+      e.preventDefault();
+      if (!authToken) {
+        alert("Você precisa realizar o login administrativo primeiro!");
+        return;
+      }
+
+      const cityId = parseInt(document.getElementById("new-city-id").value);
+      const name = document.getElementById("new-point-name").value;
+      const neighborhood = document.getElementById("new-point-neighborhood").value;
+      const address = document.getElementById("new-point-address").value;
+
+      const checkedVax = Array.from(document.querySelectorAll("input[name='vax']:checked"))
+        .map(cb => parseInt(cb.value));
+
+      const payload = {
+        city_id: cityId,
+        name: name,
+        neighborhood: neighborhood,
+        address: address,
+        vaccine_ids: checkedVax
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/admin/vaccination-points`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("Erro na inserção");
+        alert("Ponto de vacinação cadastrado com sucesso no PostgreSQL!");
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Falha ao salvar: Token expirado ou dados inválidos.");
+      }
+    }
+
+    async function triggerOsmBot() {
+      if (!authToken) {
+        alert("Realize o login antes de disparar o bot de dados!");
+        return;
+      }
+
+      const fb = document.getElementById("bot-feedback");
+      fb.className = "text-xs mt-3 block text-cyan-300 font-mono";
+      fb.innerText = "Consultando Overpass API (OpenStreetMap) em Maceió... Aguarde.";
+
+      try {
+        const res = await fetch(`${API_URL}/admin/enrichment/sync-osm`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+
+        const data = await res.json();
+        fb.innerText = data.message;
+        fb.className = "text-xs mt-3 block text-emerald-400 font-mono";
+      } catch (err) {
+        fb.innerText = "Erro ao executar o bot ou serviço Overpass temporariamente indisponível.";
+        fb.className = "text-xs mt-3 block text-red-400 font-mono";
+      }
+    }
+  </script>
+</body>
+</html>
