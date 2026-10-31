@@ -27,6 +27,8 @@ class PointService:
                 vp.name,
                 vp.neighborhood,
                 vp.address,
+                vp.latitude,
+                vp.longitude,
                 COALESCE(
                     ARRAY_REMOVE(ARRAY_AGG(v.name ORDER BY v.name), NULL), 
                     '{}'
@@ -35,7 +37,7 @@ class PointService:
             LEFT JOIN point_vaccines pv ON vp.id = pv.point_id
             LEFT JOIN vaccines v ON pv.vaccine_id = v.id
             WHERE vp.city_id = :city_id
-            GROUP BY vp.id, vp.name, vp.neighborhood, vp.address
+            GROUP BY vp.id, vp.name, vp.neighborhood, vp.address, vp.latitude, vp.longitude
             ORDER BY vp.name ASC;
         """)
 
@@ -48,6 +50,8 @@ class PointService:
                 name=r["name"],
                 neighborhood=r["neighborhood"],
                 address=r["address"],
+                latitude=float(r["latitude"]) if r["latitude"] is not None else None,
+                longitude=float(r["longitude"]) if r["longitude"] is not None else None,
                 vaccines=r["vaccines"]
             )
             for r in rows

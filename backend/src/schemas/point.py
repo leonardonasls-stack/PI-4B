@@ -15,6 +15,8 @@ class VaccinationPointResponse(BaseModel):
     name: str
     neighborhood: Optional[str] = None
     address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     vaccines: List[str] = []
 
     model_config = ConfigDict(from_attributes=True)

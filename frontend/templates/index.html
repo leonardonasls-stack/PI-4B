@@ -13,33 +13,54 @@
       Encontre Postos de Vacinação em Alagoas
     </h1>
     <p class="text-sm mt-2 text-cyan-100 max-w-2xl mx-auto">
-      Selecione sua cidade para consultar unidades básicas de saúde ativas, endereços e o catálogo de doses de imunobiológicos disponíveis.
+      Selecione sua cidade para consultar unidades ativas, traçar rotas no Google Maps e calcular a proximidade da sua localização.
     </p>
 
-    <!-- SELETOR DE MUNICÍPIO ACESSÍVEL (RF-04 / RF-06) -->
-    <div class="mt-8 max-w-md mx-auto text-left">
-      <label for="city-selector" class="block text-xs font-bold uppercase tracking-wider mb-2 text-cyan-200">
-        Selecione o Município:
-      </label>
-      <div class="relative">
-        <select 
-          id="city-selector"
-          class="w-full text-sm font-semibold py-3 px-4 rounded-xl border-2 cursor-pointer shadow-lg bg-white text-slate-900 border-cyan-400 focus:ring-4 focus:ring-cyan-500 focus:outline-none"
-          onchange="fetchVaccinationPoints(this.value)"
-        >
-          {% for city in cities %}
-            <option value="{{ city.id }}" {% if city.id == selected_city_id %}selected{% endif %}>
-              {{ city.name }}
-            </option>
-          {% endfor %}
-        </select>
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
+    <!-- BARRA DE SELEÇÃO E GEOLOCALIZAÇÃO -->
+    <div class="mt-8 max-w-xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-end gap-3 text-left">
+      <div class="flex-grow">
+        <label for="city-selector" class="block text-xs font-bold uppercase tracking-wider mb-2 text-cyan-200">
+          Selecione o Município:
+        </label>
+        <div class="relative">
+          <select 
+            id="city-selector"
+            class="w-full text-sm font-semibold py-3 px-4 rounded-xl border-2 cursor-pointer shadow-lg bg-white text-slate-900 border-cyan-400 focus:ring-4 focus:ring-cyan-500 focus:outline-none"
+            onchange="fetchVaccinationPoints(this.value)"
+          >
+            {% for city in cities %}
+              <option value="{{ city.id }}" {% if city.id == selected_city_id %}selected{% endif %}>
+                {{ city.name }}
+              </option>
+            {% endfor %}
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
         </div>
       </div>
+
+      <!-- BOTÃO DE GEOLOCALIZAÇÃO -->
+      <div>
+        <button 
+          onclick="requestUserLocation()" 
+          id="btn-geoloc" 
+          class="w-full sm:w-auto h-[46px] px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shadow-lg flex items-center justify-center gap-2 whitespace-nowrap"
+          title="Ordenar postos pela distância até sua localização atual"
+        >
+          <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span>Usar Minha Localização</span>
+        </button>
+      </div>
     </div>
+
+    <!-- STATUS DA LOCALIZAÇÃO -->
+    <div id="geoloc-banner" class="mt-3 text-xs text-cyan-200 hidden font-medium"></div>
   </div>
 </section>
 
@@ -50,64 +71,89 @@
       <h2 class="text-2xl font-black text-cyan-950">
         Unidades de Atendimento Encontradas
       </h2>
-      <p class="text-xs text-slate-700 mt-0.5">Clique nos postos para conferir os imunobiológicos ofertados</p>
+      <p class="text-xs text-slate-700 mt-0.5">Clique em "Traçar Rota" para abrir as direções no Google Maps</p>
     </div>
     <span id="counter-badge" class="self-start sm:self-auto text-xs font-bold px-3 py-1.5 rounded-lg border bg-cyan-950 text-cyan-100 border-cyan-800">
-      {{ points|length }} postos carregados
+      Carregando...
     </span>
   </div>
 
   <!-- GRID DE CARDS COM DENSIDADE VISUAL E BORDAS FORTES -->
   <div id="points-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-live="polite">
-    {% for point in points %}
-      <article class="bg-white rounded-xl border-2 border-slate-400 p-5 shadow-md hover:border-cyan-600 transition flex flex-col justify-between">
-        <div>
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <h3 class="font-extrabold text-base text-cyan-950 leading-snug">{{ point.name }}</h3>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-100 text-cyan-900 border border-cyan-300">
-              Ativo
-            </span>
-          </div>
-          
-          <p class="text-xs font-bold text-cyan-700 mb-1">
-            Bairro: {{ point.neighborhood or "Não informado" }}
-          </p>
-          <p class="text-xs text-slate-700 mb-4 flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            {{ point.address or "Endereço cadastrado no município" }}
-          </p>
-        </div>
-
-        <div class="border-t border-slate-200 pt-3 mt-2">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-2">
-            Vacinas Ofertadas:
-          </span>
-          <div class="flex flex-wrap gap-1.5">
-            {% if point.vaccines %}
-              {% for vac in point.vaccines %}
-                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                  {{ vac }}
-                </span>
-              {% endfor %}
-            {% else %}
-              <span class="text-xs text-slate-500 italic">Consulte na recepção da unidade</span>
-            {% endif %}
-          </div>
-        </div>
-      </article>
-    {% endfor %}
+    <!-- Renderizado dinamicamente via JavaScript -->
   </div>
 </section>
 
-<!-- SCRIPT ASSÍNCRONO PARA CONSUMIR GET /vaccination-points/{city_id} SEM RECARREGAR A TELA -->
 <script>
+  let loadedPoints = [];
+  let userLatitude = null;
+  let userLongitude = null;
+
+  function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+    if (!lat1 || !lon1 || !lat2 || !lon2) return null;
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return (R * c);
+  }
+
+  function requestUserLocation() {
+    const banner = document.getElementById("geoloc-banner");
+    const btn = document.getElementById("btn-geoloc");
+
+    if (!navigator.geolocation) {
+      alert("Geolocalização não é suportada pelo seu navegador.");
+      return;
+    }
+
+    btn.classList.add("opacity-75");
+    banner.className = "mt-3 text-xs text-amber-300 block font-medium";
+    banner.innerText = "Obtendo sua localização com alta precisão...";
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        userLatitude = pos.coords.latitude;
+        userLongitude = pos.coords.longitude;
+
+        btn.classList.remove("opacity-75");
+        btn.classList.remove("bg-amber-500", "hover:bg-amber-400");
+        btn.classList.add("bg-emerald-500", "hover:bg-emerald-400", "text-slate-950");
+
+        banner.className = "mt-3 text-xs text-emerald-300 block font-medium";
+        banner.innerText = `Sua localização ativa: (${userLatitude.toFixed(4)}, ${userLongitude.toFixed(4)}). Postos ordenados por proximidade!`;
+
+        renderPoints();
+      },
+      (err) => {
+        btn.classList.remove("opacity-75");
+        banner.className = "mt-3 text-xs text-red-300 block font-medium";
+        let msg = "Não foi possível obter sua localização.";
+        if (err.code === 1) msg = "Permissão de localização negada pelo usuário.";
+        else if (err.code === 2) msg = "Posição indisponível.";
+        banner.innerText = msg;
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+
+  function getGoogleMapsUrl(point) {
+    if (point.latitude && point.longitude) {
+      if (userLatitude && userLongitude) {
+        return `https://www.google.com/maps/dir/?api=1&origin=${userLatitude},${userLongitude}&destination=${point.latitude},${point.longitude}&travelmode=driving`;
+      }
+      return `https://www.google.com/maps/search/?api=1&query=${point.latitude},${point.longitude}`;
+    }
+    const query = encodeURIComponent(`${point.name}, ${point.address || ''}, Alagoas`);
+    return `https://www.google.com/maps/search/?api=1&query=${query}`;
+  }
+
   async function fetchVaccinationPoints(cityId) {
     const container = document.getElementById("points-container");
-    const counter = document.getElementById("counter-badge");
-    
     container.innerHTML = `
       <div class="col-span-full py-12 text-center text-cyan-950 font-bold">
         <svg class="animate-spin h-6 w-6 mx-auto mb-2 text-cyan-700" fill="none" viewBox="0 0 24 24">
@@ -122,38 +168,95 @@
       const response = await fetch(`/vaccination-points/${cityId}`);
       if (!response.ok) throw new Error("Erro ao consultar pontos");
       
-      const points = await response.json();
-      counter.innerText = `${points.length} postos carregados`;
+      loadedPoints = await response.json();
+      renderPoints();
+    } catch (err) {
+      container.innerHTML = `
+        <div class="col-span-full py-8 text-center text-red-700 font-bold">
+          Falha na comunicação com o servidor REST. Verifique se o PostgreSQL está ativo.
+        </div>
+      `;
+    }
+  }
 
-      if (points.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full py-10 text-center bg-white rounded-xl border border-gray-400 p-8 shadow-sm">
-            <p class="font-bold text-slate-800 text-base">Nenhum ponto de vacinação registrado nesta cidade ainda.</p>
-            <p class="text-xs text-slate-600 mt-1">Utilize o painel administrativo ou execute o bot de enriquecimento OSM.</p>
-          </div>
-        `;
-        return;
-      }
+  function renderPoints() {
+    const container = document.getElementById("points-container");
+    const counter = document.getElementById("counter-badge");
 
-      container.innerHTML = points.map(p => `
+    let displayList = [...loadedPoints];
+
+    if (userLatitude && userLongitude) {
+      displayList = displayList.map(p => {
+        const dist = calculateDistanceKm(userLatitude, userLongitude, p.latitude, p.longitude);
+        return { ...p, distanceKm: dist };
+      });
+
+      displayList.sort((a, b) => {
+        if (a.distanceKm === null) return 1;
+        if (b.distanceKm === null) return -1;
+        return a.distanceKm - b.distanceKm;
+      });
+    }
+
+    counter.innerText = `${displayList.length} postos carregados`;
+
+    if (displayList.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full py-10 text-center bg-white rounded-xl border border-gray-400 p-8 shadow-sm">
+          <p class="font-bold text-slate-800 text-base">Nenhum ponto de vacinação registrado nesta cidade ainda.</p>
+          <p class="text-xs text-slate-600 mt-1">Utilize o painel administrativo ou execute o bot de enriquecimento OSM.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = displayList.map(p => {
+      const mapsUrl = getGoogleMapsUrl(p);
+      const distBadge = (p.distanceKm !== undefined && p.distanceKm !== null)
+        ? `<span class="text-[11px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">
+             ~${p.distanceKm < 1 ? Math.round(p.distanceKm * 1000) + ' m' : p.distanceKm.toFixed(1) + ' km'} de você
+           </span>`
+        : '';
+
+      return `
         <article class="bg-white rounded-xl border-2 border-slate-400 p-5 shadow-md hover:border-cyan-600 transition flex flex-col justify-between">
           <div>
             <div class="flex items-start justify-between gap-2 mb-2">
               <h3 class="font-extrabold text-base text-cyan-950 leading-snug">${p.name}</h3>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-100 text-cyan-900 border border-cyan-300">
-                Ativo
-              </span>
+              <div class="flex flex-col items-end gap-1">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-100 text-cyan-900 border border-cyan-300">
+                  Ativo
+                </span>
+                ${distBadge}
+              </div>
             </div>
+            
             <p class="text-xs font-bold text-cyan-700 mb-1">
               Bairro: ${p.neighborhood || "Não informado"}
             </p>
-            <p class="text-xs text-slate-700 mb-4 flex items-center gap-1.5">
+            <p class="text-xs text-slate-700 mb-3 flex items-center gap-1.5">
               <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
               </svg>
               ${p.address || "Endereço cadastrado no município"}
             </p>
+
+            <!-- INTEGRAÇÃO GOOGLE MAPS -->
+            <a 
+              href="${mapsUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-800 hover:text-cyan-950 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 px-3 py-1.5 rounded-lg transition mb-3"
+            >
+              <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              <span>${userLatitude ? 'Traçar Rota no Google Maps' : 'Ver no Google Maps'}</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
           </div>
 
           <div class="border-t border-slate-200 pt-3 mt-2">
@@ -163,20 +266,19 @@
             <div class="flex flex-wrap gap-1.5">
               ${p.vaccines && p.vaccines.length > 0 
                 ? p.vaccines.map(v => `<span class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">${v}</span>`).join('')
-                : '<span class="text-xs text-slate-500 italic">Consulte na unidade</span>'
+                : '<span class="text-xs text-slate-500 italic">Consulte na recepção da unidade</span>'
               }
             </div>
           </div>
         </article>
-      `).join("");
-
-    } catch (err) {
-      container.innerHTML = `
-        <div class="col-span-full py-8 text-center text-red-700 font-bold">
-          Falha na comunicação com o servidor REST. Verifique se o PostgreSQL está ativo.
-        </div>
       `;
-    }
+    }).join("");
+  }
+
+  // Carrega inicial
+  const initCitySelect = document.getElementById("city-selector");
+  if (initCitySelect && initCitySelect.value) {
+    fetchVaccinationPoints(initCitySelect.value);
   }
 </script>
 {% endblock %}
