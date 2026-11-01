@@ -515,18 +515,16 @@
                   <span
                     class="inline-block w-2 h-2 rounded-full bg-secondary animate-pulse"
                   ></span>
-                  <span
-                    >Localização identificada:
-                    <strong>Pajuçara / Maceió</strong> (Precisão estimada: ±
-                    45m)</span
+                  <span id="gps-status-text"
+                    >Localização identificada via GPS. Postos ordenados pela distância até você.</span
                   >
                 </div>
                 <button
-                  class="text-on-surface-variant hover:text-error text-label-sm font-label-sm"
+                  class="text-on-surface-variant hover:text-error text-label-sm font-label-sm cursor-pointer"
                   onclick="window.desativarGps()"
                   type="button"
                 >
-                  Desativar
+                  Desativar GPS
                 </button>
               </div>
             </div>
@@ -1578,19 +1576,39 @@
 
               btn.classList.add("opacity-75");
               navigator.geolocation.getCurrentPosition(
-                (pos) => {
+                async (pos) => {
                   userLatitude = pos.coords.latitude;
                   userLongitude = pos.coords.longitude;
                   btn.classList.remove("opacity-75");
-                  btn.classList.add("ring-2", "ring-secondary");
-                  alert(
-                    "Localização obtida! Os postos foram reordenados por distância até você.",
-                  );
-                  window.aplicarFiltros();
+                  btn.classList.add("ring-2", "ring-secondary", "bg-secondary/10", "font-bold");
+
+                  const gpsStatus = document.getElementById("gps-status");
+                  if (gpsStatus) {
+                    gpsStatus.classList.remove("hidden");
+                    gpsStatus.classList.add("flex");
+                  }
+
+                  const selectOrdem = document.getElementById("ordenar-select");
+                  if (selectOrdem) selectOrdem.value = "distancia";
+
+                  const selectCidade = document.getElementById("municipio-select");
+                  const cityId = selectCidade ? selectCidade.value : null;
+
+                  if (allPoints.length === 0 && cityId) {
+                    await carregarPostos(cityId);
+                  } else {
+                    window.aplicarFiltros();
+                  }
+
+                  // Rolagem suave até a lista de postos encontrados
+                  const secaoPostos = document.getElementById("titulo-resultados");
+                  if (secaoPostos) {
+                    secaoPostos.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
                 },
                 (err) => {
                   btn.classList.remove("opacity-75");
-                  alert("Não foi possível obter sua localização exata.");
+                  alert("Não foi possível obter sua localização. Verifique as permissões de GPS no seu navegador.");
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
               );
@@ -1649,10 +1667,15 @@
             window.desativarGps = function () {
               userLatitude = null;
               userLongitude = null;
-              const bannerGps = document.getElementById("feedback-geolocalizacao");
-              if (bannerGps) bannerGps.classList.add("hidden");
+              const gpsStatus = document.getElementById("gps-status");
+              if (gpsStatus) {
+                gpsStatus.classList.remove("flex");
+                gpsStatus.classList.add("hidden");
+              }
               const btnGps = document.getElementById("btn-gps");
-              if (btnGps) btnGps.classList.remove("ring-2", "ring-secondary", "opacity-75");
+              if (btnGps) {
+                btnGps.classList.remove("ring-2", "ring-secondary", "bg-secondary/10", "font-bold", "opacity-75");
+              }
               window.aplicarFiltros();
             };
 
