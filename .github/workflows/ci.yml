@@ -73,3 +73,4 @@ jobs:
       - name: Validate Docker Compose Build
         run: |
           docker compose build
+
