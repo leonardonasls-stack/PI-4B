@@ -6,6 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="web_standard" name="shell-type" />
     <title>Vacina Alagoas — Consulta Pública e Busca</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&amp;display=swap"
       rel="stylesheet"
@@ -39,6 +41,17 @@
         display: none;
       }
     </style>
+    <script>
+      (function() {
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+          if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+            return;
+          }
+          origWarn.apply(console, args);
+        };
+      })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script id="tailwind-config">
       tailwind.config = {
@@ -276,11 +289,9 @@
         class="h-20 max-w-7xl mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-space-lg"
       >
         <div class="flex items-center gap-space-md">
-          <img
-            alt="Vacina Alagoas Logo"
-            class="h-8 w-auto object-contain"
-            src="https://lh3.googleusercontent.com/aida/AEtjO1V1HUpWfCp4RKBhXVtFa3iWyBZIzlpdp8wVO-dIoVEaBPaATbw436A0TrEbCJ4m_LYafWBWqMbviVfGzcCn25a566n3uFZnehYa5dcDeb8KuY4AqNt1TygxTgQNUMC_076oHj-IT42p7NAPINBttG9mwznXF8K_ZF6jKq823tfZkg2PWcGVII6c17dqC16pFHURWkE4Ce5jkAYydTdPaA7V6KwVr1U5tngNxgPyE7Q"
-          />
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-primary-container text-on-primary shadow-sm">
+            <span class="material-symbols-outlined text-[22px] text-primary-fixed">health_and_safety</span>
+          </div>
           <div class="flex flex-col">
             <span
               class="font-headline-sm text-headline-sm text-primary leading-tight tracking-tight"
@@ -409,10 +420,7 @@
               <form
                 class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-end"
                 id="search-form"
-                onsubmit="
-                  event.preventDefault();
-                  window.aplicarFiltros();
-                "
+                onsubmit="event.preventDefault(); window.executarBusca();"
               >
                 <!-- Seletor Município -->
                 <div class="md:col-span-4 flex flex-col gap-space-xs">
@@ -487,8 +495,9 @@
                     <span class="hidden sm:inline">Meu GPS</span>
                   </button>
                   <button
-                    class="w-full h-12 px-space-lg bg-primary-container hover:bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-md transition-all"
+                    class="w-full h-12 px-space-lg bg-primary-container hover:bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-md transition-all cursor-pointer"
                     type="submit"
+                    onclick="window.executarBusca()"
                   >
                     <span class="material-symbols-outlined text-[20px]"
                       >search</span
@@ -743,14 +752,16 @@
             aria-atomic="false"
           >
             <div
-              class="col-span-full py-16 text-center text-on-surface-variant font-bold flex flex-col items-center justify-center gap-space-sm"
-              id="loading-postos"
+              class="col-span-full py-16 text-center text-on-surface-variant flex flex-col items-center justify-center gap-space-sm"
+              id="placeholder-busca"
             >
-              <span
-                class="material-symbols-outlined text-[32px] text-primary animate-spin"
-                >progress_activity</span
-              >
-              <span>Carregando postos de vacinação oficiais...</span>
+              <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container mb-2">
+                <span class="material-symbols-outlined text-[32px]">travel_explore</span>
+              </div>
+              <h3 class="font-headline-sm text-base text-on-surface font-bold">Consulte os Postos de Vacinação</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant max-w-md">
+                Selecione o município desejado e clique no botão <strong>Buscar Postos</strong> para carregar as unidades de saúde e imunobiológicos disponíveis.
+              </p>
             </div>
           </div>
           <!-- MENSAGEM QUANDO NENHUM POSTO FOR ENCONTRADO -->
@@ -1182,6 +1193,7 @@
 
             // Inicializar Mapa Leaflet
             function initMap() {
+              if (typeof L === 'undefined') return;
               if (leafletMap) return;
               const mapContainer = document.getElementById("leaflet-map");
               if (!mapContainer) return;
@@ -1201,6 +1213,7 @@
             }
 
             function updateMapMarkers(points) {
+              if (typeof L === 'undefined') return;
               if (!leafletMap) initMap();
               if (!leafletMap) return;
 
@@ -1259,9 +1272,9 @@
                   )
                   .join("");
 
-                if (cities.length > 0) {
-                  carregarPostos(cities[0].id);
-                }
+                // Cidades carregadas. A busca ocorrerá quando o usuário clicar em Buscar Postos.
+                const contador = document.getElementById('badge-total-postos');
+                if (contador) contador.textContent = 'Clique em Buscar Postos para iniciar a consulta';
               } catch (err) {
                 console.error("Falha em carregarCidades:", err);
                 select.innerHTML = `<option value="">Erro ao conectar com API (${API_URL})</option>`;
@@ -1440,7 +1453,17 @@
               updateMapMarkers(points);
             }
 
-            // Filtros e Ordenação
+            // Execução da Busca sob Demanda
+            window.executarBusca = function () {
+              const selectCidade = document.getElementById("municipio-select");
+              const cityId = selectCidade ? selectCidade.value : null;
+              if (cityId) {
+                carregarPostos(cityId);
+              } else {
+                alert("Por favor, selecione um município para buscar.");
+              }
+            };
+
             window.aplicarFiltros = function () {
               const termoBusca = (
                 document.getElementById("bairro-ubs-input")?.value || ""
@@ -1613,6 +1636,24 @@
               const modal = document.getElementById("modal-detalhes");
               modal.classList.remove("hidden");
               document.body.style.overflow = "hidden";
+            };
+
+            window.limparTodosOsFiltros = function () {
+              const inputBusca = document.getElementById("bairro-ubs-input");
+              if (inputBusca) inputBusca.value = "";
+              const btnClear = document.getElementById("btn-clear-search");
+              if (btnClear) btnClear.classList.add("hidden");
+              window.selecionarVacina("todas");
+            };
+
+            window.desativarGps = function () {
+              userLatitude = null;
+              userLongitude = null;
+              const bannerGps = document.getElementById("feedback-geolocalizacao");
+              if (bannerGps) bannerGps.classList.add("hidden");
+              const btnGps = document.getElementById("btn-gps");
+              if (btnGps) btnGps.classList.remove("ring-2", "ring-secondary", "opacity-75");
+              window.aplicarFiltros();
             };
 
             window.fecharModalDetalhes = function () {
