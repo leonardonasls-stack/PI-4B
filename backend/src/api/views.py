@@ -35,9 +35,9 @@ async def home_view(request: Request, db: AsyncSession = Depends(get_db)):
         points = await point_service.list_by_city(initial_city_id)
         
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "cities": cities,
             "selected_city_id": initial_city_id,
             "points": points
@@ -49,9 +49,9 @@ async def admin_view(request: Request, db: AsyncSession = Depends(get_db)):
     city_service = CityService(db)
     cities = await city_service.list_cities()
     return templates.TemplateResponse(
-        "admin.html",
-        {
-            "request": request,
+        request=request,
+        name="admin.html",
+        context={
             "cities": cities
         }
     )
