@@ -22,9 +22,6 @@ class Settings(BaseSettings):
     ADMIN_USERNAME: str = "admin"
     ADMIN_PASSWORD: str = "admin123"
 
-    # Diretório dos templates do frontend
-    TEMPLATES_DIR: str = os.getenv("TEMPLATES_DIR", "/app/frontend/templates")
-
     class Config:
         env_file = ".env"
         extra = "allow"

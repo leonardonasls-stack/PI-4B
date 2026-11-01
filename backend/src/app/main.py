@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.app.config import settings
 from src.api.v1.api import api_router
 from src.api.v1.endpoints import auth, cities, points, enrichment
-from src.api.views import views_router
 
 app = FastAPI(
     title=f"{settings.PROJECT_NAME} — API REST",
@@ -42,6 +41,3 @@ app.include_router(enrichment.router, prefix="/admin/enrichment", tags=["Bot de 
 
 # 2. Rotas Versionadas (/api/v1/...)
 app.include_router(api_router, prefix=settings.API_V1_STR)
-
-# 3. Rotas de Apresentação HTML (Frontend)
-app.include_router(views_router)
