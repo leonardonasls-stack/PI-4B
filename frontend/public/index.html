@@ -299,29 +299,29 @@
             >
           </div>
         </div>
-        <nav
-          class="hidden xl:flex items-center gap-space-sm p-space-xs bg-surface-container-low rounded-xl"
-          data-active-classes="bg-primary-container text-on-primary font-label-md"
-        >
+        <nav class="hidden md:flex items-center gap-6">
           <a
-            aria-current="page"
-            class="px-space-md py-space-sm rounded-lg transition-all bg-primary-container text-on-primary font-label-md"
-            data-path="consulta-postos"
-            href="#"
-            >Início / Consulta de Postos</a
-          ><a
-            class="px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all"
-            data-path="duvidas-frequentes"
-            href="#"
-            >Dúvidas Frequentes</a
+            class="text-sm font-semibold text-primary hover:text-primary-container transition-colors border-b-2 border-primary pb-1"
+            href="#search-form"
+            >Consulta de Postos</a
+          >
+          <a
+            class="text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1"
+            href="#painel-mapa"
+            onclick="window.alternarVisao('mapa')"
+            >Mapa Integrado</a
+          >
+          <a
+            class="text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1"
+            href="#guia-cidadao"
+            >Guia de Vacinação</a
           >
         </nav>
         <div class="flex items-center gap-space-md">
           <a
-            class="inline-flex items-center justify-center px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[0_1px_3px_rgba(15,23,42,0.05)]"
-            data-path="area-restrita"
+            class="inline-flex items-center justify-center px-4 py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-sm transition-all shadow-sm"
             href="admin.html"
-            >Área Restrita (Servidor/Admin)</a
+            >Painel Administrativo &rarr;</a
           >
         </div>
       </div>
@@ -347,10 +347,9 @@
           </div>
           <div class="max-w-7xl mx-auto relative z-10">
             <!-- Identificação Institucional Sóbria -->
-            <div class="inline-flex items-center gap-2 text-secondary-fixed font-label-sm text-label-sm font-bold uppercase tracking-wider mb-space-sm bg-primary-container/80 px-3.5 py-1 rounded-full border border-secondary-fixed/20">
-              <span class="w-2 h-2 rounded-full bg-secondary-fixed"></span>
-              Governo de Alagoas • Secretaria de Estado da Saúde
-            </div>
+            <p class="text-xs uppercase tracking-wider text-primary-fixed-dim font-bold mb-space-sm">
+              Governo do Estado de Alagoas • Secretaria de Estado da Saúde (SESAU)
+            </p>
             
             <!-- Título e Subtítulo Integrados -->
             <div class="max-w-4xl mb-space-md">
@@ -393,6 +392,7 @@
                     <select
                       class="w-full h-12 pl-space-md pr-space-xl bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all appearance-none cursor-pointer border border-outline-variant/30"
                       id="municipio-select"
+                      onchange="window.executarBusca()"
                     >
                       <option value="" disabled selected>
                         Carregando cidades da SESAU...
@@ -414,12 +414,14 @@
                     <input
                       class="w-full h-12 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all border border-outline-variant/30"
                       id="bairro-ubs-input"
-                      placeholder="Ex: Jacintinho, Ponta Verde, Primavera..."
+                      placeholder="Ex: Poço, Jacintinho, Ponta Verde, Primavera..."
                       type="text"
+                      oninput="window.aplicarFiltros()"
                     >
                     <button
                       class="hidden absolute right-space-md top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-primary-container cursor-pointer"
                       id="btn-clear-search"
+                      onclick="document.getElementById('bairro-ubs-input').value = ''; this.classList.add('hidden'); window.aplicarFiltros();"
                       type="button"
                     >
                       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -429,7 +431,7 @@
                 <!-- Botões Ação / GPS -->
                 <div class="md:col-span-3 flex items-center gap-space-sm">
                   <button
-                    class="h-12 px-space-md flex-shrink-0 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg font-label-md text-label-md flex items-center gap-space-xs transition-colors cursor-pointer border border-outline-variant/40"
+                    class="h-12 px-4 flex-shrink-0 bg-white hover:bg-slate-100 text-slate-800 rounded-lg font-medium text-sm flex items-center gap-2 border border-slate-300 shadow-sm transition-colors cursor-pointer"
                     id="btn-gps"
                     onclick="window.ativarGeolocalizacao()"
                     title="Localizar postos usando as coordenadas do seu dispositivo"
@@ -439,11 +441,11 @@
                     <span class="hidden sm:inline">Meu GPS</span>
                   </button>
                   <button
-                    class="w-full h-12 px-space-lg bg-primary-container hover:bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-md transition-all cursor-pointer font-bold"
+                    class="w-full h-12 px-5 bg-primary-container hover:bg-primary text-white rounded-lg font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
                     type="submit"
                     onclick="window.executarBusca()"
                   >
-                    <svg class="w-4 h-4 text-on-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     <span>Buscar Postos</span>
                   </button>
                 </div>
@@ -1156,9 +1158,10 @@
                   )
                   .join("");
 
-                // Cidades carregadas. A busca ocorrerá quando o usuário clicar em Buscar Postos.
-                const contador = document.getElementById('badge-total-postos');
-                if (contador) contador.textContent = 'Clique em Buscar Postos para iniciar a consulta';
+                // Auto-carregar os postos do primeiro município (Maceió)
+                if (cities.length > 0) {
+                  carregarPostos(cities[0].id);
+                }
               } catch (err) {
                 console.error("Falha em carregarCidades:", err);
                 select.innerHTML = `<option value="">Erro ao conectar com API (${API_URL})</option>`;
@@ -1246,7 +1249,9 @@
 
                   const mapsUrl =
                     p.latitude && p.longitude
-                      ? `https://www.google.com/maps/dir/?api=1&origin=${userLatitude ? userLatitude + "," + userLongitude : ""}&destination=${p.latitude},${p.longitude}&travelmode=driving`
+                      ? (userLatitude && userLongitude
+                          ? `https://www.google.com/maps/dir/?api=1&origin=${userLatitude},${userLongitude}&destination=${p.latitude},${p.longitude}&travelmode=driving`
+                          : `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}`)
                       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ", " + (p.address || "") + ", Alagoas")}`;
 
                   const vacinasHtml =
@@ -1307,26 +1312,37 @@
               </div>
             </div>
 
-            <!-- Rodapé padronizado com altura compacta -->
-            <div class="px-4 py-2.5 bg-surface-container-low border-t border-surface-container-high/60 flex items-center justify-between gap-2 h-[62px]">
+            <!-- Rodapé padronizado -->
+            <div class="px-3.5 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-1.5 h-[62px]">
               <button 
                 type="button" 
-                class="text-xs text-primary-container hover:text-primary font-bold inline-flex items-center gap-1 py-1.5 px-2 rounded-lg hover:bg-surface-container-high transition-colors focus-visible:ring-2 focus-visible:ring-primary-container cursor-pointer" 
+                class="text-xs text-slate-700 hover:text-primary font-medium inline-flex items-center gap-1 py-1.5 px-2 rounded hover:bg-slate-200/60 transition-colors cursor-pointer" 
                 onclick="window.abrirModalPorId(${p.id})"
               >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                 Detalhes
               </button>
-              <a 
-                href="${mapsUrl}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="Traçar rota no Google Maps para ${p.name}"
-                class="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-secondary focus-visible:outline-none whitespace-nowrap cursor-pointer"
-              >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-                Traçar Rota
-              </a>
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  class="h-8 px-2.5 rounded border border-slate-300 hover:bg-white text-slate-700 text-xs font-medium inline-flex items-center gap-1 transition-colors cursor-pointer"
+                  onclick="window.focarNoMapa(${p.id}, ${p.latitude || 'null'}, ${p.longitude || 'null'})"
+                  title="Localizar no mapa integrado"
+                >
+                  <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                  Ver no Mapa
+                </button>
+                <a 
+                  href="${mapsUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label="Traçar rota no Google Maps para ${p.name}"
+                  class="h-8 px-3 rounded bg-primary hover:bg-primary-container text-white text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                >
+                  <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                  Traçar Rota
+                </a>
+              </div>
             </div>
           </article>
         `;
@@ -1453,6 +1469,21 @@
               }
             };
 
+            window.focarNoMapa = function (pointId, lat, lng) {
+              window.alternarVisao("mapa");
+              if (!lat || !lng) return;
+              setTimeout(() => {
+                if (leafletMap) {
+                  leafletMap.setView([lat, lng], 16);
+                  const marker = mapMarkers.find((m) => {
+                    const pos = m.getLatLng();
+                    return Math.abs(pos.lat - lat) < 0.0005 && Math.abs(pos.lng - lng) < 0.0005;
+                  });
+                  if (marker) marker.openPopup();
+                }
+              }, 250);
+            };
+
             window.ativarGeolocalizacao = function () {
               const btn = document.getElementById("btn-gps");
               if (!navigator.geolocation) {
@@ -1466,7 +1497,19 @@
                   userLatitude = pos.coords.latitude;
                   userLongitude = pos.coords.longitude;
                   btn.classList.remove("opacity-75");
-                  btn.classList.add("ring-2", "ring-secondary", "bg-secondary/10", "font-bold");
+                  btn.classList.add("ring-2", "ring-primary", "bg-primary/10", "font-bold");
+
+                  if (leafletMap) {
+                    if (window._userMarker) leafletMap.removeLayer(window._userMarker);
+                    window._userMarker = L.circleMarker([userLatitude, userLongitude], {
+                      radius: 8,
+                      fillColor: "#0066cc",
+                      color: "#ffffff",
+                      weight: 2,
+                      opacity: 1,
+                      fillOpacity: 0.9
+                    }).addTo(leafletMap).bindPopup("<b>Sua Localização (GPS)</b>");
+                  }
 
                   const gpsStatus = document.getElementById("gps-status");
                   if (gpsStatus) {
