@@ -36,6 +36,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # 1. Rotas Diretas na Raiz (Exigência Estrita dos Slides da Disciplina: /cities e /vaccination-points)
 app.include_router(cities.router, prefix="/cities", tags=["Municípios (cities)"])
 app.include_router(points.router, prefix="/vaccination-points", tags=["Pontos de Vacinação (vaccination-points)"])
+app.include_router(points.router, prefix="/admin/vaccination-points", tags=["Pontos de Vacinação (Admin Alias)"], include_in_schema=False)
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação Administrativa"])
 app.include_router(enrichment.router, prefix="/admin/enrichment", tags=["Bot de Enriquecimento (OSM)"])
 

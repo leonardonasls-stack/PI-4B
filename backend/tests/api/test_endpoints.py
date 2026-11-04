@@ -70,3 +70,25 @@ async def test_get_vaccination_points_by_city(client: AsyncClient):
 async def test_auth_login_invalid_credentials(client: AsyncClient):
     response = await client.post("/auth/login", data={"username": "wrong", "password": "wrong"})
     assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_create_point_unauthorized(client: AsyncClient):
+    payload = {"city_id": 1, "name": "Posto Teste"}
+    response = await client.post("/vaccination-points", json=payload)
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_update_point_unauthorized(client: AsyncClient):
+    payload = {"name": "Posto Alterado"}
+    response = await client.put("/vaccination-points/1", json=payload)
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_delete_point_unauthorized(client: AsyncClient):
+    response = await client.delete("/vaccination-points/1")
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_get_point_detail_not_found(client: AsyncClient):
+    response = await client.get("/vaccination-points/detail/999999")
+    assert response.status_code == 404
