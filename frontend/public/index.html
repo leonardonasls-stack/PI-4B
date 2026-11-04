@@ -18,6 +18,9 @@
     >
 
     <style>
+      html {
+        scroll-behavior: smooth;
+      }
       @layer base {
         html,
         body {
@@ -305,29 +308,31 @@
             >
           </div>
         </div>
-        <nav class="hidden md:flex items-center gap-6">
+        <nav class="flex items-center gap-2 sm:gap-4 md:gap-6 overflow-x-auto">
           <a
-            class="text-sm font-semibold text-primary hover:text-primary-container transition-colors border-b-2 border-primary pb-1"
+            class="text-xs sm:text-sm font-semibold text-primary hover:text-primary-container transition-colors border-b-2 border-primary pb-1 cursor-pointer whitespace-nowrap"
             href="#search-form"
+            onclick="window.rolarPara('search-form', event)"
             >Consulta de Postos</a
           >
           <a
-            class="text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1"
+            class="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1 cursor-pointer whitespace-nowrap"
             href="#painel-mapa"
-            onclick="window.alternarVisao('mapa')"
+            onclick="window.alternarVisao('mapa'); window.rolarPara('painel-mapa', event);"
             >Mapa Integrado</a
           >
           <a
-            class="text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1"
+            class="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1 cursor-pointer whitespace-nowrap"
             href="#guia-cidadao"
+            onclick="window.rolarPara('guia-cidadao', event)"
             >Guia de Vacinação</a
           >
         </nav>
-        <div class="flex items-center gap-space-md">
+        <div class="flex items-center gap-space-md shrink-0">
           <a
-            class="inline-flex items-center justify-center px-4 py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-sm transition-all shadow-sm"
+            class="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm transition-all shadow-sm whitespace-nowrap"
             href="admin.html"
-            >Painel Administrativo &rarr;</a
+            ><span class="hidden sm:inline">Painel Administrativo &rarr;</span><span class="sm:hidden">Admin &rarr;</span></a
           >
         </div>
       </div>
@@ -1908,6 +1913,31 @@
                 });
               } else {
                 alert("Disque Saúde 136 (SUS)\n\nDisque 136 gratuitamente de qualquer telefone fixo ou smartphone para tirar dúvidas sobre imunização e campanhas vigentes.");
+              }
+            };
+
+            // Rolagem suave e precisa para seções da página com offset de cabeçalho
+            window.rolarPara = function (targetId, ev) {
+              if (ev) ev.preventDefault();
+              const el = document.getElementById(targetId);
+              if (el) {
+                const headerHeight = 112; // Altura do cabeçalho fixo
+                const elementPosition = el.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+                window.scrollTo({
+                  top: Math.max(0, offsetPosition),
+                  behavior: "smooth"
+                });
+
+                try {
+                  history.pushState(null, null, "#" + targetId);
+                } catch (e) {}
+
+                el.classList.add("ring-2", "ring-primary/30", "transition-all");
+                setTimeout(() => {
+                  el.classList.remove("ring-2", "ring-primary/30");
+                }, 2000);
               }
             };
 
