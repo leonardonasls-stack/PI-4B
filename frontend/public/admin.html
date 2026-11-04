@@ -866,7 +866,9 @@
 </div>
 <script>
   (function () {
-    const API_URL = "http://localhost:8085";
+    // Em ambiente Nginx (:3005), as requisições usam a rota relativa direta ao proxy local;
+    // caso aberto avulso, direciona para o backend FastAPI (:8085)
+    const API_URL = (window.location.port === "3005" || window.location.port === "80" || !window.location.port) ? "" : "http://localhost:8085";
     let authToken = localStorage.getItem("access_token");
 
     // Copiar Bearer Token
