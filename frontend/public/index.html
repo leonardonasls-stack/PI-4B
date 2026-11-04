@@ -246,13 +246,16 @@
             ><span class="hidden sm:inline-block opacity-40">|</span
             ><a
               class="hidden sm:inline-block opacity-90 hover:opacity-100 transition-opacity"
-              href="#"
+              href="https://transparencia.al.gov.br"
+              target="_blank"
+              rel="noopener noreferrer"
               >Portal da Transparência</a
             >
           </div>
           <div class="flex items-center gap-space-md">
             <button
               class="hover:text-primary-fixed transition-colors flex items-center gap-space-xs cursor-pointer"
+              onclick="window.alternarAltoContraste()"
               title="Alternar Alto Contraste"
               type="button"
             >
@@ -262,22 +265,25 @@
             <div class="flex items-center gap-space-xs font-bold">
               <button
                 class="hover:text-primary-fixed px-space-xs cursor-pointer"
+                onclick="window.alterarTamanhoFonte(-1)"
                 title="Diminuir Fonte"
                 type="button"
               >
                 A-</button
               ><button
                 class="hover:text-primary-fixed px-space-xs cursor-pointer"
+                onclick="window.alterarTamanhoFonte(1)"
                 title="Aumentar Fonte"
                 type="button"
               >
                 A+
               </button>
             </div>
-            <a
-              class="opacity-90 hover:opacity-100 hidden lg:inline-block"
-              href="#"
-              >Acessibilidade WCAG 2.1</a
+            <button
+              class="opacity-90 hover:opacity-100 hidden lg:inline-block cursor-pointer bg-transparent border-0 p-0 text-inherit text-xs"
+              onclick="window.abrirModalAcessibilidade()"
+              type="button"
+              >Acessibilidade WCAG 2.1</button
             >
           </div>
         </div>
@@ -871,14 +877,14 @@
                   </div>
                 </div>
                 <div class="mt-space-md">
-                  <a
-                    class="font-label-md text-label-md text-primary hover:text-primary-container font-bold inline-flex items-center gap-space-xs"
-                    data-path="calendario-vacinal"
-                    href="#"
+                  <button
+                    type="button"
+                    class="font-label-md text-label-md text-primary hover:text-primary-container font-bold inline-flex items-center gap-space-xs cursor-pointer bg-transparent border-0 p-0"
+                    onclick="window.abrirModalCalendario()"
                   >
                     <span>Consultar Calendário Completo</span>
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -908,18 +914,208 @@
                 </div>
               </div>
               <div class="flex items-center gap-space-sm flex-shrink-0">
-                <a
-                  class="px-space-lg py-space-sm bg-surface-container-lowest text-primary font-label-md text-label-md rounded-lg shadow hover:bg-surface-container transition-all"
-                  data-path="duvidas-frequentes"
-                  href="#"
+                <button
+                  type="button"
+                  class="px-5 py-2.5 bg-white text-slate-800 font-semibold text-sm rounded-lg shadow-sm hover:bg-slate-100 transition-all cursor-pointer"
+                  onclick="window.abrirModalFaq()"
                 >
                   Perguntas Frequentes
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </section>
-        <!-- MODAL DE DETALHES DA UNIDADE (ACESSIBILIDADE & INFORMAÇÕES COMPLETAS) -->
+        <!-- MODAL DE PERGUNTAS FREQUENTES (FAQ) -->
+        <div
+          aria-labelledby="modal-faq-titulo"
+          aria-modal="true"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/60 backdrop-blur-sm"
+          id="modal-faq"
+          role="dialog"
+        >
+          <div class="bg-surface-container-lowest rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-outline-variant/40 flex flex-col max-h-[90vh]">
+            <div class="p-space-lg bg-primary text-on-primary flex items-center justify-between">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-primary-container text-white flex items-center justify-center">
+                  <svg class="w-4 h-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-headline-sm text-base text-white font-bold" id="modal-faq-titulo">Dúvidas Frequentes — Vacinação SUS / Alagoas</h3>
+                  <span class="text-xs text-primary-fixed-dim">Orientação ao cidadão de acordo com as normas da SESAU</span>
+                </div>
+              </div>
+              <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalFaq()" type="button" aria-label="Fechar">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="p-space-lg space-y-space-md overflow-y-auto text-on-surface">
+              <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <h4 class="font-semibold text-sm text-primary mb-1">1. Quem pode se vacinar gratuitamente nos postos do SUS?</h4>
+                <p class="text-xs text-slate-700 leading-relaxed">Qualquer cidadão brasileiro ou residente legal no estado de Alagoas, sem qualquer custo, mediante apresentação de documento ou cadastro no SUS.</p>
+              </div>
+              <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <h4 class="font-semibold text-sm text-primary mb-1">2. Quais documentos são exigidos no momento da vacinação?</h4>
+                <p class="text-xs text-slate-700 leading-relaxed">Documento oficial com foto (RG, CNH) ou Certidão de Nascimento (para crianças), CPF ou Cartão Nacional do SUS, e a caderneta de vacinação física, caso possua.</p>
+              </div>
+              <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <h4 class="font-semibold text-sm text-primary mb-1">3. Como saber se a vacina que preciso está em estoque no meu posto?</h4>
+                <p class="text-xs text-slate-700 leading-relaxed">Utilize o seletor de vacinas na página inicial para filtrar apenas os postos com o imunizante desejado (Covid-19, Influenza, Pólio, BCG, etc.) ou ligue gratuitamente para o <strong>Disque Saúde 136</strong>.</p>
+              </div>
+              <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <h4 class="font-semibold text-sm text-primary mb-1">4. Menores de 18 anos precisam estar acompanhados?</h4>
+                <p class="text-xs text-slate-700 leading-relaxed">Sim. Crianças e adolescentes de até 15 anos devem estar acompanhados por pai, mãe, responsável legal ou portar autorização formal assinada.</p>
+              </div>
+              <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <h4 class="font-semibold text-sm text-primary mb-1">5. E se eu tiver perdido meu cartão físico de vacinação?</h4>
+                <p class="text-xs text-slate-700 leading-relaxed">A unidade de saúde emitirá uma 2ª via física após consulta ao sistema informatizado de vacinas do SUS (SIPNI / ConecteSUS).</p>
+              </div>
+            </div>
+            <div class="p-space-md bg-slate-100 flex items-center justify-end">
+              <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalFaq()" type="button">Entendido / Fechar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL DE CALENDÁRIO VACINAL COMPLETO (PNI / SESAU) -->
+        <div
+          aria-labelledby="modal-cal-titulo"
+          aria-modal="true"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/60 backdrop-blur-sm"
+          id="modal-calendario"
+          role="dialog"
+        >
+          <div class="bg-surface-container-lowest rounded-2xl max-w-3xl w-full shadow-2xl overflow-hidden border border-outline-variant/40 flex flex-col max-h-[90vh]">
+            <div class="p-space-lg bg-primary text-on-primary flex items-center justify-between">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-primary-container text-white flex items-center justify-center">
+                  <svg class="w-4 h-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-headline-sm text-base text-white font-bold" id="modal-cal-titulo">Calendário Básico de Imunização — PNI Alagoas</h3>
+                  <span class="text-xs text-primary-fixed-dim">Programa Nacional de Imunizações • Cobertura Estadual SUS</span>
+                </div>
+              </div>
+              <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalCalendario()" type="button" aria-label="Fechar">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="p-space-lg overflow-y-auto">
+              <div class="overflow-x-auto rounded-lg border border-slate-200">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-100 text-slate-800 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-2.5 px-3">Faixa Etária</th>
+                      <th class="py-2.5 px-3">Vacinas Obrigatórias</th>
+                      <th class="py-2.5 px-3">Prevenção Contra</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 text-slate-700">
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">Ao Nascer</td>
+                      <td class="py-2.5 px-3">BCG e Hepatite B</td>
+                      <td class="py-2.5 px-3">Tuberculose grave e hepatite B</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">2 Meses</td>
+                      <td class="py-2.5 px-3">Pentavalente, VIP (Pólio), Pneumo 10, Rotavírus</td>
+                      <td class="py-2.5 px-3">Difteria, tétano, coqueluche, pólio, meningite, diarreia</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">3 e 5 Meses</td>
+                      <td class="py-2.5 px-3">Meningocócica C</td>
+                      <td class="py-2.5 px-3">Doença meningocócica C</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">9 Meses</td>
+                      <td class="py-2.5 px-3">Febre Amarela</td>
+                      <td class="py-2.5 px-3">Febre amarela (dose inicial)</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">12 Meses</td>
+                      <td class="py-2.5 px-3">Tríplice Viral, Pneumocócica (reforço)</td>
+                      <td class="py-2.5 px-3">Sarampo, caxumba, rubéola e pneumonias</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">15 Meses</td>
+                      <td class="py-2.5 px-3">DTP (reforço), VOP (gotinha), Hepatite A, Tetra Viral</td>
+                      <td class="py-2.5 px-3">Reforços gerais e catapora (varicela)</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">Anual (a partir de 6m)</td>
+                      <td class="py-2.5 px-3">Influenza / Gripe</td>
+                      <td class="py-2.5 px-3">Síndromes gripais e complicações agudas</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 font-semibold text-primary">Geral / Reforço</td>
+                      <td class="py-2.5 px-3">Covid-19 (Monovalente XBB)</td>
+                      <td class="py-2.5 px-3">Formas graves e hospitalizações por SARS-CoV-2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="p-space-md bg-slate-100 flex items-center justify-between">
+              <span class="text-xs text-slate-600 font-medium">Fonte: Ministério da Saúde / SESAU Alagoas 2026</span>
+              <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalCalendario()" type="button">Fechar Calendário</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL DE ACESSIBILIDADE WCAG 2.1 -->
+        <div
+          aria-labelledby="modal-acess-titulo"
+          aria-modal="true"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/60 backdrop-blur-sm"
+          id="modal-acessibilidade"
+          role="dialog"
+        >
+          <div class="bg-surface-container-lowest rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-outline-variant/40 flex flex-col">
+            <div class="p-space-lg bg-primary text-on-primary flex items-center justify-between">
+              <h3 class="font-headline-sm text-base text-white font-bold" id="modal-acess-titulo">Recursos de Acessibilidade (WCAG 2.1 AA/AAA)</h3>
+              <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalAcessibilidade()" type="button" aria-label="Fechar">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="p-space-lg space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>O <strong>Vacina Alagoas</strong> foi desenvolvido em conformidade com as diretrizes internacionais <strong>e-MAG</strong> e <strong>WCAG 2.1</strong>:</p>
+              <ul class="list-disc pl-5 space-y-1.5">
+                <li><strong>Alto Contraste:</strong> Alterne no topo para contraste reforçado entre textos e fundos.</li>
+                <li><strong>Tamanho da Fonte:</strong> Use os controles <strong>A-</strong> e <strong>A+</strong> para dimensionar o texto de acordo com sua preferência.</li>
+                <li><strong>Navegação por Teclado:</strong> Use a tecla <code>Tab</code> para percorrer botões e links. Pressione <code>Esc</code> para fechar qualquer modal aberto.</li>
+                <li><strong>Leitores de Tela:</strong> Rótulos WAI-ARIA incorporados em todos os botões de ação e ícones interativos.</li>
+              </ul>
+            </div>
+            <div class="p-space-md bg-slate-100 flex items-center justify-end">
+              <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalAcessibilidade()" type="button">Fechar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL DE TERMOS E PRIVACIDADE (LGPD) -->
+        <div
+          aria-labelledby="modal-termos-titulo"
+          aria-modal="true"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/60 backdrop-blur-sm"
+          id="modal-termos"
+          role="dialog"
+        >
+          <div class="bg-surface-container-lowest rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-outline-variant/40 flex flex-col">
+            <div class="p-space-lg bg-primary text-on-primary flex items-center justify-between">
+              <h3 class="font-headline-sm text-base text-white font-bold" id="modal-termos-titulo">Termos de Uso e Política de Privacidade (LGPD)</h3>
+              <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalTermos()" type="button" aria-label="Fechar">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="p-space-lg space-y-3 text-xs text-slate-700 leading-relaxed max-h-[60vh] overflow-y-auto">
+              <p><strong>1. Finalidade do Portal:</strong> Plataforma pública oficial da Secretaria de Estado da Saúde de Alagoas (SESAU) para localização de unidades de saúde, consulta de horários e transparência de imunobiológicos.</p>
+              <p><strong>2. Privacidade e LGPD (Lei 13.709/2018):</strong> Esta interface de consulta pública não coleta dados pessoais, prontuários ou cadastros médicos de cidadãos. As coordenadas GPS utilizadas na busca por proximidade permanecem exclusivamente no navegador do usuário e não são armazenadas em servidores.</p>
+              <p><strong>3. Dados Abertos:</strong> Informações de postos e estoques são sincronizadas com as bases oficiais do SUS e podem ser consumidas livremente via API REST.</p>
+            </div>
+            <div class="p-space-md bg-slate-100 flex items-center justify-end">
+              <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalTermos()" type="button">Compreendido</button>
+            </div>
+          </div>
+        </div>
         <div
           aria-labelledby="modal-titulo"
           aria-modal="true"
@@ -1614,6 +1810,73 @@
               document.body.style.overflow = "";
             };
 
+            // Acessibilidade: Alto Contraste
+            window.alternarAltoContraste = function () {
+              const ativo = document.body.classList.toggle("high-contrast-mode");
+              localStorage.setItem("alto_contraste", ativo ? "1" : "0");
+              if (ativo) {
+                document.body.style.filter = "contrast(1.25)";
+              } else {
+                document.body.style.filter = "";
+              }
+            };
+
+            // Acessibilidade: Tamanho da Fonte (A- / A+)
+            let tamanhoFonteBase = parseInt(localStorage.getItem("tamanho_fonte_base") || "100");
+            window.alterarTamanhoFonte = function (delta) {
+              tamanhoFonteBase = Math.min(140, Math.max(85, tamanhoFonteBase + (delta * 10)));
+              document.documentElement.style.fontSize = tamanhoFonteBase + "%";
+              localStorage.setItem("tamanho_fonte_base", tamanhoFonteBase);
+            };
+
+            if (localStorage.getItem("alto_contraste") === "1") {
+              window.alternarAltoContraste();
+            }
+            if (localStorage.getItem("tamanho_fonte_base")) {
+              document.documentElement.style.fontSize = localStorage.getItem("tamanho_fonte_base") + "%";
+            }
+
+            // Gerenciamento de Modais Informativos
+            window.abrirModalFaq = function () {
+              const m = document.getElementById("modal-faq");
+              if (m) { m.classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+            };
+            window.fecharModalFaq = function () {
+              const m = document.getElementById("modal-faq");
+              if (m) { m.classList.add("hidden"); document.body.style.overflow = ""; }
+            };
+
+            window.abrirModalCalendario = function () {
+              const m = document.getElementById("modal-calendario");
+              if (m) { m.classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+            };
+            window.fecharModalCalendario = function () {
+              const m = document.getElementById("modal-calendario");
+              if (m) { m.classList.add("hidden"); document.body.style.overflow = ""; }
+            };
+
+            window.abrirModalAcessibilidade = function () {
+              const m = document.getElementById("modal-acessibilidade");
+              if (m) { m.classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+            };
+            window.fecharModalAcessibilidade = function () {
+              const m = document.getElementById("modal-acessibilidade");
+              if (m) { m.classList.add("hidden"); document.body.style.overflow = ""; }
+            };
+
+            window.abrirModalTermos = function () {
+              const m = document.getElementById("modal-termos");
+              if (m) { m.classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+            };
+            window.fecharModalTermos = function () {
+              const m = document.getElementById("modal-termos");
+              if (m) { m.classList.add("hidden"); document.body.style.overflow = ""; }
+            };
+
+            window.abrirModalPrivacidade = function () {
+              window.abrirModalTermos();
+            };
+
             // Event listeners de inicialização
             window.addEventListener("DOMContentLoaded", () => {
               carregarCidades();
@@ -1651,15 +1914,27 @@
 
               // Atalhos de teclado modal
               window.addEventListener("keydown", (e) => {
-                if (e.key === "Escape") window.fecharModalDetalhes();
+                if (e.key === "Escape") {
+                  window.fecharModalDetalhes();
+                  window.fecharModalFaq();
+                  window.fecharModalCalendario();
+                  window.fecharModalAcessibilidade();
+                  window.fecharModalTermos();
+                }
               });
 
-              const modal = document.getElementById("modal-detalhes");
-              if (modal) {
-                modal.addEventListener("click", (e) => {
-                  if (e.target === modal) window.fecharModalDetalhes();
-                });
-              }
+              // Fechamento ao clicar fora do container
+              ["modal-detalhes", "modal-faq", "modal-calendario", "modal-acessibilidade", "modal-termos"].forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) {
+                  el.addEventListener("click", (e) => {
+                    if (e.target === el) {
+                      el.classList.add("hidden");
+                      document.body.style.overflow = "";
+                    }
+                  });
+                }
+              });
             });
           })();
         </script>
@@ -1736,40 +2011,39 @@
               <li>
                 <a
                   class="hover:text-on-primary transition-colors"
-                  data-path="consulta-postos"
-                  href="#"
+                  href="#search-form"
                   >Consulta de Postos Ativos</a
                 >
               </li>
               <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  data-path="calendario-vacinal"
-                  href="#"
-                  >Calendário Estadual de Imunização</a
+                <button
+                  type="button"
+                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
+                  onclick="window.abrirModalCalendario()"
+                  >Calendário Estadual de Imunização</button
                 >
               </li>
               <li>
                 <a
                   class="hover:text-on-primary transition-colors"
-                  data-path="documentacao-api"
-                  href="#"
+                  href="http://localhost:8085/docs"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Dados Abertos e API Pública</a
                 >
               </li>
               <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  data-path="duvidas-frequentes"
-                  href="#"
-                  >Perguntas Frequentes (FAQ)</a
+                <button
+                  type="button"
+                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
+                  onclick="window.abrirModalFaq()"
+                  >Perguntas Frequentes (FAQ)</button
                 >
               </li>
               <li>
                 <a
                   class="hover:text-on-primary transition-colors"
-                  data-path="area-restrita"
-                  href="#"
+                  href="admin.html"
                   >Acesso Restrito aos Operadores</a
                 >
               </li>
@@ -1790,10 +2064,16 @@
             <div
               class="flex flex-col gap-space-xs pt-space-xs font-body-sm text-body-sm text-primary-fixed-dim"
             >
-              <a class="hover:text-on-primary transition-colors" href="#"
-                >Termos de Uso e Privacidade</a
-              ><a class="hover:text-on-primary transition-colors" href="#"
-                >Política de Cookies</a
+              <button
+                type="button"
+                class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
+                onclick="window.abrirModalTermos()"
+                >Termos de Uso e Privacidade</button
+              ><button
+                type="button"
+                class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
+                onclick="window.abrirModalPrivacidade()"
+                >Política de Cookies</button
               >
             </div>
           </div>
