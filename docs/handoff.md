@@ -55,3 +55,4 @@ Caso seja necessário restaurar qualquer estado anterior:
 - Voltar para o fim da Camada 2: `git checkout camada-2-concluida`
 - Voltar para o fim da Camada 1: `git checkout camada-1-concluida`
 - Voltar para o estado original intocado: `git checkout snapshot-pre-melhoria-m2`
+

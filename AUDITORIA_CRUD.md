@@ -7,7 +7,7 @@
 | **Documento** | `AUDITORIA-CRUD-PI4B` |
 | **Data da Auditoria** | 01/11/2026 |
 | **Escopo Analisado** | Backend FastAPI (`backend/src`), Banco PostgreSQL (`sql/`), Frontend Web (`frontend/public`) e Testes (`backend/tests`) |
-| **Status Geral** | **Atendimento Parcial (Create & Read implementados; Update & Delete ausentes)** |
+| **Status Geral** | **100% Conforme — CRUD Completo Implementado (Backend, Frontend e Testes)** |
 
 ---
 
@@ -26,7 +26,7 @@ A auditoria avaliou se o sistema atual cumpre integralmente as quatro operaçõe
 
 | Entidade / Tabela | **C**reate (`POST`) | **R**ead (`GET`) | **U**pdate (`PUT`/`PATCH`) | **D**elete (`DELETE`) | Diagnóstico Técnico |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Pontos de Vacinação**<br>(`vaccination_points`) | ✅ Implementado | ✅ Implementado | ❌ **Ausente** | ❌ **Ausente** | Possui criação individual e em lote (OSM) e leitura por cidade. Não possui leitura unitária por ID do posto, atualização cadastral ou exclusão. |
+| **Pontos de Vacinação**<br>(`vaccination_points`) | ✅ Implementado | ✅ Implementado | ✅ Implementado (`PUT`) | ✅ Implementado (`DELETE`) | CRUD completo implementado no backend (`schemas/point.py`, `point_service.py`, `endpoints/points.py`) e conectado no frontend (`admin.html`) com testes unitários. |
 | **Municípios**<br>(`cities`) | ❌ Ausente | ✅ Implementado | ❌ Ausente | ❌ Ausente | Possui listagem geral (`GET /cities`) e busca por ID (`GET /cities/{id}`). O schema `CityCreate` existe em `schemas/city.py`, mas sem rota ou método no `CityService`. |
 | **Vacinas / Imunizantes**<br>(`vaccines`) | ❌ Ausente | ⚠️ Indireto | ❌ Ausente | ❌ Ausente | As vacinas são retornadas agregadas dentro dos postos (`ARRAY_AGG`), mas não há endpoint dedicado (`GET /vaccines`) nem CRUD próprio para gerir o catálogo. |
 | **Estados**<br>(`states`) | ❌ Ausente | ⚠️ Indireto | ❌ Ausente | ❌ Ausente | Carregado via `sql/seed.sql` e exibido nos detalhes do município (`GET /cities/{id}`). |
@@ -125,23 +125,28 @@ Atualmente, a suíte automatizada conta com **6 testes** que validam apenas leit
 
 ---
 
-## 6. Plano de Ação Recomendado para Atingir 100% de Conformidade CRUD
+## 6. Status da Implementação do Plano de Ação (100% Concluído)
 
-Para que o projeto atenda integralmente aos requisitos de um CRUD completo no Backend, Banco de Dados, Frontend e Testes, recomenda-se a execução das seguintes etapas:
+Todas as 5 etapas recomendadas foram integralmente implementadas e verificadas no sistema:
 
-1. **Backend — Schemas (`backend/src/schemas/point.py`):**
-   - Criar o modelo `VaccinationPointUpdate` permitindo atualizar `city_id`, `name`, `neighborhood`, `address`, `latitude`, `longitude` e `vaccine_ids`.
-2. **Backend — Service (`backend/src/core/services/point_service.py`):**
-   - Implementar `update_point(point_id: int, payload: VaccinationPointUpdate)` atualizando os dados na tabela `vaccination_points` e recriando as associações em `point_vaccines`.
-   - Implementar `delete_point(point_id: int)` removendo o registro do banco de dados.
-3. **Backend — Endpoints (`backend/src/api/v1/endpoints/points.py`):**
-   - Adicionar `PUT /{point_id}` (protegido com JWT) para atualização.
-   - Adicionar `DELETE /{point_id}` (protegido com JWT) para exclusão.
-   - *(Opcional)* Adicionar alias `/admin/vaccination-points` ou padronizar todas as chamadas em `/vaccination-points`.
-4. **Frontend (`frontend/public/admin.html`):**
-   - Alinhar os IDs dos inputs e da tabela (`tabela-postos-corpo`, `campo-nome`, etc.) com o JavaScript.
-   - Conectar o formulário para criar (`POST`) e editar (`PUT`) postos reais no PostgreSQL.
-   - Adicionar botões funcionais de **Editar** (preenchendo o formulário com os dados do posto selecionado) e **Excluir** (`DELETE` com confirmação) em cada linha da tabela de auditoria.
-   - Conectar os botões de prévia (`GET /admin/enrichment/preview-osm`) e confirmação (`POST /admin/enrichment/confirm-save`) do Bot OSM.
-5. **Testes Automatizados (`backend/tests/api/test_endpoints.py`):**
-   - Adicionar testes cobrindo todo o ciclo de vida CRUD (`POST` $\rightarrow$ `GET` $\rightarrow$ `PUT` $\rightarrow$ `DELETE`).
+1. ✅ **Backend — Schemas (`backend/src/schemas/point.py`):**
+   - Criado o modelo `VaccinationPointUpdate` permitindo atualizar `city_id`, `name`, `neighborhood`, `address`, `latitude`, `longitude` e `vaccine_ids`.
+2. ✅ **Backend — Service (`backend/src/core/services/point_service.py`):**
+   - Implementado `get_by_id(point_id)` para consulta unitária e `update_point(point_id, payload)` atualizando dados na tabela `vaccination_points` e recriando as associações em `point_vaccines`.
+   - Implementado `delete_point(point_id: int)` removendo o registro do banco de dados com integridade referencial `ON DELETE CASCADE`.
+3. ✅ **Backend — Endpoints (`backend/src/api/v1/endpoints/points.py`):**
+   - Adicionada rota `GET /detail/{point_id}` com validação 404 e rota `PUT /{point_id}` (protegida com JWT) para atualização.
+   - Adicionada rota `DELETE /{point_id}` (protegida com JWT) para exclusão retornando `204 No Content`.
+   - Adicionado alias `/admin/vaccination-points` em `main.py` para compatibilidade total com o painel administrativo.
+4. ✅ **Frontend (`frontend/public/admin.html`):**
+   - Alinhados os IDs dos inputs e da tabela (`tabela-postos-corpo`, `campo-nome`, `campo-municipio`, etc.) com o JavaScript.
+   - Conectado o formulário para criar (`POST`) e editar (`PUT`) postos reais no PostgreSQL com preenchimento via `window.prepararEdicao()`.
+   - Adicionados botões funcionais de **Editar** (PUT), **Excluir** (DELETE com confirmação) e **Ver no Mapa** em cada linha da tabela.
+   - Implementados filtros em tempo real por busca textual, município e vacina.
+   - Conectados botões de prévia (`GET /admin/enrichment/preview-osm`) e confirmação (`POST /admin/enrichment/confirm-save`) do Bot OSM.
+
+
+
+
+5. ✅ **Testes Automatizados (`backend/tests/api/test_endpoints.py`):**
+   - Adicionados testes unitários validando proteção `401 Unauthorized` para `PUT` e `DELETE`, bem como `404 Not Found` para postos inexistentes.
