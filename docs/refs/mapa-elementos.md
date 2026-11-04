@@ -16,3 +16,4 @@
 | **Painel do Mapa Leaflet** | `index.html` (linhas 600-660) | [mantido] | Altura e proporção atual, marcadores interativos | Não alterar renderização dos pins |
 | **Cartões de Postos de Vacinação** | `index.html` (linhas 700-850) | [ajustar] | Nome do posto, endereço e horário com clareza | Reduzir o excesso de tags de vacinas aglomeradas |
 | **Rodapé Institucional** | `index.html` (linhas 1100-1160) | [mantido] | Canais de atendimento (Disque 136) | Não poluir com selos fictícios |
+

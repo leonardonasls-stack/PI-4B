@@ -14,3 +14,4 @@
 | **Rolagem / Scroll** | Scroll suave para mapa | Botão "Ver no Mapa" | [mantido] | Funcionalidade mantida |
 
 > **Painel "Onde Procurar" (Regra P-18):** Qualquer nova microinteração que venha a ser sugerida deve priorizar `prefers-reduced-motion` e referências sóbrias de interfaces governamentais/SUS.
+

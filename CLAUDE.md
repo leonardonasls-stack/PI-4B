@@ -46,3 +46,4 @@
 - **Referência por elemento (P-17):** Elemento visual novo ou alterado requer referência concreta aprovada em `docs/refs/mapa-elementos.md`. Sem referência, pedir material ao usuário.
 - **Efeitos intencionais (P-18):** Microinterações novas ou alteradas exigem propósito, parâmetros e referência aprovados em `docs/refs/mapa-efeitos.md`, consultando o painel "Onde procurar".
 - **Nenhum segredo em arquivo versionado:** Senhas, tokens e chaves ficam estritamente em `.env` (ignorado pelo git).
+

@@ -100,3 +100,4 @@
 3. **Distribuição Espalhada e Falta de Contexto no Hero:** A divisão em colunas desiguais (`col-span-8` vs `col-span-4`) coloca blocos de campanhas e estatísticas soltos, competindo visualmente com o campo principal de busca.
 4. **Rótulos Duplicados e Poluição em Pills:** Diversos cards exibem pills de categorias repetidas ("SUS Conectado", "Horário Estendido", "Aberto Hoje") sem explicação clara sobre a fonte dos dados.
 5. **Densidade e Hierarquia Frágil na Lista de Postos:** Informações essenciais como horário e endereço competem com tags de vacinas empilhadas sem delimitação nítida.
+

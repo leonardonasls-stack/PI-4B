@@ -43,3 +43,4 @@
 | **Estilização** | Tailwind CSS 3.x (CDN) | [mantido] |
 | **Mapas** | Leaflet 1.9.4 (CDN) | [mantido] |
 | **Tipografia** | Google Fonts Public Sans | [mantido] |
+

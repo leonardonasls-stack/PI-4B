@@ -23,3 +23,4 @@
 | **asyncpg** | >= 0.29.0 | Driver assíncrono do PostgreSQL |
 | **python-jose / passlib** | 3.3.0 / 1.7.4 | Autenticação JWT e hash bcrypt |
 | **uvicorn** | >= 0.28.0 | Servidor ASGI para FastAPI |
+

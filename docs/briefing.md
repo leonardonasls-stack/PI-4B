@@ -15,3 +15,4 @@
 1. Além de Maceió e Arapiraca, há planos para listar outros municípios alagoanos nesta versão acadêmica?
 2. O botão de Disque Saúde 136 no rodapé é suficiente ou deve haver um atalho direto no cabeçalho?
 3. O painel administrativo (`admin.html`) precisa passar pela mesma limpeza visual agora ou o foco total é a página pública do cidadão (`index.html`)?
+
