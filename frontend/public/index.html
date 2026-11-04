@@ -346,57 +346,35 @@
             </svg>
           </div>
           <div class="max-w-7xl mx-auto relative z-10">
-            <!-- Identificação Institucional -->
-            <div class="inline-block text-secondary-fixed font-label-sm text-label-sm font-bold uppercase tracking-wider mb-space-sm">
+            <!-- Identificação Institucional Sóbria -->
+            <div class="inline-flex items-center gap-2 text-secondary-fixed font-label-sm text-label-sm font-bold uppercase tracking-wider mb-space-sm bg-primary-container/80 px-3.5 py-1 rounded-full border border-secondary-fixed/20">
+              <span class="w-2 h-2 rounded-full bg-secondary-fixed"></span>
               Governo de Alagoas • Secretaria de Estado da Saúde
             </div>
-            <div
-              class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center mb-space-2xl"
-            >
-              <div class="lg:col-span-8 flex flex-col gap-space-sm">
-                <h1
-                  class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary tracking-tight font-extrabold leading-tight"
-                >
-                  Encontre o Posto de Vacinação Mais Próximo em Alagoas
-                </h1>
-                <p
-                  class="font-body-lg text-body-lg text-primary-fixed-dim max-w-3xl leading-relaxed"
-                >
-                  Consulte horários de funcionamento, estoque de imunizantes e
-                  rotas em tempo real para Maceió, Arapiraca e municípios
-                  alagoanos com dados sincronizados do SUS.
-                </p>
-              </div>
-              <div
-                class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-space-sm justify-end"
+            
+            <!-- Título e Subtítulo Integrados -->
+            <div class="max-w-4xl mb-space-md">
+              <h1
+                class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary tracking-tight font-extrabold leading-tight mb-space-xs"
               >
-                <div
-                  class="bg-primary-container p-space-md rounded-xl flex items-center gap-space-md shadow-sm"
-                >
-                  <div
-                    class="w-10 h-10 rounded-lg bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0"
-                  >
-                    <svg class="w-5 h-5 text-on-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  </div>
-                  <div>
-                    <span
-                      class="font-label-sm text-label-sm text-secondary-fixed uppercase tracking-wider block"
-                      >Campanha Ativa</span
-                    >
-                    <span
-                      class="font-label-lg text-label-lg text-on-primary font-bold"
-                      >Influenza • Gripe 2025</span
-                    >
-                    <p class="font-body-sm text-body-sm text-primary-fixed-dim">
-                      Todas as idades a partir de 6 meses
-                    </p>
-                  </div>
-                </div>
-              </div>
+                Encontre o Posto de Vacinação Mais Próximo
+              </h1>
+              <p
+                class="font-body-lg text-body-lg text-primary-fixed-dim leading-relaxed"
+              >
+                Consulte horários de funcionamento, estoque de imunizantes e rotas em tempo real com dados oficiais sincronizados com o SUS.
+              </p>
             </div>
-            <!-- BARRA DE PESQUISA MULTICRITÉRIO FLUTUANTE -->
+
+            <!-- Aviso Institucional de Campanha Ativa Integrado -->
+            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-lg bg-primary-container text-xs text-primary-fixed mb-space-lg border border-outline-variant/30 shadow-sm">
+              <svg class="w-4 h-4 text-secondary-fixed flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span><strong>Campanha Vigente:</strong> Influenza (Gripe 2025) disponível para todas as faixas etárias a partir de 6 meses</span>
+            </div>
+
+            <!-- BARRA DE PESQUISA UNIFICADA E ERGONÔMICA -->
             <div
-              class="bg-surface-container-lowest text-on-surface rounded-xl p-space-md lg:p-space-lg shadow-xl -mb-space-2xl relative z-20"
+              class="bg-surface-container-lowest text-on-surface rounded-2xl p-space-md lg:p-space-lg shadow-lg border border-outline-variant/40 relative z-20"
             >
               <form
                 class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-end"
@@ -413,7 +391,7 @@
                   </label>
                   <div class="relative">
                     <select
-                      class="w-full h-12 pl-space-md pr-space-xl bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all appearance-none cursor-pointer"
+                      class="w-full h-12 pl-space-md pr-space-xl bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all appearance-none cursor-pointer border border-outline-variant/30"
                       id="municipio-select"
                     >
                       <option value="" disabled selected>
@@ -434,7 +412,7 @@
                   </label>
                   <div class="relative">
                     <input
-                      class="w-full h-12 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all"
+                      class="w-full h-12 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all border border-outline-variant/30"
                       id="bairro-ubs-input"
                       placeholder="Ex: Jacintinho, Ponta Verde, Primavera..."
                       type="text"
@@ -451,7 +429,7 @@
                 <!-- Botões Ação / GPS -->
                 <div class="md:col-span-3 flex items-center gap-space-sm">
                   <button
-                    class="h-12 px-space-md flex-shrink-0 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg font-label-md text-label-md flex items-center gap-space-xs transition-colors cursor-pointer"
+                    class="h-12 px-space-md flex-shrink-0 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg font-label-md text-label-md flex items-center gap-space-xs transition-colors cursor-pointer border border-outline-variant/40"
                     id="btn-gps"
                     onclick="window.ativarGeolocalizacao()"
                     title="Localizar postos usando as coordenadas do seu dispositivo"
@@ -461,7 +439,7 @@
                     <span class="hidden sm:inline">Meu GPS</span>
                   </button>
                   <button
-                    class="w-full h-12 px-space-lg bg-primary-container hover:bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-md transition-all cursor-pointer"
+                    class="w-full h-12 px-space-lg bg-primary-container hover:bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-md transition-all cursor-pointer font-bold"
                     type="submit"
                     onclick="window.executarBusca()"
                   >
@@ -494,8 +472,6 @@
             </div>
           </div>
         </section>
-        <!-- ESPAÇAMENTO COMPENSATÓRIO PARA A BARRA FLUTUANTE -->
-        <div class="h-16 w-full"></div>
         <!-- CONTEÚDO PRINCIPAL: FILTROS RÁPIDOS & LISTA/MAPA -->
         <section
           class="max-w-7xl mx-auto px-margin-sm lg:px-margin w-full py-space-xl"
@@ -824,16 +800,19 @@
                     vacinal.
                   </p>
                   <div
-                    class="p-space-md bg-surface-container-low rounded-lg mb-space-sm"
+                    class="p-space-sm bg-surface-container-low rounded-lg mb-space-sm flex items-center justify-between"
                   >
-                    <span
-                      class="font-display-lg text-headline-xl text-primary font-black block"
-                      >136</span
-                    >
-                    <span
-                      class="font-label-sm text-label-sm text-on-surface-variant block"
-                      >Ligação Gratuita • 24 horas por dia</span
-                    >
+                    <div>
+                      <span
+                        class="font-headline-md text-primary font-black block leading-none"
+                        >136</span
+                      >
+                      <span
+                        class="font-label-sm text-on-surface-variant text-xs block mt-1"
+                        >Ligação Gratuita • 24h por dia</span
+                      >
+                    </div>
+                    <span class="px-2.5 py-1 rounded bg-secondary/15 text-secondary text-xs font-bold">Disque Saúde</span>
                   </div>
                 </div>
                 <a

@@ -4,5 +4,6 @@
 | :--- | :--- | :--- | :--- | :--- |
 | 03/11/2026 | Fase 4 — Adoção (M-A) | Criação da base documental e governança do Playbook | Padronizar regras e controle sem alterar código funcional | 11 arquivos `.md` criados |
 | 03/11/2026 | Camada 1 — Acessibilidade e Encoding | Correção de textos UTF-8 e contraste WCAG base | Qualidade textual e legibilidade | Commit `5a229aa` |
-| 04/11/2026 | Camada 2 — Iconografia e Anti-IA | Remoção de Material Symbols, selo fake e caixas vazias; adoção de SVGs institucionais | Eliminar aparência de template de IA e melhorar fidelidade visual | `frontend/public/index.html` limpo (zero Material Symbols) |
+| 04/11/2026 | Camada 2 — Iconografia e Anti-IA | Remoção de Material Symbols, selo fake e caixas vazias; adoção de SVGs institucionais | Eliminar aparência de template de IA e melhorar fidelidade visual | Commit `15bf7c0` (tag `camada-2-concluida`) |
+| 04/11/2026 | Camada 3 — Reorganização e Hierarquia UX | Unificação do Hero, ancoragem ergonômica da barra de busca e harmonização do Guia Prático | Resolver dispersão visual, eliminar sobreposição desajustada e melhorar fluxo intuitivo do cidadão | `frontend/public/index.html` reestruturado |
 
