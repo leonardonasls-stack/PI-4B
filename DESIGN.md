@@ -94,10 +94,10 @@
 
 ---
 
-## 6. Inconsistências Identificadas (Diagnóstico Inicial)
-1. **Excesso de Ícones "Cara de IA":** O uso massivo de *Material Symbols Outlined* em praticamente todos os elementos (badges, títulos, listas, botões de ação) sem necessidade funcional satura a interface e transmite a impressão de mockup gerado por IA.
-2. **Badges Falsas de Autoridade:** O selo `verified` com *"Rede Oficial de Vacinação • SESAU Alagoas"* no topo cria ruído e se parece com um elemento de template de landing page comercial, destoando de um portal de utilidade pública do SUS.
-3. **Distribuição Espalhada e Falta de Contexto no Hero:** A divisão em colunas desiguais (`col-span-8` vs `col-span-4`) coloca blocos de campanhas e estatísticas soltos, competindo visualmente com o campo principal de busca.
-4. **Rótulos Duplicados e Poluição em Pills:** Diversos cards exibem pills de categorias repetidas ("SUS Conectado", "Horário Estendido", "Aberto Hoje") sem explicação clara sobre a fonte dos dados.
-5. **Densidade e Hierarquia Frágil na Lista de Postos:** Informações essenciais como horário e endereço competem com tags de vacinas empilhadas sem delimitação nítida.
+## 6. Padrões Atualizados Após Melhorias (Camadas 2 e 3)
+1. **Iconografia Sob Medida (Zero Material Symbols em index.html):** Adoção de SVGs inline de contorno fino (1.75px stroke) integrados organicamente ao texto e com atributos `aria-hidden="true"`, eliminando a necessidade de download de fontes pesadas externas.
+2. **Identidade Institucional Sóbria:** Selos de autoridade falsos (`verified`) foram substituídos por cabeçalhos e assinaturas editoriais oficiais ("Governo de Alagoas • Secretaria de Estado da Saúde").
+3. **Hero Unificado e Busca Ergonômica:** O Hero agora é centrado e integrado, eliminando a sobreposição forçada de margens negativas e unindo a entrada de dados (Município → Bairro → GPS → Buscar) em um fluxo visual contínuo.
+4. **Guia Prático Proporcional:** O bento grid assimétrico foi substituído por 3 blocos informativos equilibrados com espaçamento e hierarquia homogêneos.
+5. **Acessibilidade Estrita:** Garantia permanente de conformidade WCAG 2.1 (AA/AAA), alto contraste e navegação por teclado.
 
