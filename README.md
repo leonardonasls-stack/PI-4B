@@ -254,6 +254,21 @@ A modelagem de dados assegura integridade referencial com chaves estrangeiras, �
 
 ---
 
+## Documentação do Projeto
+
+Toda a documentação técnica, especificações e relatórios de auditoria foram organizados e estruturados no diretório [docs/](docs/README.md):
+
+- 📘 [**Relatório Técnico de Implementação**](docs/relatorio-implementacao.md) — Relatório estruturado de melhorias, CRUD completo, polimento visual e testes.
+- 📊 [**Relatório de Auditoria CRUD (100% Conforme)**](docs/auditoria-crud.md) — Matriz completa de persistência e validação técnica.
+- 🔌 [**Documentação da API RESTful**](docs/api.md) — Especificação detalhada de rotas, contratos JSON e autenticação.
+- 🏛️ [**Arquitetura Técnica (TRD)**](docs/arquitetura.md) — Modelagem física de banco, PostGIS, microsserviços e Docker.
+- 📋 [**Requisitos de Produto (PRD)**](docs/requisitos.md) — Casos de uso, personas e regras de negócio da SESAU.
+- ♿ [**Design System e Acessibilidade (WCAG)**](docs/design-wcag.md) — Diretrizes de inclusão, contraste e tokens visuais.
+- 🎨 [**Manual de Design Humano (Anti-IA)**](docs/anti-ia-polimento.md) — Eliminação de artefatos visuais sintéticos e padrões de qualidade.
+- 📜 [**Histórico de Melhorias**](docs/historico-melhorias.md) — Linha do tempo de commits e decisões de projeto.
+
+---
+
 ## Estrutura de Diretórios do Projeto
 
 ```text
