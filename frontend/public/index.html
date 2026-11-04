@@ -725,7 +725,8 @@
         </section>
         <!-- SEÇÃO COMPLEMENTAR: ORIENTAÇÃO AO CIDADÃO & CANAIS PÚBLICOS -->
         <section
-          class="bg-surface-container-low py-space-2xl px-margin-sm lg:px-margin mt-space-xl"
+          id="guia-cidadao"
+          class="bg-surface-container-low py-space-2xl px-margin-sm lg:px-margin mt-space-xl scroll-mt-24"
         >
           <div class="max-w-7xl mx-auto">
             <div class="mb-space-xl text-center md:text-left">
@@ -823,13 +824,17 @@
                     <span class="px-2.5 py-1 rounded bg-secondary/15 text-secondary text-xs font-bold">Disque Saúde</span>
                   </div>
                 </div>
-                <a
-                  class="h-10 px-space-md bg-surface-container-high hover:bg-surface-variant text-on-surface font-label-md text-label-md rounded-lg inline-flex items-center justify-center gap-space-xs transition-colors"
-                  href="tel:136"
+                <button
+                  type="button"
+                  id="btn-disque-136"
+                  class="h-10 px-space-md bg-surface-container-high hover:bg-surface-variant text-on-surface font-label-md text-label-md rounded-lg inline-flex items-center justify-center gap-space-xs transition-colors cursor-pointer w-full"
+                  onclick="window.acionarDisqueSaude(this)"
+                  title="No computador, copia o número 136. No celular, inicia a chamada telefônica."
                 >
-                  <svg class="w-4 h-4 text-on-surface" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span>Ligar para o 136</span>
-                </a>
+                  <svg class="w-4 h-4 text-on-surface shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <span id="btn-136-texto">Ligar para o 136</span>
+                </button>
+                <span class="text-[11px] text-on-surface-variant text-center block mt-1">Gratuito de fixo ou celular • 24h</span>
               </div>
               <!-- Bloco 3: Campanha Vigente & Calendário -->
               <div
@@ -1875,6 +1880,35 @@
 
             window.abrirModalPrivacidade = function () {
               window.abrirModalTermos();
+            };
+
+            // Acionamento inteligente do Disque Saúde 136 (Mobile liga / Desktop copia e orienta)
+            window.acionarDisqueSaude = function (btn) {
+              const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+              if (isMobile) {
+                window.location.href = "tel:136";
+                return;
+              }
+              // Comportamento para PC / Desktop
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText("136").then(() => {
+                  const span = document.getElementById("btn-136-texto");
+                  if (span) {
+                    const original = span.textContent;
+                    span.textContent = "✓ Número 136 Copiado!";
+                    btn.classList.add("bg-emerald-100", "text-emerald-900");
+                    setTimeout(() => {
+                      span.textContent = original;
+                      btn.classList.remove("bg-emerald-100", "text-emerald-900");
+                    }, 3500);
+                  }
+                  alert("Disque Saúde 136 (SUS)\n\nO número '136' foi copiado com sucesso para a área de transferência!\n\n• Ligação 100% gratuita para todo o Brasil\n• Atendimento 24 horas por dia, 7 dias por semana\n• Acesse diretamente de qualquer telefone fixo ou smartphone");
+                }).catch(() => {
+                  alert("Disque Saúde 136 (SUS)\n\nDisque 136 gratuitamente de qualquer telefone fixo ou smartphone para tirar dúvidas sobre imunização e campanhas vigentes.");
+                });
+              } else {
+                alert("Disque Saúde 136 (SUS)\n\nDisque 136 gratuitamente de qualquer telefone fixo ou smartphone para tirar dúvidas sobre imunização e campanhas vigentes.");
+              }
             };
 
             // Event listeners de inicialização
