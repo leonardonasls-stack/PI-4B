@@ -12,6 +12,7 @@
     <title>Vacina Alagoas — Consulta Pública e Busca</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&amp;display=swap"
       rel="stylesheet"
@@ -39,6 +40,9 @@
       }
       ::-webkit-scrollbar {
         display: none;
+      }
+      [v-cloak] {
+        display: none !important;
       }
     </style>
     <script>
@@ -236,108 +240,112 @@
     </script>
   </head>
   <body class="bg-surface font-body-md text-on-surface antialiased">
-    <header
-      class="fixed top-0 w-full z-50 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)]"
-    >
-      <div class="bg-primary text-on-primary text-label-sm font-label-sm">
-        <div
-          class="max-w-7xl mx-auto px-margin-sm lg:px-margin h-8 flex items-center justify-between"
+    <header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+  <!-- Barra Superior de Utilidades / Acessibilidade -->
+  <div class="bg-slate-900 text-white text-xs">
+    <div class="max-w-7xl mx-auto px-margin-sm lg:px-margin h-8 flex items-center justify-between">
+      <div class="flex items-center gap-space-md">
+        <span class="tracking-wide uppercase text-[11px] font-semibold text-slate-300">Consulta de Imunização • Alagoas</span>
+      </div>
+      <div class="flex items-center gap-space-md">
+        <button
+          class="text-slate-300 hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+          onclick="window.alternarAltoContraste()"
+          title="Alternar Alto Contraste"
+          type="button"
         >
-          <div class="flex items-center gap-space-md">
-            <span class="tracking-wide uppercase opacity-90"
-              >Governo de Alagoas • SESAU</span
-            ><span class="hidden sm:inline-block opacity-40">|</span
-            ><a
-              class="hidden sm:inline-block opacity-90 hover:opacity-100 transition-opacity"
-              href="https://transparencia.al.gov.br"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Portal da Transparência</a
-            >
-          </div>
-          <div class="flex items-center gap-space-md">
-            <button
-              class="hover:text-primary-fixed transition-colors flex items-center gap-space-xs cursor-pointer"
-              onclick="window.alternarAltoContraste()"
-              title="Alternar Alto Contraste"
-              type="button"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/></svg>
-              <span class="hidden md:inline">Alto Contraste</span>
-            </button>
-            <div class="flex items-center gap-space-xs font-bold">
-              <button
-                class="hover:text-primary-fixed px-space-xs cursor-pointer"
-                onclick="window.alterarTamanhoFonte(-1)"
-                title="Diminuir Fonte"
-                type="button"
-              >
-                A-</button
-              ><button
-                class="hover:text-primary-fixed px-space-xs cursor-pointer"
-                onclick="window.alterarTamanhoFonte(1)"
-                title="Aumentar Fonte"
-                type="button"
-              >
-                A+
-              </button>
-            </div>
-            <button
-              class="opacity-90 hover:opacity-100 hidden lg:inline-block cursor-pointer bg-transparent border-0 p-0 text-inherit text-xs"
-              onclick="window.abrirModalAcessibilidade()"
-              type="button"
-              >Acessibilidade WCAG 2.1</button
-            >
-          </div>
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/></svg>
+          <span class="hidden md:inline">Alto Contraste</span>
+        </button>
+        <div class="flex items-center gap-1 font-bold">
+          <button
+            class="text-slate-300 hover:text-white px-1 cursor-pointer"
+            onclick="window.alterarTamanhoFonte(-1)"
+            title="Diminuir Fonte"
+            type="button"
+          >
+            A-
+          </button>
+          <button
+            class="text-slate-300 hover:text-white px-1 cursor-pointer"
+            onclick="window.alterarTamanhoFonte(1)"
+            title="Aumentar Fonte"
+            type="button"
+          >
+            A+
+          </button>
         </div>
+        <button
+          class="text-slate-300 hover:text-white hidden lg:inline-block cursor-pointer bg-transparent border-0 p-0 text-inherit text-xs"
+          onclick="window.abrirModalAcessibilidade()"
+          type="button"
+        >
+          Acessibilidade
+        </button>
       </div>
-      <div
-        class="h-20 max-w-7xl mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-space-lg"
+    </div>
+  </div>
+
+  <!-- Barra Principal -->
+  <div class="h-16 max-w-7xl mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-space-lg">
+    <!-- Brand / Logo -->
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-emerald-600 text-white shadow-sm transition-transform group-hover:scale-105">
+        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M12 8v8"/>
+          <path d="M8 12h8"/>
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-bold text-base text-slate-900 leading-tight tracking-tight">Vacina Alagoas</span>
+        <span class="text-xs text-slate-500 font-normal leading-tight hidden sm:block">Guia de Postos e Vacinas</span>
+      </div>
+    </a>
+
+    <!-- Menu Simplificado com Ícones -->
+    <nav class="flex items-center gap-1 sm:gap-2">
+      <a
+        class="px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#search-form"
+        onclick="window.rolarPara('search-form', event)"
       >
-        <div class="flex items-center gap-space-md">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-primary-container text-on-primary shadow-sm">
-            <svg class="w-5 h-5 text-primary-fixed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-          </div>
-          <div class="flex flex-col">
-            <span
-              class="font-headline-sm text-headline-sm text-primary leading-tight tracking-tight"
-              >Vacina Alagoas</span
-            ><span
-              class="font-label-sm text-label-sm text-on-surface-variant font-normal leading-tight hidden sm:block"
-              >SESAU • Sistema Único de Saúde</span
-            >
-          </div>
-        </div>
-        <nav class="flex items-center gap-2 sm:gap-4 md:gap-6 overflow-x-auto">
-          <a
-            class="text-xs sm:text-sm font-semibold text-primary hover:text-primary-container transition-colors border-b-2 border-primary pb-1 cursor-pointer whitespace-nowrap"
-            href="#search-form"
-            onclick="window.rolarPara('search-form', event)"
-            >Consulta de Postos</a
-          >
-          <a
-            class="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1 cursor-pointer whitespace-nowrap"
-            href="#painel-mapa"
-            onclick="window.alternarVisao('mapa'); window.rolarPara('painel-mapa', event);"
-            >Mapa Integrado</a
-          >
-          <a
-            class="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1 cursor-pointer whitespace-nowrap"
-            href="#guia-cidadao"
-            onclick="window.rolarPara('guia-cidadao', event)"
-            >Guia de Vacinação</a
-          >
-        </nav>
-        <div class="flex items-center gap-space-md shrink-0">
-          <a
-            class="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm transition-all shadow-sm whitespace-nowrap"
-            href="admin.html"
-            ><span class="hidden sm:inline">Painel Administrativo &rarr;</span><span class="sm:hidden">Admin &rarr;</span></a
-          >
-        </div>
-      </div>
-    </header>
-    <main class="w-full pt-28 bg-surface min-h-[calc(100vh-280px)]">
+        <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Buscar Postos</span>
+      </a>
+      <a
+        class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#painel-mapa"
+        onclick="window.alternarVisao('mapa'); window.rolarPara('painel-mapa', event);"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>Mapa</span>
+      </a>
+      <a
+        class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#guia-cidadao"
+        onclick="window.rolarPara('guia-cidadao', event)"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Calendário</span>
+      </a>
+    </nav>
+
+    <!-- Botão Painel Administrativo -->
+    <div class="flex items-center gap-space-md shrink-0">
+      <button
+        class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 hover:text-slate-900 font-medium text-xs sm:text-sm transition-all shadow-sm whitespace-nowrap cursor-pointer"
+        type="button"
+        onclick="window.abrirModalLoginAdmin()"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="hidden sm:inline">Área Restrita</span>
+        <span class="sm:hidden">Entrar</span>
+      </button>
+    </div>
+  </div>
+</header>
+    <main id="public-app" v-cloak class="w-full pt-24 bg-surface min-h-[calc(100vh-280px)]">
       <div class="flex flex-col w-full">
         <!-- HERO INSTITUCIONAL & BUSCA GEOLOCALIZADA -->
         <section
@@ -359,7 +367,7 @@
           <div class="max-w-7xl mx-auto relative z-10">
             <!-- Identificação Institucional Sóbria -->
             <p class="text-xs uppercase tracking-wider text-primary-fixed-dim font-bold mb-space-sm">
-              Governo do Estado de Alagoas • Secretaria de Estado da Saúde (SESAU)
+              Plataforma Territorial de Vacinação • Alagoas
             </p>
             
             <!-- Título e Subtítulo Integrados -->
@@ -406,7 +414,7 @@
                       onchange="window.executarBusca()"
                     >
                       <option value="" disabled selected>
-                        Carregando cidades da SESAU...
+                        Carregando municípios...
                       </option>
                     </select>
                     <svg class="w-4 h-4 absolute right-space-md top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
@@ -425,7 +433,7 @@
                     <input
                       class="w-full h-12 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all border border-outline-variant/30"
                       id="bairro-ubs-input"
-                      placeholder="Ex: Poço, Jacintinho, Ponta Verde, Primavera..."
+                      placeholder="Digite o CEP (ex: 57010-000), bairro, endereço ou nome da unidade..."
                       type="text"
                       oninput="window.aplicarFiltros()"
                     >
@@ -860,7 +868,7 @@
                     class="font-body-sm text-body-sm text-on-surface-variant mb-space-md"
                   >
                     Acompanhe o cronograma prioritário estabelecido pela
-                    Secretaria de Estado da Saúde (SESAU):
+                    Coordenação de Saúde:
                   </p>
                   <div
                     class="flex flex-col gap-space-sm font-body-sm text-body-sm text-on-surface"
@@ -951,7 +959,7 @@
                 </div>
                 <div>
                   <h3 class="font-headline-sm text-base text-white font-bold" id="modal-faq-titulo">Dúvidas Frequentes — Vacinação SUS / Alagoas</h3>
-                  <span class="text-xs text-primary-fixed-dim">Orientação ao cidadão de acordo com as normas da SESAU</span>
+                  <span class="text-xs text-primary-fixed-dim">Orientação ao cidadão conforme orientações das equipes de imunização</span>
                 </div>
               </div>
               <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalFaq()" type="button" aria-label="Fechar">
@@ -1065,7 +1073,7 @@
               </div>
             </div>
             <div class="p-space-md bg-slate-100 flex items-center justify-between">
-              <span class="text-xs text-slate-600 font-medium">Fonte: Ministério da Saúde / SESAU Alagoas 2026</span>
+              <span class="text-xs text-slate-600 font-medium">Fonte: Calendário Nacional de Imunização 2026</span>
               <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalCalendario()" type="button">Fechar Calendário</button>
             </div>
           </div>
@@ -1117,13 +1125,94 @@
               </button>
             </div>
             <div class="p-space-lg space-y-3 text-xs text-slate-700 leading-relaxed max-h-[60vh] overflow-y-auto">
-              <p><strong>1. Finalidade do Portal:</strong> Plataforma pública oficial da Secretaria de Estado da Saúde de Alagoas (SESAU) para localização de unidades de saúde, consulta de horários e transparência de imunobiológicos.</p>
+              <p><strong>1. Finalidade do Portal:</strong> Plataforma pública oficial da Plataforma de Vacinação para localização de unidades de saúde, consulta de horários e transparência de imunobiológicos.</p>
               <p><strong>2. Privacidade e LGPD (Lei 13.709/2018):</strong> Esta interface de consulta pública não coleta dados pessoais, prontuários ou cadastros médicos de cidadãos. As coordenadas GPS utilizadas na busca por proximidade permanecem exclusivamente no navegador do usuário e não são armazenadas em servidores.</p>
               <p><strong>3. Dados Abertos:</strong> Informações de postos e estoques são sincronizadas com as bases oficiais do SUS e podem ser consumidas livremente via API REST.</p>
             </div>
             <div class="p-space-md bg-slate-100 flex items-center justify-end">
               <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalTermos()" type="button">Compreendido</button>
             </div>
+          </div>
+        </div>
+        <!-- MODAL DE LOGIN ADMINISTRATIVO -->
+        <div
+          aria-labelledby="modal-login-admin-titulo"
+          aria-modal="true"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/60 backdrop-blur-sm"
+          id="modal-login-admin"
+          role="dialog"
+        >
+          <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-space-lg bg-slate-900 text-white flex items-center justify-between">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/><path d="M12 14v3"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-headline-sm text-base text-white font-bold leading-tight" id="modal-login-admin-titulo">Painel Administrativo</h3>
+                  <span class="text-[11px] text-slate-400 block">Acesso Restrito</span>
+                </div>
+              </div>
+              <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalLoginAdmin()" type="button" aria-label="Fechar Modal">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            
+            <form id="form-login-admin" onsubmit="window.submeterLoginAdmin(event)" class="p-space-lg space-y-4">
+              <div id="login-admin-alerta" class="hidden p-3 rounded-lg text-xs font-medium"></div>
+
+              <div>
+                <label for="login-admin-user" class="block text-xs font-semibold text-slate-700 mb-1">Usuário</label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </span>
+                  <input
+                    id="login-admin-user"
+                    type="text"
+                    required
+                    autocomplete="username"
+                    placeholder="Digite seu usuário"
+                    class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all shadow-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="login-admin-pass" class="block text-xs font-semibold text-slate-700 mb-1">Senha</label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  </span>
+                  <input
+                    id="login-admin-pass"
+                    type="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="Digite sua senha"
+                    class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all shadow-none"
+                  />
+                </div>
+              </div>
+
+              <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onclick="window.fecharModalLoginAdmin()"
+                  class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  id="btn-submit-login"
+                  type="submit"
+                  class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Entrar no Painel</span>
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
         <div
@@ -1258,6 +1347,16 @@
         </div>
         <!-- SCRIPT DE INTERAÇÕES E FILTROS DINÂMICOS -->
         <script>
+  // Inicialização e montagem com Vue 3
+  const { createApp } = Vue;
+
+  createApp({
+    setup() {
+      return {};
+    }
+  }).mount('#public-app');
+
+
           (function () {
             // Em ambiente Nginx (:3005), as requisições usam a rota relativa direta ao proxy local;
             // caso aberto avulso, direciona para o backend FastAPI (:8085)
@@ -1497,7 +1596,7 @@
               <!-- Endereço com truncamento suave (1 linha) -->
               <p class="text-xs text-slate-700 font-medium my-1.5 flex items-center gap-1.5 truncate" title="${(p.neighborhood ? p.neighborhood + " • " : "") + (p.address || "")}">
                 <svg class="w-3.5 h-3.5 text-primary-container flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span class="truncate"><strong class="text-on-surface font-semibold">${p.neighborhood ? p.neighborhood + " • " : ""}</strong>${p.address || "Endereço registrado na SESAU"}</span>
+                <span class="truncate"><strong class="text-on-surface font-semibold">${p.neighborhood ? p.neighborhood + " • " : ""}</strong>${p.address || "Endereço registrado no sistema"}</span>
               </p>
 
               <!-- Imunizantes em linha única rolável horizontalmente ou compacta -->
@@ -1573,21 +1672,24 @@
             };
 
             window.aplicarFiltros = function () {
-              const termoBusca = (
-                document.getElementById("bairro-ubs-input")?.value || ""
-              )
-                .toLowerCase()
-                .trim();
+              const rawInput = (document.getElementById("bairro-ubs-input")?.value || "").trim();
+              const termoBusca = rawInput.toLowerCase();
+              const termoNumeros = rawInput.replace(/\D/g, "");
               const criterioOrdem =
                 document.getElementById("ordenar-select")?.value || "distancia";
 
               let filtrados = allPoints.filter((p) => {
-                const matchesTermo =
-                  !termoBusca ||
+                if (!termoBusca) return true;
+                const matchesTexto =
                   p.name.toLowerCase().includes(termoBusca) ||
-                  (p.neighborhood &&
-                    p.neighborhood.toLowerCase().includes(termoBusca)) ||
+                  (p.neighborhood && p.neighborhood.toLowerCase().includes(termoBusca)) ||
                   (p.address && p.address.toLowerCase().includes(termoBusca));
+
+                // Busca flexível de CEP (com ou sem hífen)
+                const pNumeros = (p.address || "").replace(/\D/g, "");
+                const matchesNumeros = termoNumeros.length >= 4 && pNumeros.includes(termoNumeros);
+
+                const matchesTermo = matchesTexto || matchesNumeros;
 
                 const matchesVacina =
                   filtroVacinaAtual === "todas" ||
@@ -1757,8 +1859,8 @@
               window.abrirModalDetalhes(
                 p.name,
                 (p.neighborhood ? "Bairro " + p.neighborhood + " • " : "") +
-                  (p.address || "Endereço registrado na SESAU"),
-                "Disque Saúde 136 / SESAU Alagoas",
+                  (p.address || "Endereço registrado no sistema"),
+                "Disque Saúde 136",
                 "Segunda a Sexta: 07h30 às 17h00",
                 p.vaccines || [],
               );
@@ -1889,6 +1991,126 @@
               window.abrirModalTermos();
             };
 
+            // Modal de Login do Administrador
+            window.abrirModalLoginAdmin = function () {
+              const token = localStorage.getItem("access_token");
+              if (token) {
+                // Se já houver token salvo, redireciona diretamente ao painel
+                window.location.href = "admin.html";
+                return;
+              }
+              const m = document.getElementById("modal-login-admin");
+              const alerta = document.getElementById("login-admin-alerta");
+              if (alerta) {
+                alerta.className = "hidden";
+                alerta.textContent = "";
+              }
+              if (m) {
+                m.classList.remove("hidden");
+                document.body.style.overflow = "hidden";
+                setTimeout(() => {
+                  const inputUser = document.getElementById("login-admin-user");
+                  if (inputUser) inputUser.focus();
+                }, 100);
+              }
+            };
+
+            window.fecharModalLoginAdmin = function () {
+              const m = document.getElementById("modal-login-admin");
+              if (m) {
+                m.classList.add("hidden");
+                document.body.style.overflow = "";
+              }
+            };
+
+            window.submeterLoginAdmin = async function (ev) {
+              if (ev) ev.preventDefault();
+              const userEl = document.getElementById("login-admin-user");
+              const passEl = document.getElementById("login-admin-pass");
+              const alertaEl = document.getElementById("login-admin-alerta");
+              const btnEl = document.getElementById("btn-submit-login");
+
+              const username = userEl ? userEl.value.trim() : "";
+              const password = passEl ? passEl.value : "";
+
+              if (!username || !password) {
+                if (alertaEl) {
+                  alertaEl.textContent = "Informe o usuário e a senha.";
+                  alertaEl.className = "p-3 rounded-lg text-xs font-medium bg-red-50 text-red-700 border border-red-200 block";
+                }
+                return;
+              }
+
+              const params = new URLSearchParams();
+              params.append("username", username);
+              params.append("password", password);
+
+              try {
+                if (btnEl) {
+                  btnEl.disabled = true;
+                  btnEl.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Autenticando...</span>
+                  `;
+                }
+                if (alertaEl) alertaEl.className = "hidden";
+
+                const res = await fetch(`${API_URL}/auth/login`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                  body: params
+                });
+
+                if (res.status === 429) {
+                  const errorData = await res.json().catch(() => ({}));
+                  const msg = errorData.detail || "Muitas tentativas de login consecutivas. Aguarde 1 minuto.";
+                  if (alertaEl) {
+                    alertaEl.textContent = msg;
+                    alertaEl.className = "p-3 rounded-lg text-xs font-medium bg-amber-50 text-amber-800 border border-amber-300 block";
+                  }
+                  return;
+                }
+
+                if (!res.ok) {
+                  const errorData = await res.json().catch(() => ({}));
+                  const msg = errorData.detail || "Credenciais inválidas. Verifique seu usuário e senha.";
+                  if (alertaEl) {
+                    alertaEl.textContent = msg;
+                    alertaEl.className = "p-3 rounded-lg text-xs font-medium bg-red-50 text-red-700 border border-red-200 block";
+                  }
+                  return;
+                }
+
+                const data = await res.json();
+                if (data.access_token) {
+                  localStorage.setItem("access_token", data.access_token);
+                  if (alertaEl) {
+                    alertaEl.textContent = "Autenticação realizada com sucesso! Redirecionando...";
+                    alertaEl.className = "p-3 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-300 block";
+                  }
+                  setTimeout(() => {
+                    window.location.href = "admin.html";
+                  }, 600);
+                }
+              } catch (err) {
+                if (alertaEl) {
+                  alertaEl.textContent = "Erro ao conectar com o serviço de autenticação da SESAU.";
+                  alertaEl.className = "p-3 rounded-lg text-xs font-medium bg-red-50 text-red-700 border border-red-200 block";
+                }
+              } finally {
+                if (btnEl) {
+                  btnEl.disabled = false;
+                  btnEl.innerHTML = `
+                    <span>Entrar no Painel</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  `;
+                }
+              }
+            };
+
             // Acionamento inteligente do Disque Saúde 136 (Mobile liga / Desktop copia e orienta)
             window.acionarDisqueSaude = function (btn) {
               const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -1986,11 +2208,12 @@
                   window.fecharModalCalendario();
                   window.fecharModalAcessibilidade();
                   window.fecharModalTermos();
+                  window.fecharModalLoginAdmin();
                 }
               });
 
               // Fechamento ao clicar fora do container
-              ["modal-detalhes", "modal-faq", "modal-calendario", "modal-acessibilidade", "modal-termos"].forEach((id) => {
+              ["modal-detalhes", "modal-faq", "modal-calendario", "modal-acessibilidade", "modal-termos", "modal-login-admin"].forEach((id) => {
                 const el = document.getElementById(id);
                 if (el) {
                   el.addEventListener("click", (e) => {
@@ -2004,161 +2227,3 @@
             });
           })();
         </script>
-      </div>
-    </main>
-    <footer class="w-full bg-primary text-on-primary mt-space-2xl">
-      <div class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-2xl">
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-xl mb-space-2xl"
-        >
-          <div class="flex flex-col gap-space-md">
-            <div class="flex items-center gap-space-sm">
-              <div
-                class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center shadow-sm"
-              >
-                <svg class="w-5 h-5 text-primary-fixed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-              </div>
-              <span class="font-headline-sm text-headline-sm text-primary-fixed"
-                >Vacina Alagoas</span
-              >
-            </div>
-            <p
-              class="font-body-sm text-body-sm text-primary-fixed-dim leading-relaxed"
-            >
-              Portal Oficial de Transparência e Consulta de Imunização da
-              Secretaria de Estado da Saúde de Alagoas em alinhamento com o SUS.
-            </p>
-            <div class="flex items-center gap-space-sm mt-space-xs">
-              <span
-                class="inline-flex items-center px-space-sm py-space-xs rounded bg-primary-container text-on-primary font-label-sm text-label-sm"
-                >WCAG 2.1 AA/AAA</span
-              ><span
-                class="inline-flex items-center px-space-sm py-space-xs rounded bg-primary-container text-on-primary font-label-sm text-label-sm"
-                >e-MAG</span
-              >
-            </div>
-          </div>
-          <div class="flex flex-col gap-space-sm">
-            <h4
-              class="font-label-lg text-label-lg text-primary-fixed font-bold mb-space-xs"
-            >
-              Canais de Atendimento
-            </h4>
-            <div class="flex items-start gap-space-sm">
-              <svg class="w-4 h-4 text-tertiary-fixed-dim mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <div>
-                <span class="font-label-md text-label-md block text-on-primary"
-                  >Disque Saúde 136</span
-                ><span class="font-body-sm text-body-sm text-primary-fixed-dim"
-                  >Atendimento 24h em todo o país</span
-                >
-              </div>
-            </div>
-            <div class="flex items-start gap-space-sm mt-space-xs">
-              <svg class="w-4 h-4 text-tertiary-fixed-dim mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <div>
-                <span class="font-label-md text-label-md block text-on-primary"
-                  >Ouvidoria SESAU / AL</span
-                ><span class="font-body-sm text-body-sm text-primary-fixed-dim"
-                  >0800 284 0011 • Seg a Sex, 8h às 17h</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col gap-space-sm">
-            <h4
-              class="font-label-lg text-label-lg text-primary-fixed font-bold mb-space-xs"
-            >
-              Navegação Institucional
-            </h4>
-            <ul
-              class="flex flex-col gap-space-xs font-body-sm text-body-sm text-primary-fixed-dim"
-            >
-              <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  href="#search-form"
-                  >Consulta de Postos Ativos</a
-                >
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                  onclick="window.abrirModalCalendario()"
-                  >Calendário Estadual de Imunização</button
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  href="http://localhost:8085/docs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >Dados Abertos e API Pública</a
-                >
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                  onclick="window.abrirModalFaq()"
-                  >Perguntas Frequentes (FAQ)</button
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  href="admin.html"
-                  >Acesso Restrito aos Operadores</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="flex flex-col gap-space-sm">
-            <h4
-              class="font-label-lg text-label-lg text-primary-fixed font-bold mb-space-xs"
-            >
-              Governança e Dados
-            </h4>
-            <p
-              class="font-body-sm text-body-sm text-primary-fixed-dim leading-relaxed"
-            >
-              Em conformidade com a Lei Geral de Proteção de Dados Pessoais
-              (LGPD - Lei nº 13.709/2018) e a Lei de Acesso à Informação (LAI).
-            </p>
-            <div
-              class="flex flex-col gap-space-xs pt-space-xs font-body-sm text-body-sm text-primary-fixed-dim"
-            >
-              <button
-                type="button"
-                class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                onclick="window.abrirModalTermos()"
-                >Termos de Uso e Privacidade</button
-              ><button
-                type="button"
-                class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                onclick="window.abrirModalPrivacidade()"
-                >Política de Cookies</button
-              >
-            </div>
-          </div>
-        </div>
-        <div
-          class="pt-space-lg border-t border-primary-container flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-primary-fixed-dim"
-        >
-          <div class="text-center md:text-left">
-            © 2025 Governo do Estado de Alagoas • Secretaria de Estado da Saúde
-            (SESAU). Todos os direitos reservados.
-          </div>
-          <div
-            class="flex items-center gap-space-lg text-label-sm font-label-sm"
-          >
-            <span class="text-primary-fixed">SUS • Sistema Único de Saúde</span
-            ><span class="opacity-40">•</span><span>Alagoas Te Faz Feliz</span>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </body>
-</html>

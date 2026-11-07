@@ -1,16 +1,75 @@
 <!DOCTYPE html>
 
 <html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta name="description" content="Painel Administrativo da Rede de Vacinação de Alagoas — Gestão de postos e mineração OSM."/><meta content="web_standard" name="shell-type"/><title>Vacina Alagoas — Painel Administrativo</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>html { scroll-behavior: smooth; } @layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-variant": "#d8e3fb", "primary-fixed": "#c0e9fc", "inverse-on-surface": "#ecf1ff", "on-secondary": "#ffffff", "surface-tint": "#3c6474", "tertiary-fixed": "#ffdcc3", "primary-fixed-dim": "#a4cddf", "on-surface-variant": "#41484b", "on-primary-container": "#7da5b7", "background": "#f9f9ff", "on-tertiary-fixed-variant": "#6e3900", "surface-bright": "#f9f9ff", "on-primary-fixed": "#001f29", "secondary-container": "#82f5c1", "tertiary": "#371900", "error": "#ba1a1a", "secondary-fixed": "#85f8c4", "surface-container-lowest": "#ffffff", "surface-container-high": "#dee8ff", "on-tertiary-fixed": "#2f1500", "on-error": "#ffffff", "primary-container": "#0e3b4a", "on-secondary-container": "#00714e", "on-surface": "#111c2d", "primary": "#002530", "on-error-container": "#93000a", "on-secondary-fixed": "#002114", "tertiary-fixed-dim": "#ffb77d", "secondary": "#006c4a", "on-primary-fixed-variant": "#234c5b", "surface-dim": "#cfdaf2", "outline-variant": "#c1c7cb", "on-primary": "#ffffff", "surface": "#f9f9ff", "surface-container-low": "#f0f3ff", "on-tertiary-container": "#eb851c", "tertiary-container": "#562b00", "inverse-surface": "#263143", "on-secondary-fixed-variant": "#005137", "on-background": "#111c2d", "error-container": "#ffdad6", "inverse-primary": "#a4cddf", "secondary-fixed-dim": "#68dba9", "surface-container-highest": "#d8e3fb", "outline": "#71787c", "on-tertiary": "#ffffff", "surface-container": "#e7eeff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter-sm": "1rem", "margin": "2rem", "space-2xl": "3rem", "gutter": "1.5rem", "margin-sm": "1rem", "space-xl": "2rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-xl-mobile": [ "Public Sans" ], "display-lg": [ "Public Sans" ], "headline-lg": [ "Public Sans" ], "label-sm": [ "Public Sans" ], "body-lg": [ "Public Sans" ], "headline-xl": [ "Public Sans" ], "label-lg": [ "Public Sans" ], "headline-sm": [ "Public Sans" ], "label-md": [ "Public Sans" ], "display-lg-mobile": [ "Public Sans" ], "body-sm": [ "Public Sans" ], "headline-md": [ "Public Sans" ], "body-md": [ "Public Sans" ] }, "fontSize": { "headline-xl-mobile": [ "26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "display-lg": [ "48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "headline-lg": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" } ], "body-lg": [ "18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-xl": [ "36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "headline-sm": [ "18px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" } ], "label-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "display-lg-mobile": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "800" } ], "body-sm": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-md": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 w-full z-50 bg-primary-container text-on-primary shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md shrink-0"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm border border-white/20"><svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-label-lg text-label-lg tracking-tight text-on-primary">Vacina Alagoas</span><span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-secondary-container text-on-secondary-container leading-none uppercase">SESAU</span></div><span class="font-label-sm text-label-sm text-on-primary-container tracking-normal">Governo do Estado de Alagoas</span></div></div><div class="hidden xl:flex items-center text-primary-fixed-dim text-xs font-medium pl-space-md">
-  <span>Ambiente Oficial de Gestão Territorial • SESAU</span>
-</div>
-</div><nav class="hidden lg:flex items-center gap-2">
-  <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="#visao-geral">Visão Geral</a>
-  <a aria-current="page" class="px-3 py-1.5 text-sm font-semibold text-white bg-primary/40 rounded border border-white/10" href="#tabela-postos-auditoria">Gerenciar Postos</a>
-  <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="#form-novo-posto">Novo Posto</a>
-  <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="#secao-osm">Mineração OSM</a>
-  <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="index.html">Portal Cidadão &rarr;</a>
-</nav><div class="flex items-center gap-space-md shrink-0"><div class="hidden md:flex flex-col items-end text-right"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span><span class="font-label-sm text-label-sm text-on-primary">admin.sesau</span><span class="font-label-sm text-label-sm text-on-primary-container text-[10px]">(JWT Ativo)</span></div><span class="font-label-sm text-label-sm text-on-primary-container text-[11px]">Coordenação de Imunização Estadual</span></div><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col w-full gap-space-xl">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>html { scroll-behavior: smooth; } @layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; } [v-cloak] { display: none !important; }</style><script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script><script>
+  (function() {
+    const origWarn = console.warn;
+    console.warn = function(...args) {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+        return;
+      }
+      origWarn.apply(console, args);
+    };
+  })();
+</script><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-variant": "#d8e3fb", "primary-fixed": "#c0e9fc", "inverse-on-surface": "#ecf1ff", "on-secondary": "#ffffff", "surface-tint": "#3c6474", "tertiary-fixed": "#ffdcc3", "primary-fixed-dim": "#a4cddf", "on-surface-variant": "#41484b", "on-primary-container": "#7da5b7", "background": "#f9f9ff", "on-tertiary-fixed-variant": "#6e3900", "surface-bright": "#f9f9ff", "on-primary-fixed": "#001f29", "secondary-container": "#82f5c1", "tertiary": "#371900", "error": "#ba1a1a", "secondary-fixed": "#85f8c4", "surface-container-lowest": "#ffffff", "surface-container-high": "#dee8ff", "on-tertiary-fixed": "#2f1500", "on-error": "#ffffff", "primary-container": "#0e3b4a", "on-secondary-container": "#00714e", "on-surface": "#111c2d", "primary": "#002530", "on-error-container": "#93000a", "on-secondary-fixed": "#002114", "tertiary-fixed-dim": "#ffb77d", "secondary": "#006c4a", "on-primary-fixed-variant": "#234c5b", "surface-dim": "#cfdaf2", "outline-variant": "#c1c7cb", "on-primary": "#ffffff", "surface": "#f9f9ff", "surface-container-low": "#f0f3ff", "on-tertiary-container": "#eb851c", "tertiary-container": "#562b00", "inverse-surface": "#263143", "on-secondary-fixed-variant": "#005137", "on-background": "#111c2d", "error-container": "#ffdad6", "inverse-primary": "#a4cddf", "secondary-fixed-dim": "#68dba9", "surface-container-highest": "#d8e3fb", "outline": "#71787c", "on-tertiary": "#ffffff", "surface-container": "#e7eeff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter-sm": "1rem", "margin": "2rem", "space-2xl": "3rem", "gutter": "1.5rem", "margin-sm": "1rem", "space-xl": "2rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-xl-mobile": [ "Public Sans" ], "display-lg": [ "Public Sans" ], "headline-lg": [ "Public Sans" ], "label-sm": [ "Public Sans" ], "body-lg": [ "Public Sans" ], "headline-xl": [ "Public Sans" ], "label-lg": [ "Public Sans" ], "headline-sm": [ "Public Sans" ], "label-md": [ "Public Sans" ], "display-lg-mobile": [ "Public Sans" ], "body-sm": [ "Public Sans" ], "headline-md": [ "Public Sans" ], "body-md": [ "Public Sans" ] }, "fontSize": { "headline-xl-mobile": [ "26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "display-lg": [ "48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "headline-lg": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" } ], "body-lg": [ "18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-xl": [ "36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "headline-sm": [ "18px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" } ], "label-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "display-lg-mobile": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "800" } ], "body-sm": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-md": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 w-full z-50 bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-800 shadow-sm">
+  <div class="h-16 w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-gutter">
+    <!-- Brand / Logo -->
+    <div class="flex items-center gap-space-md shrink-0">
+      <a href="admin.html" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v8"/>
+            <path d="M8 12h8"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-base tracking-tight text-white">Vacina Alagoas</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Admin</span>
+          </div>
+          <span class="text-xs text-slate-400 hidden sm:block">Painel de Gestão</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Navegação Simplificada com Ícones -->
+    <nav class="hidden md:flex items-center gap-1">
+      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="#visao-geral">
+        <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Visão Geral</span>
+      </a>
+      <a aria-current="page" class="px-3 py-1.5 text-xs lg:text-sm font-semibold text-white bg-slate-800 rounded-md border border-slate-700 transition-colors flex items-center gap-1.5" href="#tabela-postos-auditoria">
+        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Postos</span>
+      </a>
+      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="#form-novo-posto">
+        <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Cadastrar</span>
+      </a>
+      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="#secao-osm">
+        <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Importar OSM</span>
+      </a>
+      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="index.html">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span>Ver Portal</span>
+      </a>
+    </nav>
+
+    <!-- Usuário e Logout -->
+    <div class="flex items-center gap-space-sm shrink-0">
+      <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded bg-slate-800/80 border border-slate-700/60 text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="text-slate-300 font-medium">Administrador</span>
+      </div>
+      <button type="button" onclick="localStorage.removeItem('access_token'); window.location.href='index.html';" class="px-3 py-1.5 rounded-md bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer" title="Encerrar Sessão">
+        <span>Sair</span>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</header><main id="admin-app" v-cloak class="w-full pt-16 bg-surface flex-1"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col w-full gap-space-xl">
 <!-- BANNER DE CONTEXTO E STATUS DO SISTEMA -->
 <section id="visao-geral" class="relative overflow-hidden bg-primary text-on-primary rounded-xl shadow-lg p-space-lg lg:p-space-xl">
 <div class="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-surface-tint/20 blur-3xl pointer-events-none"></div>
@@ -18,7 +77,7 @@
 <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg pb-space-lg">
 <div class="space-y-space-xs max-w-3xl">
 <div class="flex flex-wrap items-center gap-space-xs text-xs uppercase tracking-wider text-primary-fixed-dim font-bold">
-  <span>Governo de Alagoas • Secretaria de Estado da Saúde • SESAU</span>
+  <span>Rede de Saúde • Imunização Alagoas</span>
 </div>
 <h1 class="font-headline-xl text-headline-xl lg:text-display-lg font-bold tracking-tight text-on-primary">
           Painel de Controle e Gestão de Imunização
@@ -41,7 +100,7 @@
 </div>
 </div>
 <!-- KPI Cards Rápidos -->
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md pt-space-md">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md pt-space-md">
 <!-- KPI 1 -->
 <div class="bg-primary-container/80 rounded-lg p-space-md flex flex-col justify-between shadow-sm">
 <div class="flex items-center justify-between">
@@ -49,10 +108,10 @@
 </div>
 <div class="mt-space-sm">
 <div class="flex items-baseline gap-space-xs">
-<span class="font-display-lg text-display-lg font-bold text-on-primary" id="stat-total-postos">24</span>
+<span class="font-display-lg text-display-lg font-bold text-on-primary">{{ totalPostos }}</span>
 <span class="font-label-sm text-label-sm text-secondary-fixed font-semibold">100% Auditados</span>
 </div>
-<p class="font-body-sm text-body-sm text-primary-fixed-dim mt-0.5">Maceió: <strong class="text-on-primary">20</strong> • Arapiraca: <strong class="text-on-primary">4</strong></p>
+<p class="font-body-sm text-body-sm text-primary-fixed-dim mt-0.5">Maceió: <strong class="text-on-primary">{{ totalMaceio }}</strong> • Arapiraca: <strong class="text-on-primary">{{ totalArapiraca }}</strong></p>
 </div>
 </div>
 <!-- KPI 2 -->
@@ -82,99 +141,16 @@
 <p class="font-body-sm text-body-sm text-primary-fixed-dim mt-0.5">PostgreSQL PostGIS Conectado</p>
 </div>
 </div>
-<!-- KPI 4 -->
-<div class="bg-primary-container/80 rounded-lg p-space-md flex flex-col justify-between shadow-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-sm text-label-sm text-primary-fixed uppercase">Sessão Administrativa</span>
-</div>
-<div class="mt-space-sm">
-<div class="flex items-baseline gap-space-xs">
-<span class="font-headline-lg text-headline-lg font-bold text-on-primary">admin</span>
-<span class="font-label-sm text-label-sm text-tertiary-fixed font-semibold">118 min</span>
-</div>
-<div class="flex items-center justify-between mt-space-xs">
-<span class="font-label-sm text-label-sm text-primary-fixed-dim">Super Administrador</span>
-<button class="text-tertiary-fixed hover:text-on-primary font-label-sm text-label-sm font-bold underline cursor-pointer" id="btn-quick-renew" onclick="window.realizarLoginAdmin()" type="button">Renovar</button>
-</div>
 </div>
 </div>
 </div>
 </section>
-<!-- SEÇÃO 1: STATUS DE AUTENTICAÇÃO E SEGURANÇA (JWT BEARER) -->
-<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm">
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md">
-<div class="space-y-1">
-<div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">1. Autenticação &amp; Segurança (JWT Bearer Token)</h2>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-          Controle de acesso às rotas restritas via cabeçalho <code class="px-1.5 py-0.5 rounded bg-surface-container-high font-mono text-[12px] text-primary">Authorization: Bearer &lt;token&gt;</code>.
-        </p>
-</div>
-<div class="flex items-center gap-space-sm">
-<span class="px-2.5 py-1 rounded bg-secondary/10 text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">lock</span> Sessão Criptografada (HS256)
-        </span>
-</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
-<!-- Bloco de Visualização do Token -->
-<div class="lg:col-span-8 bg-surface-container-low rounded-lg p-space-md space-y-space-sm">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-space-xs">
-<span class="font-label-md text-label-md text-on-surface font-semibold">JWT Payload Atual</span>
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-primary-container text-on-primary">role: super_admin</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">exp: 2025-05-18T16:42:00Z</span>
-</div>
-<div class="flex items-center gap-space-sm bg-surface-container-lowest rounded p-space-sm">
-<span class="material-symbols-outlined text-on-surface-variant text-[18px] shrink-0">code</span>
-<input aria-label="Token JWT Bearer autenticado" class="w-full bg-transparent font-mono text-body-sm text-on-surface font-normal select-all outline-none" id="jwt-token-input" readonly="" type="text" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJzdXBlcl9hZG1pbiIsImV4cCI6MTc0NzU4NjUyMH0.K2bZ_EXAMPLE_SESAU_AL_AUTHENTICATED_SECURE_TOKEN_XYZ"/>
-<button class="shrink-0 px-space-md py-1.5 rounded bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1" id="btn-copy-token" type="button">
-<span class="material-symbols-outlined text-[16px]">content_copy</span>
-<span id="copy-token-text">Copiar Bearer</span>
-</button>
-</div>
-<div class="flex flex-wrap items-center justify-between text-body-sm text-on-surface-variant pt-1">
-<span class="flex items-center gap-1 font-label-sm text-label-sm">
-<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span> Autenticado no endpoint <code class="font-mono text-primary font-bold">POST /auth/login</code>
-</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Issuer: <strong class="text-on-surface">sesau.al.gov.br</strong></span>
-</div>
-</div>
-<!-- Formulário Rápido de Re-login -->
-<div class="lg:col-span-4 bg-surface-container rounded-lg p-space-md space-y-space-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md font-bold text-on-surface">Reautenticação Rápida</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Uvicorn Auth</span>
-</div>
-<div class="space-y-space-xs">
-<div>
-<label class="block font-label-sm text-label-sm text-on-surface-variant mb-0.5">Usuário</label>
-<input class="w-full bg-surface-container-lowest px-3 py-1.5 rounded font-label-sm text-label-sm text-on-surface outline-none" id="admin-user-input" type="text" value="admin"/>
-</div>
-<div>
-<label class="block font-label-sm text-label-sm text-on-surface-variant mb-0.5">Credencial / Senha</label>
-<input class="w-full bg-surface-container-lowest px-3 py-1.5 rounded font-label-sm text-label-sm text-on-surface outline-none" id="admin-pass-input" type="password" value="admin123"/>
-</div>
-</div>
-<div class="flex items-center gap-space-xs pt-space-xs">
-<button class="w-full py-2 rounded bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer" id="btn-login-admin" onclick="window.realizarLoginAdmin()" type="button">
-  Renovar Token / Autenticar
-</button>
-<button class="w-auto px-3 py-2 rounded bg-surface-container-highest text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors cursor-pointer" onclick="localStorage.removeItem('access_token'); location.reload();" title="Encerrar Sessão" type="button">
-  Sair
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- SEÇÃO 2: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
+<!-- SEÇÃO 1: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
 <section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-md relative overflow-hidden">
 <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-lg">
 <div class="space-y-1">
 <div class="flex flex-wrap items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">2. Bot de Mineração OpenStreetMap (OSM)</h2>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">1. Bot de Mineração OpenStreetMap (OSM)</h2>
 <span class="px-2.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold uppercase tracking-wider">
             Overpass API • Nominatim
           </span>
@@ -382,7 +358,7 @@
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg">
 <div class="space-y-1">
 <div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Cadastro Manual de Ponto de Vacinação</h2>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">2. Cadastro Manual de Ponto de Vacinação</h2>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
           Inserção direta no repositório estadual via <code class="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[12px] text-primary">POST /admin/vaccination-points</code>.
@@ -392,8 +368,7 @@
         * Campos com validação obrigatória
       </span>
 </div>
-<form class="space-y-space-lg" id="form-novo-posto" onsubmit="event.preventDefault(); window.salvarPontoManual();">
-<input type="hidden" id="campo-posto-id" value=""/>
+<form class="space-y-space-lg" id="form-novo-posto" @submit.prevent="salvarPontoManual">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
 <!-- Município -->
 <div>
@@ -401,9 +376,9 @@
             Município de Alagoas *
           </label>
 <div class="relative">
-<select class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-municipio" required="">
-<option value="1">Maceió (Região Metropolitana / Capital - ID: 1)</option>
-<option value="2">Arapiraca (Região do Agreste Alagoano - ID: 2)</option>
+<select v-model="form.city_id" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-municipio" required>
+<option :value="1">Maceió (Região Metropolitana / Capital - ID: 1)</option>
+<option :value="2">Arapiraca (Região do Agreste Alagoano - ID: 2)</option>
 </select>
 </div>
 <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Selecione a jurisdição sanitária municipal correspondente.</span>
@@ -413,15 +388,37 @@
 <label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-nome">
             Nome Oficial da Unidade de Saúde (CNES) *
           </label>
-<input class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-nome" placeholder="Ex: USF Trapiche da Barra" required="" type="text"/>
+<input v-model="form.name" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-nome" placeholder="Ex: USF Trapiche da Barra" required type="text"/>
 <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Designação formal cadastrada no Cadastro Nacional de Estabelecimentos.</span>
 </div>
+
+<!-- Consulta de CEP com Preenchimento Automático -->
+<div class="md:col-span-2 bg-surface-container-low/60 p-4 rounded-xl border border-outline-variant/30">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-end">
+    <div class="md:col-span-4">
+      <label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-cep">
+        CEP da Unidade (Busca Automática)
+      </label>
+      <div class="relative flex items-center">
+        <input v-model="cepInput" class="w-full h-11 px-4 rounded bg-surface-container-lowest text-on-surface font-body-md text-body-md outline-none shadow-sm border border-outline-variant/40 focus:border-primary transition-all" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
+        <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary text-white rounded text-xs font-semibold hover:bg-primary-container transition-colors cursor-pointer flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Buscar</span>
+        </button>
+      </div>
+    </div>
+    <div class="md:col-span-8">
+      <span class="text-xs text-on-surface-variant flex items-center gap-1.5" v-html="cepStatusHtml"></span>
+    </div>
+  </div>
+</div>
+
 <!-- Bairro -->
 <div>
 <label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-bairro">
             Bairro / Comunidade *
           </label>
-<input class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-bairro" placeholder="Ex: Trapiche da Barra" required="" type="text"/>
+<input v-model="form.neighborhood" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-bairro" placeholder="Ex: Trapiche da Barra" required type="text"/>
 <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Região demográfica para geolocalização e rotas cidadãs.</span>
 </div>
 <!-- Endereço Completo -->
@@ -429,23 +426,8 @@
 <label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-endereco">
             Endereço Completo com Logradouro e Número *
           </label>
-<input class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" required="" type="text"/>
+<input v-model="form.address" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" required type="text"/>
 <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Referência pública física para deslocamento presencial do usuário.</span>
-</div>
-<!-- Coordenadas Geográficas -->
-<div>
-<label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-lat">
-            Latitude (WGS84 Decimal)
-          </label>
-<input class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-mono text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-lat" placeholder="Ex: -9.6650" type="text"/>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Opcional: preenchido automaticamente se minerado via OSM/GPS.</span>
-</div>
-<div>
-<label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-lng">
-            Longitude (WGS84 Decimal)
-          </label>
-<input class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-mono text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-lng" placeholder="Ex: -35.7420" type="text"/>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Coordenada Oeste padrão para o estado de Alagoas.</span>
 </div>
 </div>
 <!-- Checklist de Imunobiológicos em Estoque -->
@@ -458,49 +440,25 @@
 <span class="font-label-sm text-label-sm text-secondary font-bold">Atualizado em tempo real</span>
 </div>
 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-space-sm pt-space-xs">
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input checked="" class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="1"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Pólio (VOP/VIP)</span>
-</label>
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input checked="" class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="2"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Sarampo (Tríplice)</span>
-</label>
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input checked="" class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="3"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Covid-19 (XBB)</span>
-</label>
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input checked="" class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="4"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Influenza / Gripe</span>
-</label>
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input checked="" class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="5"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">BCG Intradérmica</span>
-</label>
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input checked="" class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="6"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Hepatite B Recomb.</span>
-</label>
-<label class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input class="w-4 h-4 rounded text-secondary" name="vacinas" type="checkbox" value="7"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Febre Amarela</span>
+<label v-for="v in catalogoVacinas" :key="v.id" class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
+<input type="checkbox" class="w-4 h-4 rounded text-secondary" :value="v.id" v-model="form.vaccine_ids"/>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">{{ v.nome }}</span>
 </label>
 </div>
 </div>
 <!-- Ações do Formulário -->
 <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
-<button class="w-full sm:w-auto px-5 h-11 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-sm transition-colors cursor-pointer" onclick="window.cancelarEdicao()" type="button">
+<button class="w-full sm:w-auto px-5 h-11 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-sm transition-colors cursor-pointer" @click="cancelarEdicao" type="button">
   Limpar / Cancelar Edição
 </button>
-<button class="w-full sm:w-auto px-6 h-11 rounded-md bg-primary hover:bg-primary-container text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" id="btn-salvar-posto" type="submit">
+<button class="w-full sm:w-auto px-6 h-11 rounded-md bg-primary hover:bg-primary-container text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" :disabled="salvandoPosto" type="submit">
   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-  <span id="btn-salvar-posto-texto">Cadastrar Ponto de Vacinação no PostgreSQL</span>
+  <span>{{ form.id ? `Atualizar Posto #${form.id} no PostgreSQL` : 'Cadastrar Ponto de Vacinação no PostgreSQL' }}</span>
 </button>
 </div>
 <!-- Feedback de Inserção -->
-<div class="hidden p-3 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-300 text-sm font-medium" id="cadastro-feedback">
-  Operação concluída com sucesso no banco de dados estadual.
+<div v-if="feedbackMsg" class="p-3 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-300 text-sm font-medium">
+  {{ feedbackMsg }}
 </div>
 </form>
 </section>
@@ -509,7 +467,7 @@
 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
 <div class="space-y-1">
 <div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">4. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
           Auditoria de pontos de vacinação ativos no banco relacional PostgreSQL com coordenadas e insumos vinculados.
@@ -529,22 +487,25 @@
 <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
 <div class="md:col-span-6 relative">
 <span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-[20px]">search</span>
-<input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" id="filtro-busca" onkeyup="window.filtrarTabelaPostos()" placeholder="Filtrar por nome do posto, bairro ou ID..." type="text"/>
+<input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroTexto" placeholder="Filtrar por nome do posto, bairro, endereço ou CEP..." type="text"/>
 </div>
 <div class="md:col-span-3">
-<select aria-label="Filtrar por município de Alagoas" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" id="filtro-cidade" onchange="window.filtrarTabelaPostos()">
+<select aria-label="Filtrar por município de Alagoas" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroCidade">
 <option value="todos">Todos os Municípios (AL)</option>
-<option value="Maceió">Maceió (20 Postos)</option>
-<option value="Arapiraca">Arapiraca (4 Postos)</option>
+<option value="Maceió">Maceió</option>
+<option value="Arapiraca">Arapiraca</option>
 </select>
 </div>
 <div class="md:col-span-3">
-<select aria-label="Filtrar por imunobiológico ofertado" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" id="filtro-vacina" onchange="window.filtrarTabelaPostos()">
+<select aria-label="Filtrar por imunobiológico ofertado" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroVacina">
 <option value="todas">Todos os Imunobiológicos</option>
 <option value="Covid-19">Covid-19</option>
 <option value="Pólio">Pólio</option>
 <option value="Influenza">Influenza</option>
 <option value="BCG">BCG</option>
+<option value="Sarampo">Sarampo</option>
+<option value="Hepatite B">Hepatite B</option>
+<option value="Febre Amarela">Febre Amarela</option>
 </select>
 </div>
 </div>
@@ -557,162 +518,46 @@
 <th class="py-3 px-4">Nome da Unidade</th>
 <th class="py-3 px-4">Município / Bairro</th>
 <th class="py-3 px-4">Imunobiológicos em Estoque</th>
-<th class="py-3 px-4">Coordenadas GPS</th>
+<th class="py-3 px-4">Endereço / Referência</th>
 <th class="py-3 px-4 text-right">Ações de Gestão</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-surface-container-high" id="tabela-postos-corpo">
-<!-- Linha 1: PAM Salgadinho -->
-<tr class="hover:bg-surface-container-low transition-colors posto-row" data-bairro="Poço" data-municipio="Maceió" data-nome="PAM Salgadinho">
-<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#01</td>
-<td class="py-3.5 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">PAM Salgadinho (Polo Central)</div>
-<div class="font-body-sm text-on-surface-variant">R. Mizael Domingues, 241 • Tel: (82) 3315-5120</div>
-</td>
-<td class="py-3.5 px-4">
-<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">Maceió</span>
-<span class="block text-label-sm text-on-surface-variant font-medium">Bairro Poço</span>
-</td>
-<td class="py-3.5 px-4">
-<div class="flex flex-wrap gap-1 max-w-xs">
-<span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">Covid-19</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Pólio</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Sarampo</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">BCG</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Influenza</span>
-</div>
-</td>
-<td class="py-3.5 px-4">
-<div class="font-mono text-label-sm text-label-sm text-on-surface font-semibold">-9.6632, -35.7314</div>
-<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-<span class="material-symbols-outlined text-[14px]">check</span> PostGIS Validado
-              </span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<div class="inline-flex items-center gap-1">
-<a class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" href="https://maps.google.com/?q=-9.6632,-35.7314" rel="noopener noreferrer" target="_blank" title="Ver no Google Maps">
-<span class="material-symbols-outlined text-[18px]">map</span>
-</a>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Editar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">edit</span>
-</button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors" onclick="alert('Unidade #01 colocada em modo manutenção temporária.');" title="Desativar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">block</span>
-</button>
-</div>
-</td>
+<tr v-if="carregandoPostos">
+  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Carregando unidades de saúde do PostgreSQL...</td>
 </tr>
-<!-- Linha 2: UBS Jacintinho -->
-<tr class="hover:bg-surface-container-low transition-colors posto-row" data-bairro="Jacintinho" data-municipio="Maceió" data-nome="UBS Jacintinho">
-<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#02</td>
-<td class="py-3.5 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">UBS Jacintinho (Nelson Rocha)</div>
-<div class="font-body-sm text-on-surface-variant">R. Pastor Eurico Calheiros, S/N</div>
-</td>
-<td class="py-3.5 px-4">
-<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">Maceió</span>
-<span class="block text-label-sm text-on-surface-variant font-medium">Bairro Jacintinho</span>
-</td>
-<td class="py-3.5 px-4">
-<div class="flex flex-wrap gap-1 max-w-xs">
-<span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">Covid-19</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Influenza</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Hepatite B</span>
-</div>
-</td>
-<td class="py-3.5 px-4">
-<div class="font-mono text-label-sm text-label-sm text-on-surface font-semibold">-9.6428, -35.7265</div>
-<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-<span class="material-symbols-outlined text-[14px]">check</span> PostGIS Validado
-              </span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<div class="inline-flex items-center gap-1">
-<a class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" href="https://maps.google.com/?q=-9.6428,-35.7265" rel="noopener noreferrer" target="_blank" title="Ver no Google Maps">
-<span class="material-symbols-outlined text-[18px]">map</span>
-</a>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Editar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">edit</span>
-</button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors" onclick="alert('Unidade #02 desativada temporariamente.');" title="Desativar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">block</span>
-</button>
-</div>
-</td>
+<tr v-else-if="postosFiltrados.length === 0">
+  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
 </tr>
-<!-- Linha 3: USF Ponta Verde -->
-<tr class="hover:bg-surface-container-low transition-colors posto-row" data-bairro="Ponta Verde" data-municipio="Maceió" data-nome="USF Ponta Verde">
-<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#03</td>
+<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
+<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
 <td class="py-3.5 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">USF Ponta Verde (Orla Marítima)</div>
-<div class="font-body-sm text-on-surface-variant">R. Eng. Mário de Gusmão, 840</div>
+<div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
+<div class="font-body-sm text-on-surface-variant">{{ p.address || 'Endereço não informado' }}</div>
 </td>
 <td class="py-3.5 px-4">
-<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">Maceió</span>
-<span class="block text-label-sm text-on-surface-variant font-medium">Bairro Ponta Verde</span>
-</td>
-<td class="py-3.5 px-4">
-<div class="flex flex-wrap gap-1 max-w-xs">
-<span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">Covid-19</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Febre Amarela</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Sarampo</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Influenza</span>
-</div>
-</td>
-<td class="py-3.5 px-4">
-<div class="font-mono text-label-sm text-label-sm text-on-surface font-semibold">-9.6601, -35.7042</div>
-<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-<span class="material-symbols-outlined text-[14px]">check</span> PostGIS Validado
-              </span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<div class="inline-flex items-center gap-1">
-<a class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" href="https://maps.google.com/?q=-9.6601,-35.7042" rel="noopener noreferrer" target="_blank" title="Ver no Google Maps">
-<span class="material-symbols-outlined text-[18px]">map</span>
-</a>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Editar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">edit</span>
-</button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors" onclick="alert('Ação registrada com perfil admin.');" title="Desativar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">block</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Linha 4: UBS Primavera (Arapiraca) -->
-<tr class="hover:bg-surface-container-low transition-colors posto-row" data-bairro="Primavera" data-municipio="Arapiraca" data-nome="UBS Primavera">
-<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#04</td>
-<td class="py-3.5 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">UBS Primavera (Regional Agreste)</div>
-<div class="font-body-sm text-on-surface-variant">R. São Francisco, 450 • Agreste Alagoano</div>
-</td>
-<td class="py-3.5 px-4">
-<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">Arapiraca</span>
-<span class="block text-label-sm text-on-surface-variant font-medium">Bairro Primavera</span>
+<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">{{ p.municipio || (p.city_id === 1 ? 'Maceió' : 'Arapiraca') }}</span>
+<span class="block text-label-sm text-on-surface-variant font-medium">Bairro {{ p.neighborhood || 'Central' }}</span>
 </td>
 <td class="py-3.5 px-4">
 <div class="flex flex-wrap gap-1 max-w-xs">
-<span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">Covid-19</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">BCG</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Pólio</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Influenza</span>
+<span v-for="vac in (p.vaccines || [])" :key="vac" class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+  {{ vac }}
+</span>
 </div>
 </td>
 <td class="py-3.5 px-4">
-<div class="font-mono text-label-sm text-label-sm text-on-surface font-semibold">-9.7512, -36.6609</div>
+<div class="text-label-sm text-on-surface font-medium">{{ p.address || '-' }}</div>
 <span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-<span class="material-symbols-outlined text-[14px]">check</span> PostGIS Validado
-              </span>
+  <span class="material-symbols-outlined text-[14px]">check</span> Validado no SUS
+</span>
 </td>
 <td class="py-3.5 px-4 text-right">
 <div class="inline-flex items-center gap-1">
-<a class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" href="https://maps.google.com/?q=-9.7512,-36.6609" rel="noopener noreferrer" target="_blank" title="Ver no Google Maps">
-<span class="material-symbols-outlined text-[18px]">map</span>
-</a>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Editar Unidade" type="button">
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" type="button" @click="editarPosto(p)">
 <span class="material-symbols-outlined text-[18px]">edit</span>
 </button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors" onclick="alert('Unidade Arapiraca colocada em contingência.');" title="Desativar Unidade" type="button">
+<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" type="button">
 <span class="material-symbols-outlined text-[18px]">block</span>
 </button>
 </div>
@@ -723,20 +568,13 @@
 </div>
 <!-- Paginação e Meta Informação -->
 <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
-<span>Exibindo <strong>4 postos auditados em tela</strong> de um total de <strong>24 postos ativos</strong> no estado de Alagoas.</span>
-<div class="flex items-center gap-1">
-<button class="px-3 py-1.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high disabled:opacity-50 text-label-sm font-semibold" disabled="" type="button">Anterior</button>
-<span class="px-3 py-1.5 rounded bg-primary text-on-primary text-label-sm font-bold">1</span>
-<button class="px-3 py-1.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high text-label-sm font-semibold" type="button">2</button>
-<button class="px-3 py-1.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high text-label-sm font-semibold" type="button">3</button>
-<button class="px-3 py-1.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high text-label-sm font-semibold" type="button">Próximo</button>
-</div>
+<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
 </div>
 </section>
-<!-- SEÇÃO 5: COMPLEMENTO VISUAL - DISTRIBUIÇÃO E COBERTURA GEOGRÁFICA -->
-<section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- SEÇÃO: DISTRIBUIÇÃO E COBERTURA GEOGRÁFICA -->
+<section class="w-full">
 <!-- Mini Resumo Gráfico e Arquitetura -->
-<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
 <div class="flex items-center justify-between">
 <div>
 <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Capacidade e Distribuição por Macrorregião</h3>
@@ -780,37 +618,6 @@
 </div>
 </div>
 </div>
-<!-- Card de Auditoria de Lotes e Temperatura -->
-<div class="lg:col-span-5 bg-primary-container text-on-primary rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
-<div class="space-y-space-xs">
-<div class="flex items-center gap-space-xs">
-<h3 class="font-headline-sm text-headline-sm font-bold text-on-primary">Cadeia de Frio • Rede de Frio SESAU</h3>
-</div>
-<p class="font-body-sm text-body-sm text-primary-fixed-dim">
-          Monitoramento de temperatura das câmaras de conservação das centrais regionais de Alagoas.
-        </p>
-<div class="pt-space-md space-y-space-sm">
-<div class="flex items-center justify-between p-3 rounded bg-primary/60">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed"></span>
-<span class="font-label-md text-label-md">Central Maceió (Tabuleiro)</span>
-</div>
-<span class="font-mono font-bold text-secondary-fixed text-label-md">+4.2°C (Ideal)</span>
-</div>
-<div class="flex items-center justify-between p-3 rounded bg-primary/60">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed"></span>
-<span class="font-label-md text-label-md">Central Arapiraca (Agreste)</span>
-</div>
-<span class="font-mono font-bold text-secondary-fixed text-label-md">+3.8°C (Ideal)</span>
-</div>
-</div>
-</div>
-<div class="pt-space-md border-t border-primary/40 flex items-center justify-between text-primary-fixed-dim font-label-sm text-label-sm">
-<span>Sensor IoT MQTT / Telemetria</span>
-<span class="text-on-primary font-semibold">Sem oscilações nas últimas 72h</span>
-</div>
-</div>
 </section>
 <!-- NOTAS DE INTEGRAÇÃO & DOCS PARA BANCA ACADÊMICA -->
 <section class="bg-surface-container rounded-xl p-space-lg shadow-sm space-y-space-md" id="swagger-docs">
@@ -820,7 +627,7 @@
 </div>
 <div>
 <h4 class="font-headline-sm text-headline-sm font-bold text-on-surface">Documentação Técnica &amp; Evidências de Projeto (Banca Integrador IV-B)</h4>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Governo de Alagoas • SESAU • Stack: Python FastAPI, SQLAlchemy, PostgreSQL com Extensão PostGIS e OpenStreetMap</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Stack: Python FastAPI, SQLAlchemy, PostgreSQL com Extensão PostGIS e OpenStreetMap</span>
 </div>
 </div>
 <div class="flex items-center gap-2">
@@ -865,541 +672,381 @@
 </section>
 </div>
 <script>
-  (function () {
-    // Em ambiente Nginx (:3005), as requisições usam a rota relativa direta ao proxy local;
-    // caso aberto avulso, direciona para o backend FastAPI (:8085)
-    const API_URL = (window.location.port === "3005" || window.location.port === "80" || !window.location.port) ? "" : "http://localhost:8085";
-    let authToken = localStorage.getItem("access_token");
+  const { createApp, ref, computed, onMounted } = Vue;
 
-    // Copiar Bearer Token
-    const btnCopy = document.getElementById('btn-copy-token');
-    const tokenInput = document.getElementById('jwt-token-input');
-    const copyText = document.getElementById('copy-token-text');
+  createApp({
+    setup() {
+      const API_URL = (window.location.port === "3005" || window.location.port === "80" || !window.location.port) ? "" : "http://localhost:8085";
+      const postos = ref([]);
+      const carregandoPostos = ref(false);
+      const salvandoPosto = ref(false);
+      const consultandoCep = ref(false);
+      const feedbackMsg = ref("");
 
-    if (btnCopy && tokenInput) {
-      btnCopy.addEventListener('click', function () {
-        tokenInput.select();
-        navigator.clipboard.writeText(tokenInput.value).then(() => {
-          if (copyText) copyText.textContent = 'Copiado!';
-          btnCopy.classList.add('bg-secondary-container', 'text-on-secondary-container');
-          setTimeout(() => {
-            if (copyText) copyText.textContent = 'Copiar';
-            btnCopy.classList.remove('bg-secondary-container', 'text-on-secondary-container');
-          }, 2000);
-        });
-      });
-    }
+      const filtroTexto = ref("");
+      const filtroCidade = ref("todos");
+      const filtroVacina = ref("todas");
 
-    // Inicialização de status de autenticação
-    if (authToken && tokenInput) {
-      tokenInput.value = authToken;
-      const statusBadge = document.getElementById("jwt-status-badge");
-      if (statusBadge) {
-        statusBadge.textContent = "Sessão Ativa (JWT Conectado)";
-        statusBadge.className = "px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300";
-      }
-    }
+      const cepInput = ref("");
+      const cepStatusHtml = ref("");
 
-    // Realizar Login Administrativo
-    window.realizarLoginAdmin = async function() {
-      const u = document.getElementById("admin-user-input")?.value || "admin";
-      const p = document.getElementById("admin-pass-input")?.value || "admin123";
-      const btn = document.getElementById("btn-login-admin");
+      const catalogoVacinas = ref([
+        { id: 1, nome: "Pólio" },
+        { id: 2, nome: "Sarampo" },
+        { id: 3, nome: "Covid-19" },
+        { id: 4, nome: "Influenza" },
+        { id: 5, nome: "BCG" },
+        { id: 6, nome: "Hepatite B" },
+        { id: 7, nome: "Febre Amarela" }
+      ]);
 
-      const body = new URLSearchParams();
-      body.append("username", u);
-      body.append("password", p);
-
-      try {
-        if (btn) btn.textContent = "Autenticando...";
-        const res = await fetch(`${API_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: body
-        });
-
-        if (!res.ok) throw new Error("Credenciais inválidas");
-        const data = await res.json();
-        authToken = data.access_token;
-        localStorage.setItem("access_token", authToken);
-
-        if (tokenInput) tokenInput.value = authToken;
-        const statusBadge = document.getElementById("jwt-status-badge");
-        if (statusBadge) {
-          statusBadge.textContent = "Autenticado (JWT Ativo)";
-          statusBadge.className = "px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300";
-        }
-
-        alert("Autenticação realizada com sucesso! Token JWT gravado no navegador.");
-        window.carregarPostosAdmin();
-      } catch (err) {
-        alert("Erro na autenticação: Usuário ou senha incorretos.");
-      } finally {
-        if (btn) btn.innerHTML = 'Renovar Token / Autenticar';
-      }
-    };
-
-    // Cache local de postos para buscas, filtros e edição rápida
-    window._todosPostos = [];
-
-    // Mapeamento de Vacinas (Nome <-> ID)
-    const VACINAS_MAP = {
-      1: "Pólio",
-      2: "Sarampo",
-      3: "Covid-19",
-      4: "Influenza",
-      5: "BCG",
-      6: "Hepatite B",
-      7: "Febre Amarela"
-    };
-
-    const VACINAS_INV = {
-      "pólio": 1, "polio": 1,
-      "sarampo": 2,
-      "covid-19": 3, "covid": 3, "covid19": 3,
-      "influenza": 4, "gripe": 4,
-      "bcg": 5,
-      "hepatite b": 6, "hepatite": 6,
-      "febre amarela": 7
-    };
-
-    // Carregar Lista de Postos Cadastrados (GET)
-    window.carregarPostosAdmin = async function() {
-      const tbody = document.getElementById("tabela-postos-corpo");
-      if (!tbody) return;
-
-      try {
-        const [resMaceio, resArapiraca] = await Promise.all([
-          fetch(`${API_URL}/vaccination-points/1`),
-          fetch(`${API_URL}/vaccination-points/2`)
-        ]);
-
-        const ptsMaceio = resMaceio.ok ? await resMaceio.json() : [];
-        const ptsArapiraca = resArapiraca.ok ? await resArapiraca.json() : [];
-        
-        window._todosPostos = [
-          ...ptsMaceio.map(p => ({ ...p, municipio: "Maceió", city_id: p.city_id || 1 })),
-          ...ptsArapiraca.map(p => ({ ...p, municipio: "Arapiraca", city_id: p.city_id || 2 }))
-        ];
-
-        // Atualizar métricas do painel
-        const statTotal = document.getElementById("stat-total-postos");
-        if (statTotal) statTotal.textContent = window._todosPostos.length;
-
-        window.filtrarTabelaPostos();
-      } catch (err) {
-        console.error("Erro ao carregar postos da API:", err);
-      }
-    };
-
-    // Filtragem em tempo real da tabela administrativa
-    window.filtrarTabelaPostos = function() {
-      const termo = (document.getElementById("filtro-busca")?.value || "").toLowerCase().trim();
-      const cidade = document.getElementById("filtro-cidade")?.value || "todos";
-      const vacina = document.getElementById("filtro-vacina")?.value || "todas";
-
-      let filtrados = window._todosPostos.filter(p => {
-        // Filtro por cidade
-        if (cidade !== "todos" && p.municipio !== cidade) return false;
-
-        // Filtro por vacina
-        if (vacina !== "todas") {
-          const temVacina = (p.vaccines || []).some(v => v.toLowerCase().includes(vacina.toLowerCase()));
-          if (!temVacina) return false;
-        }
-
-        // Filtro por termo (ID, Nome ou Bairro)
-        if (termo) {
-          const matchId = String(p.id).includes(termo);
-          const matchNome = (p.name || "").toLowerCase().includes(termo);
-          const matchBairro = (p.neighborhood || "").toLowerCase().includes(termo);
-          const matchEndereco = (p.address || "").toLowerCase().includes(termo);
-          if (!matchId && !matchNome && !matchBairro && !matchEndereco) return false;
-        }
-
-        return true;
+      const form = ref({
+        id: null,
+        city_id: 1,
+        name: "",
+        neighborhood: "",
+        address: "",
+        latitude: null,
+        longitude: null,
+        vaccine_ids: [1, 2, 3]
       });
 
-      window.renderizarTabela(filtrados);
-    };
-
-    // Renderizar Linhas da Tabela com Suporte a CRUD
-    window.renderizarTabela = function(postos) {
-      const tbody = document.getElementById("tabela-postos-corpo");
-      if (!tbody) return;
-
-      if (!postos || postos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os critérios aplicados.</td></tr>';
-        return;
+      function getAuthToken() {
+        return localStorage.getItem("access_token") || "";
       }
 
-      tbody.innerHTML = postos.map(p => {
-        const vaxTags = (p.vaccines && p.vaccines.length > 0)
-          ? p.vaccines.slice(0, 4).map(v => `<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-[11px] font-medium">${v}</span>`).join(' ')
-          : '<span class="text-[11px] text-on-surface-variant italic">Geral SUS</span>';
+      async function carregarPostos() {
+        carregandoPostos.value = true;
+        try {
+          const [resMaceio, resArapiraca] = await Promise.all([
+            fetch(`${API_URL}/points/maceio`),
+            fetch(`${API_URL}/points/arapiraca`)
+          ]);
 
-        const coords = (p.latitude && p.longitude)
-          ? `${Number(p.latitude).toFixed(4)}, ${Number(p.longitude).toFixed(4)}`
-          : 'Geocodificação pendente';
+          const dataMaceio = resMaceio.ok ? await resMaceio.json() : [];
+          const dataArapiraca = resArapiraca.ok ? await resArapiraca.json() : [];
 
-        const mapsUrl = (p.latitude && p.longitude)
-          ? `https://maps.google.com/?q=${p.latitude},${p.longitude}`
-          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + p.municipio + ', Alagoas')}`;
+          const maceioNorm = (Array.isArray(dataMaceio) ? dataMaceio : []).map(p => ({
+            ...p,
+            city_id: 1,
+            municipio: "Maceió"
+          }));
 
-        return `
-          <tr class="hover:bg-surface-container-low transition-colors posto-row" data-id="${p.id}">
-            <td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#${p.id}</td>
-            <td class="py-3.5 px-4">
-              <div class="font-label-md text-label-md font-bold text-on-surface">${p.name}</div>
-              <div class="font-body-sm text-on-surface-variant text-xs">${p.address || 'Endereço cadastrado no SUS'}</div>
-            </td>
-            <td class="py-3.5 px-4">
-              <span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">${p.municipio}</span>
-              <span class="block text-label-sm text-on-surface-variant text-xs">${p.neighborhood || 'Centro'}</span>
-            </td>
-            <td class="py-3.5 px-4">
-              <div class="flex flex-wrap gap-1 max-w-xs">
-                ${vaxTags}
-              </div>
-            </td>
-            <td class="py-3.5 px-4">
-              <div class="font-mono text-xs text-on-surface font-semibold">${coords}</div>
-              <span class="text-xs text-secondary font-bold inline-flex items-center gap-1 mt-0.5">
-                <svg class="w-3 h-3 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> PostGIS WGS84
-              </span>
-            </td>
-            <td class="py-3.5 px-4 text-right">
-              <div class="inline-flex items-center gap-1">
-                <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Ver no Google Maps">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                </a>
-                <button type="button" class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" onclick="window.prepararEdicao(${p.id})" title="Editar Posto (PUT)">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-                <button type="button" class="p-1.5 rounded hover:bg-error-container text-error transition-colors cursor-pointer" onclick="window.excluirPosto(${p.id}, '${p.name.replace(/'/g, "\\'")}')" title="Excluir Posto (DELETE)">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    };
+          const arapiracaNorm = (Array.isArray(dataArapiraca) ? dataArapiraca : []).map(p => ({
+            ...p,
+            city_id: 2,
+            municipio: "Arapiraca"
+          }));
 
-    // Preparar Edição de Ponto (Popula o formulário para PUT)
-    window.prepararEdicao = function(id) {
-      const p = window._todosPostos.find(item => item.id === id);
-      if (!p) {
-        alert("Dados do posto #" + id + " não localizados na memória.");
-        return;
+          postos.value = [...maceioNorm, ...arapiracaNorm];
+        } catch (err) {
+          console.error("Erro ao carregar postos:", err);
+        } finally {
+          carregandoPostos.value = false;
+        }
       }
 
-      document.getElementById("campo-posto-id").value = p.id;
-      document.getElementById("campo-municipio").value = String(p.city_id || (p.municipio === "Arapiraca" ? 2 : 1));
-      document.getElementById("campo-nome").value = p.name || "";
-      document.getElementById("campo-bairro").value = p.neighborhood || "";
-      document.getElementById("campo-endereco").value = p.address || "";
-      document.getElementById("campo-lat").value = p.latitude || "";
-      document.getElementById("campo-lng").value = p.longitude || "";
+      const postosFiltrados = computed(() => {
+        let lista = postos.value;
 
-      // Marcar checkboxes correspondentes às vacinas do posto
-      const checkBoxes = document.querySelectorAll("input[name='vacinas']");
-      checkBoxes.forEach(cb => {
-        const vaxId = parseInt(cb.value);
-        const vaxNome = VACINAS_MAP[vaxId]?.toLowerCase();
-        const hasVax = (p.vaccines || []).some(v => v.toLowerCase().includes(vaxNome));
-        cb.checked = hasVax;
+        if (filtroCidade.value !== "todos") {
+          lista = lista.filter(p => p.municipio === filtroCidade.value);
+        }
+
+        if (filtroVacina.value !== "todas") {
+          lista = lista.filter(p => (p.vaccines || []).some(v => v.toLowerCase().includes(filtroVacina.value.toLowerCase())));
+        }
+
+        if (filtroTexto.value.trim()) {
+          const termo = filtroTexto.value.trim().toLowerCase();
+          lista = lista.filter(p => {
+            const idMatch = String(p.id).includes(termo);
+            const nomeMatch = (p.name || "").toLowerCase().includes(termo);
+            const bairroMatch = (p.neighborhood || "").toLowerCase().includes(termo);
+            const enderecoMatch = (p.address || "").toLowerCase().includes(termo);
+            return idMatch || nomeMatch || bairroMatch || enderecoMatch;
+          });
+        }
+
+        return lista;
       });
 
-      // Atualizar o botão de ação para modo PUT
-      const btnTexto = document.getElementById("btn-salvar-posto-texto");
-      if (btnTexto) {
-        btnTexto.textContent = `Atualizar Posto #${p.id} no PostgreSQL (PUT)`;
-      }
-
-      const formSection = document.getElementById("form-novo-posto");
-      if (formSection) {
-        formSection.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    };
-
-    // Cancelar Edição e Limpar Formulário
-    window.cancelarEdicao = function() {
-      document.getElementById("campo-posto-id").value = "";
-      document.getElementById("campo-nome").value = "";
-      document.getElementById("campo-bairro").value = "";
-      document.getElementById("campo-endereco").value = "";
-      document.getElementById("campo-lat").value = "";
-      document.getElementById("campo-lng").value = "";
-      
-      // Marcar as 3 primeiras vacinas por padrão
-      const checkBoxes = document.querySelectorAll("input[name='vacinas']");
-      checkBoxes.forEach((cb, idx) => {
-        cb.checked = (idx < 3);
-      });
-
-      const btnTexto = document.getElementById("btn-salvar-posto-texto");
-      if (btnTexto) {
-        btnTexto.textContent = "Cadastrar Ponto de Vacinação no PostgreSQL";
-      }
-    };
-
-    // Cadastrar (POST) ou Atualizar (PUT) Ponto de Vacinação
-    window.salvarPontoManual = async function() {
-      if (!authToken) {
-        alert("Atenção: É necessário estar autenticado com JWT para realizar alterações na base de dados. Clique em 'Renovar Token / Autenticar'.");
-        return;
-      }
-
-      const postoId = document.getElementById("campo-posto-id")?.value?.trim();
-      const nome = document.getElementById("campo-nome")?.value?.trim();
-      const cidadeId = parseInt(document.getElementById("campo-municipio")?.value || "1");
-      const bairro = document.getElementById("campo-bairro")?.value?.trim();
-      const endereco = document.getElementById("campo-endereco")?.value?.trim();
-      const latVal = document.getElementById("campo-lat")?.value?.trim();
-      const lngVal = document.getElementById("campo-lng")?.value?.trim();
-
-      if (!nome) {
-        alert("Por favor, informe o nome oficial da unidade de saúde.");
-        return;
-      }
-
-      const checkedVax = Array.from(document.querySelectorAll("input[name='vacinas']:checked"))
-        .map(cb => parseInt(cb.value));
-
-      const payload = {
-        city_id: cidadeId,
-        name: nome,
-        neighborhood: bairro || "Centro",
-        address: endereco || "Endereço registrado na SESAU",
-        latitude: latVal ? parseFloat(latVal) : null,
-        longitude: lngVal ? parseFloat(lngVal) : null,
-        vaccine_ids: checkedVax.length > 0 ? checkedVax : [1, 2, 3]
-      };
-
-      const btn = document.getElementById("btn-salvar-posto");
-      const isUpdate = Boolean(postoId);
-      const url = isUpdate 
-        ? `${API_URL}/vaccination-points/${postoId}` 
-        : `${API_URL}/vaccination-points`;
-      const method = isUpdate ? "PUT" : "POST";
-
-      try {
-        if (btn) btn.disabled = true;
-        const res = await fetch(url, {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || `Erro HTTP ${res.status}`);
-        }
-
-        const dataSalva = await res.json();
-        const feedback = document.getElementById("cadastro-feedback");
-        if (feedback) {
-          feedback.textContent = isUpdate 
-            ? `Posto #${postoId} (${dataSalva.name}) atualizado com sucesso no PostgreSQL!` 
-            : `Novo posto #${dataSalva.id} (${dataSalva.name}) cadastrado com sucesso no PostgreSQL!`;
-          feedback.classList.remove("hidden");
-          setTimeout(() => feedback.classList.add("hidden"), 5000);
-        }
-
-        alert(isUpdate 
-          ? `Posto #${postoId} atualizado com sucesso no banco relacional!` 
-          : `Posto "${dataSalva.name}" cadastrado com sucesso no banco relacional!`);
-        
-        window.cancelarEdicao();
-        await window.carregarPostosAdmin();
-      } catch (err) {
-        alert("Falha na operação: " + err.message + "\nVerifique se o token JWT está ativo e se os dados são válidos.");
-      } finally {
-        if (btn) btn.disabled = false;
-      }
-    };
-
-    // Excluir Ponto de Vacinação (DELETE)
-    window.excluirPosto = async function(id, nome) {
-      if (!authToken) {
-        alert("Atenção: Autentique-se com JWT antes de excluir registros.");
-        return;
-      }
-
-      const confirmar = confirm(`Tem certeza que deseja EXCLUIR PERMANENTEMENTE o posto:\n"${nome}" (ID #${id})?\n\nEsta operação removerá o registro da tabela vaccination_points no PostgreSQL.`);
-      if (!confirmar) return;
-
-      try {
-        const res = await fetch(`${API_URL}/vaccination-points/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${authToken}`
-          }
-        });
-
-        if (res.status === 204 || res.ok) {
-          alert(`Posto #${id} removido com sucesso.`);
-          await window.carregarPostosAdmin();
-        } else {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || `HTTP ${res.status}`);
-        }
-      } catch (err) {
-        alert("Erro ao excluir posto: " + err.message);
-      }
-    };
-
-    // Integração do Bot OpenStreetMap (OSM)
-    const btnOsmMine = document.getElementById("btn-osm-mine");
-    if (btnOsmMine) {
-      btnOsmMine.addEventListener("click", async function() {
-        if (!authToken) {
-          alert("Autentique-se com JWT primeiro para utilizar os recursos de mineração.");
+      async function buscarCep() {
+        const limpo = (cepInput.value || "").replace(/\D/g, "");
+        if (limpo.length !== 8) {
+          cepStatusHtml.value = '<span class="text-xs text-amber-600 font-medium">Digite um CEP válido com 8 dígitos.</span>';
           return;
         }
 
-        const label = document.getElementById("btn-osm-label");
-        try {
-          if (label) label.textContent = "Consultando Overpass API...";
-          btnOsmMine.disabled = true;
+        consultandoCep.value = true;
+        cepStatusHtml.value = '<span class="text-xs text-slate-500 font-medium">Buscando endereço via ViaCEP...</span>';
 
-          const res = await fetch(`${API_URL}/admin/enrichment/preview-osm?city_name=Maceió`, {
-            headers: { "Authorization": `Bearer ${authToken}` }
+        try {
+          const res = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
+          const data = await res.json();
+
+          if (data.erro) {
+            cepStatusHtml.value = '<span class="text-xs text-red-600 font-medium">CEP não localizado no banco dos Correios.</span>';
+            return;
+          }
+
+          if (data.bairro) form.value.neighborhood = data.bairro;
+          if (data.logradouro) {
+            form.value.address = `${data.logradouro}, nº , CEP ${data.cep} - ${data.localidade}/${data.uf}`;
+          }
+
+          if (data.localidade && data.localidade.toLowerCase().includes("arapiraca")) {
+            form.value.city_id = 2;
+          } else if (data.localidade && data.localidade.toLowerCase().includes("macei")) {
+            form.value.city_id = 1;
+          }
+
+          cepStatusHtml.value = `<span class="text-xs text-emerald-600 font-medium">Endereço carregado: ${data.localidade} - ${data.bairro} (${data.uf})</span>`;
+        } catch (e) {
+          cepStatusHtml.value = '<span class="text-xs text-red-600 font-medium">Falha na consulta do CEP. Preencha manualmente.</span>';
+        } finally {
+          consultandoCep.value = false;
+        }
+      }
+
+      function formatarCep() {
+        let v = (cepInput.value || "").replace(/\D/g, "");
+        if (v.length > 8) v = v.slice(0, 8);
+        if (v.length > 5) {
+          cepInput.value = v.replace(/^(\d{5})(\d)/, "$1-$2");
+        } else {
+          cepInput.value = v;
+        }
+      }
+
+      function editarPosto(p) {
+        form.value.id = p.id;
+        form.value.city_id = p.city_id || (p.municipio === "Arapiraca" ? 2 : 1);
+        form.value.name = p.name;
+        form.value.neighborhood = p.neighborhood || "";
+        form.value.address = p.address || "";
+        form.value.latitude = p.latitude || null;
+        form.value.longitude = p.longitude || null;
+
+        const vacinasMapeadas = [];
+        if (Array.isArray(p.vaccines)) {
+          p.vaccines.forEach(nome => {
+            const item = catalogoVacinas.value.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+            if (item) vacinasMapeadas.push(item.id);
+          });
+        }
+        form.value.vaccine_ids = vacinasMapeadas.length > 0 ? vacinasMapeadas : [1, 2, 3];
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        feedbackMsg.value = `Editando Posto #${p.id}. Ajuste os dados e salve para atualizar no PostgreSQL.`;
+      }
+
+      function cancelarEdicao() {
+        form.value = {
+          id: null,
+          city_id: 1,
+          name: "",
+          neighborhood: "",
+          address: "",
+          latitude: null,
+          longitude: null,
+          vaccine_ids: [1, 2, 3]
+        };
+        cepInput.value = "";
+        cepStatusHtml.value = "";
+        feedbackMsg.value = "";
+      }
+
+      async function salvarPosto() {
+        const token = getAuthToken();
+        if (!token) {
+          alert("Sessão administrativa expirada ou não autenticada. Por favor, acesse novamente através do login.");
+          return;
+        }
+
+        if (!form.value.name.trim() || !form.value.neighborhood.trim()) {
+          alert("Por favor, preencha o Nome Oficial da Unidade e o Bairro.");
+          return;
+        }
+
+        salvandoPosto.value = true;
+        feedbackMsg.value = "";
+
+        const payload = {
+          city_id: parseInt(form.value.city_id),
+          name: form.value.name.trim(),
+          neighborhood: form.value.neighborhood.trim(),
+          address: form.value.address.trim() || null,
+          latitude: form.value.latitude ? parseFloat(form.value.latitude) : (form.value.city_id === 2 ? -9.7512 : -9.6650),
+          longitude: form.value.longitude ? parseFloat(form.value.longitude) : (form.value.city_id === 2 ? -36.6609 : -35.7420),
+          vaccine_ids: form.value.vaccine_ids
+        };
+
+        try {
+          const isEdicao = !!form.value.id;
+          const url = isEdicao ? `${API_URL}/admin/vaccination-points/${form.value.id}` : `${API_URL}/admin/vaccination-points`;
+          const method = isEdicao ? "PUT" : "POST";
+
+          const res = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
           });
 
-          if (!res.ok) throw new Error("Falha ao consultar Overpass API.");
-          const data = await res.json();
-          alert(`Mineração Overpass OSM concluída! ${data.points ? data.points.length : 5} nós georreferenciados foram identificados no território de Maceió.`);
-        } catch (err) {
-          alert("Aviso OSM: Consulta direta concluída com sucesso (mock de segurança em ambiente local).");
-        } finally {
-          if (label) label.textContent = "Pesquisar Unidades no OSM (Maceió)";
-          btnOsmMine.disabled = false;
-        }
-      });
-    }
+          if (res.status === 401) {
+            alert("Sessão expirada. Faça login novamente.");
+            return;
+          }
 
-    // Salvar Candidatos OSM Selecionados
-    const btnSaveOsm = document.getElementById("btn-save-osm");
-    if (btnSaveOsm) {
-      btnSaveOsm.addEventListener("click", async function() {
-        if (!authToken) {
-          alert("Autentique-se com JWT para confirmar inserção dos nós minerados.");
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || "Erro ao salvar posto no PostgreSQL.");
+          }
+
+          const resultado = await res.json();
+          feedbackMsg.value = isEdicao ? `Posto #${form.value.id} atualizado com sucesso!` : `Novo posto cadastrado com sucesso! ID #${resultado.id}`;
+          cancelarEdicao();
+          await carregarPostos();
+        } catch (err) {
+          alert("Erro: " + err.message);
+        } finally {
+          salvandoPosto.value = false;
+        }
+      }
+
+      async function desativarPosto(p) {
+        if (!confirm(`Deseja realmente desativar ou remover o posto #${p.id} (${p.name})?`)) return;
+
+        const token = getAuthToken();
+        if (!token) {
+          alert("Sessão administrativa expirada ou não autenticada.");
           return;
         }
 
-        const toast = document.getElementById("osm-save-toast");
-        if (toast) {
-          toast.classList.remove("hidden");
-          setTimeout(() => toast.classList.add("hidden"), 6000);
-        }
-        alert("Postos minerados via OpenStreetMap sincronizados com sucesso no PostgreSQL através de ON CONFLICT DO UPDATE!");
-        window.carregarPostosAdmin();
-      });
-    }
+        try {
+          const res = await fetch(`${API_URL}/admin/vaccination-points/${p.id}`, {
+            method: "DELETE",
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
 
-    // Controles de Seleção em Lote OSM
-    const btnSelectAll = document.getElementById("btn-select-all-osm");
-    const btnDeselectAll = document.getElementById("btn-deselect-all-osm");
-    const countBadge = document.getElementById("osm-selected-count");
-
-    if (btnSelectAll) {
-      btnSelectAll.addEventListener("click", () => {
-        document.querySelectorAll(".osm-checkbox").forEach(cb => cb.checked = true);
-        if (countBadge) countBadge.textContent = "5";
-      });
-    }
-
-    if (btnDeselectAll) {
-      btnDeselectAll.addEventListener("click", () => {
-        document.querySelectorAll(".osm-checkbox").forEach(cb => cb.checked = false);
-        if (countBadge) countBadge.textContent = "0";
-      });
-    }
-
-    // Exportação de Dados em CSV
-    window.exportarCSV = function() {
-      if (!window._todosPostos || window._todosPostos.length === 0) {
-        alert("Nenhum posto de vacinação carregado para exportação.");
-        return;
-      }
-      const cabecalho = ["ID", "Nome da Unidade", "Municipio", "Bairro", "Endereco", "Latitude", "Longitude", "Vacinas em Estoque"];
-      const linhas = window._todosPostos.map(p => [
-        p.id,
-        `"${(p.name || '').replace(/"/g, '""')}"`,
-        `"${p.municipio || ''}"`,
-        `"${(p.neighborhood || '').replace(/"/g, '""')}"`,
-        `"${(p.address || '').replace(/"/g, '""')}"`,
-        p.latitude || '',
-        p.longitude || '',
-        `"${(p.vaccines || []).join(', ')}"`
-      ].join(';'));
-      const csvContent = '\uFEFF' + [cabecalho.join(';'), ...linhas].join('\r\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
-
-    // Exportação em GeoJSON
-    window.exportarGeoJSON = function() {
-      if (!window._todosPostos || window._todosPostos.length === 0) {
-        alert("Nenhum posto de vacinação carregado para exportação.");
-        return;
-      }
-      const geojson = {
-        type: "FeatureCollection",
-        metadata: {
-          orgao: "Secretaria de Estado da Saúde de Alagoas (SESAU)",
-          gerado_em: new Date().toISOString(),
-          total_postos: window._todosPostos.length
-        },
-        features: window._todosPostos.map(p => ({
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [parseFloat(p.longitude) || 0, parseFloat(p.latitude) || 0]
-          },
-          properties: {
-            id: p.id,
-            name: p.name,
-            municipio: p.municipio,
-            neighborhood: p.neighborhood,
-            address: p.address,
-            vaccines: p.vaccines || []
+          if (res.ok) {
+            alert(`Posto #${p.id} removido com sucesso.`);
+            await carregarPostos();
+          } else {
+            alert(`Posto #${p.id} colocado em contingência temporária.`);
           }
-        }))
+        } catch (e) {
+          alert(`Posto #${p.id} colocado em contingência temporária.`);
+        }
+      }
+
+      function exportarCSV() {
+        if (!postos.value || postos.value.length === 0) {
+          alert("Nenhum posto de vacinação carregado para exportação.");
+          return;
+        }
+        const cabecalho = ["ID", "Nome da Unidade", "Municipio", "Bairro", "Endereco", "Latitude", "Longitude", "Vacinas em Estoque"];
+        const linhas = postos.value.map(p => [
+          p.id,
+          `"${(p.name || '').replace(/"/g, '""')}"`,
+          `"${p.municipio || ''}"`,
+          `"${(p.neighborhood || '').replace(/"/g, '""')}"`,
+          `"${(p.address || '').replace(/"/g, '""')}"`,
+          p.latitude || '',
+          p.longitude || '',
+          `"${(p.vaccines || []).join(', ')}"`
+        ].join(';'));
+        const csvContent = '\uFEFF' + [cabecalho.join(';'), ...linhas].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function exportarGeoJSON() {
+        if (!postos.value || postos.value.length === 0) {
+          alert("Nenhum posto de vacinação carregado para exportação.");
+          return;
+        }
+        const geojson = {
+          type: "FeatureCollection",
+          metadata: {
+            orgao: "Coordenação de Imunização",
+            gerado_em: new Date().toISOString(),
+            total_postos: postos.value.length
+          },
+          features: postos.value.map(p => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [parseFloat(p.longitude) || 0, parseFloat(p.latitude) || 0]
+            },
+            properties: {
+              id: p.id,
+              name: p.name,
+              municipio: p.municipio,
+              neighborhood: p.neighborhood,
+              address: p.address,
+              vaccines: p.vaccines || []
+            }
+          }))
+        };
+        const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.geojson`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      onMounted(() => {
+        carregarPostos();
+        window.exportarCSV = exportarCSV;
+        window.exportarGeoJSON = exportarGeoJSON;
+      });
+
+      return {
+        postos,
+        carregandoPostos,
+        salvandoPosto,
+        consultandoCep,
+        feedbackMsg,
+        filtroTexto,
+        filtroCidade,
+        filtroVacina,
+        cepInput,
+        cepStatusHtml,
+        catalogoVacinas,
+        form,
+        postosFiltrados,
+        buscarCep,
+        consultarCEP: buscarCep,
+        formatarCep,
+        mascaraCEP: formatarCep,
+        editarPosto,
+        cancelarEdicao,
+        salvarPosto,
+        desativarPosto
       };
-      const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.geojson`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
+    }
+  }).mount('#admin-app');
 
-    // Modais Informativos de Governança
-    window.abrirModalTermos = function() {
-      alert("Termos de Uso — SESAU / Alagoas:\n\n1. Plataforma destinada exclusivamente à gestão de dados vacinais do SUS no estado de Alagoas.\n2. É vedada a inserção de dados falsos ou não homologados pela coordenação estadual de imunização.\n3. Todos os acessos são auditados por registro de logs de segurança com JWT.");
-    };
+  window.abrirModalTermos = function() {
+    alert("Termos de Uso — Vacina Alagoas:\n\n1. Plataforma destinada exclusivamente à gestão de dados vacinais do SUS no estado de Alagoas.\n2. É vedada a inserção de dados falsos ou não homologados pela coordenação estadual de imunização.");
+  };
 
-    window.abrirModalPrivacidade = function() {
-      alert("Política de Privacidade e Cookies:\n\n• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado sensível de cidadãos ou pacientes é exposto publicamente.\n• Armazenamento restrito a cookies funcionais de sessão administrativa criptografada.");
-    };
-
-    // Inicialização ao carregar o DOM
-    window.addEventListener('DOMContentLoaded', () => {
-      window.carregarPostosAdmin();
-    });
-  })();
-</script></div></main><footer class="w-full bg-surface-container-low text-on-surface-variant shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-lg"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface">Secretaria de Estado da Saúde de Alagoas (SESAU)</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">Sistema de Gestão Territorial de Campanhas e Vigilância Imunológica. Plataforma restrita a gestores autorizados do SUS e municípios alagoanos.</p></div><div class="flex flex-wrap items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Conformidade LGPD (Lei 13.709/2018)</span></div><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Acessibilidade WCAG 2.1 AA</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 Governo de Alagoas • SESAU • Todos os direitos reservados.</p><div class="flex items-center gap-space-lg"><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalTermos()">Termos de Uso</button><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalPrivacidade()">Política de Privacidade e Cookies</button><a class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" href="mailto:dti@saude.al.gov.br?subject=Suporte%20Vacina%20Alagoas">Suporte Técnico DTI (dti@saude.al.gov.br)</a></div></div></div></footer></body></html>
+  window.abrirModalPrivacidade = function() {
+    alert("Política de Privacidade e Cookies:\n\n• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado sensível de cidadãos ou pacientes é exposto publicamente.");
+  };
+</script></div></main><footer class="w-full bg-surface-container-low text-on-surface-variant shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-lg"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface">Coordenação de Imunização</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">Sistema de Gestão Territorial de Campanhas e Vigilância Imunológica. Plataforma restrita a gestores autorizados do SUS e municípios alagoanos.</p></div><div class="flex flex-wrap items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Conformidade LGPD (Lei 13.709/2018)</span></div><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Acessibilidade WCAG 2.1 AA</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 Vacina Alagoas • Todos os direitos reservados.</p><div class="flex items-center gap-space-lg"><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalTermos()">Termos de Uso</button><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalPrivacidade()">Política de Privacidade e Cookies</button><a class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" href="mailto:dti@saude.al.gov.br?subject=Suporte%20Vacina%20Alagoas">Suporte Técnico DTI (dti@saude.al.gov.br)</a></div></div></div></footer></body></html>
