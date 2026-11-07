@@ -719,8 +719,8 @@
         carregandoPostos.value = true;
         try {
           const [resMaceio, resArapiraca] = await Promise.all([
-            fetch(`${API_URL}/points/maceio`),
-            fetch(`${API_URL}/points/arapiraca`)
+            fetch(`${API_URL}/vaccination-points/1`),
+            fetch(`${API_URL}/vaccination-points/2`)
           ]);
 
           const dataMaceio = resMaceio.ok ? await resMaceio.json() : [];
