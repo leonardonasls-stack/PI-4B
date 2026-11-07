@@ -390,10 +390,47 @@
               <span><strong>Campanha Vigente:</strong> Influenza (Gripe 2025) disponível para todas as faixas etárias a partir de 6 meses</span>
             </div>
 
-            <!-- BARRA DE PESQUISA UNIFICADA E ERGONÔMICA -->
+            <!-- BARRA DE PESQUISA UNIFICADA E ERGONÔMICA COM PROXIMIDADE INTELIGENTE -->
             <div
-              class="bg-surface-container-lowest text-on-surface rounded-2xl p-space-md lg:p-space-lg shadow-lg border border-outline-variant/40 relative z-20"
+              class="bg-surface-container-lowest text-on-surface rounded-2xl p-space-md lg:p-space-lg shadow-lg border border-outline-variant/40 relative z-20 space-y-space-md"
             >
+              <!-- BANNER DE DESTAQUE: ENCONTRAR UBS MAIS PRÓXIMA DE CARA (1 CLIQUE) -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3.5 p-4 rounded-xl bg-emerald-50/90 border border-emerald-200 shadow-xs">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="3"/>
+                      <line x1="12" y1="2" x2="12" y2="5"/>
+                      <line x1="12" y1="19" x2="12" y2="22"/>
+                      <line x1="2" y1="12" x2="5" y2="12"/>
+                      <line x1="19" y1="12" x2="22" y2="12"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="font-bold text-xs sm:text-sm text-emerald-950 flex items-center gap-2">
+                      <span>Deseja encontrar o posto mais próximo de você agora?</span>
+                      <span class="hidden md:inline px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900 text-[10px] font-bold">1 Clique</span>
+                    </h2>
+                    <p class="text-[11px] text-emerald-800 leading-tight mt-0.5">
+                      Usa sua localização segura para ordenar as UBS por metros de caminhada ou rota de carro.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  id="btn-proximidade-rapida"
+                  onclick="window.ativarGeolocalizacao()"
+                  class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                  title="Detectar postos mais próximos por GPS"
+                >
+                  <svg class="w-4 h-4 text-emerald-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span id="btn-proximidade-texto">Localizar Mais Próximos</span>
+                </button>
+              </div>
+
+              <!-- FORMULÁRIO DE BUSCA POR MUNICÍPIO / CEP / BAIRRO -->
               <form
                 class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-end"
                 id="search-form"
@@ -469,25 +506,24 @@
                   </button>
                 </div>
               </form>
-              <!-- Indicador de Status GPS / Precisão -->
+              <!-- Indicador de Status de Proximidade / Memória Local -->
               <div
-                class="mt-space-sm pt-space-xs hidden items-center justify-between text-body-sm font-body-sm text-secondary"
+                class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs hidden items-center justify-between gap-2 transition-all"
                 id="gps-status"
               >
-                <div class="flex items-center gap-space-xs">
-                  <span
-                    class="inline-block w-2 h-2 rounded-full bg-secondary"
-                  ></span>
-                  <span id="gps-status-text"
-                    >Localização identificada via GPS. Postos ordenados pela distância até você.</span
-                  >
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span id="gps-status-text" class="text-slate-800 font-medium">
+                    Localização identificada via GPS. Postos ordenados pela distância até você.
+                  </span>
                 </div>
                 <button
-                  class="text-on-surface-variant hover:text-error text-label-sm font-label-sm cursor-pointer"
+                  class="text-rose-600 hover:text-rose-800 font-semibold cursor-pointer underline text-[11px]"
                   onclick="window.desativarGps()"
                   type="button"
+                  title="Remover localização e voltar à listagem padrão"
                 >
-                  Desativar GPS
+                  Desativar Proximidade
                 </button>
               </div>
             </div>
@@ -1501,6 +1537,50 @@
 
                 console.log("Postos recebidos com sucesso:", points.length);
                 window.aplicarFiltros();
+
+                // ==========================================
+                // SMART PROXIMITY: MEMÓRIA LOCAL E PERMISSÃO PRÉVIA
+                // ==========================================
+                if (!window._smartProximityChecked) {
+                  window._smartProximityChecked = true;
+                  try {
+                    // 1. Verificar se o navegador já tem permissão concedida previamente
+                    if (navigator.permissions && navigator.permissions.query) {
+                      navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+                        if (status.state === 'granted') {
+                          window.ativarGeolocalizacao(true); // Ativação silenciosa logo de cara!
+                        }
+                      }).catch(() => {});
+                    }
+
+                    // 2. Se houver última coordenada salva nas últimas 48h, restaurar instantaneamente
+                    const savedLoc = localStorage.getItem('vacina_al_user_location');
+                    if (savedLoc && !userLatitude) {
+                      const data = JSON.parse(savedLoc);
+                      if (data && data.latitude && data.longitude) {
+                        const horasDecorridas = (Date.now() - (data.timestamp || 0)) / (1000 * 60 * 60);
+                        if (horasDecorridas < 48) {
+                          userLatitude = data.latitude;
+                          userLongitude = data.longitude;
+                          const gpsStatus = document.getElementById("gps-status");
+                          const gpsStatusText = document.getElementById("gps-status-text");
+                          if (gpsStatus) {
+                            gpsStatus.classList.remove("hidden");
+                            gpsStatus.classList.add("flex");
+                          }
+                          if (gpsStatusText) {
+                            gpsStatusText.textContent = "📍 Mostrando postos próximos à sua localização recente salva.";
+                          }
+                          const txtDestaque = document.getElementById("btn-proximidade-texto");
+                          if (txtDestaque) txtDestaque.textContent = "✓ Região Salva";
+                          window.aplicarFiltros();
+                        }
+                      }
+                    }
+                  } catch (e) {
+                    console.warn("Smart proximity initialization warning:", e);
+                  }
+                }
               } catch (err) {
                 console.error("Falha em carregarPostos:", err);
                 if (grid) {
@@ -1794,37 +1874,59 @@
               }, 250);
             };
 
-            window.ativarGeolocalizacao = function () {
+            window.ativarGeolocalizacao = function (silencioso = false) {
               const btn = document.getElementById("btn-gps");
+              const btnDestaque = document.getElementById("btn-proximidade-rapida");
+              const txtDestaque = document.getElementById("btn-proximidade-texto");
+
               if (!navigator.geolocation) {
-                alert("Geolocalização não é suportada pelo seu navegador.");
+                if (!silencioso) alert("Geolocalização não é suportada pelo seu navegador.");
                 return;
               }
 
-              btn.classList.add("opacity-75");
+              if (btn) btn.classList.add("opacity-75");
+              if (txtDestaque) txtDestaque.textContent = "Obtendo GPS...";
+
               navigator.geolocation.getCurrentPosition(
                 async (pos) => {
                   userLatitude = pos.coords.latitude;
                   userLongitude = pos.coords.longitude;
-                  btn.classList.remove("opacity-75");
-                  btn.classList.add("ring-2", "ring-primary", "bg-primary/10", "font-bold");
+
+                  // Salvar na memória local do aparelho (localStorage)
+                  try {
+                    localStorage.setItem('vacina_al_user_location', JSON.stringify({
+                      latitude: userLatitude,
+                      longitude: userLongitude,
+                      timestamp: Date.now()
+                    }));
+                  } catch (e) {}
+
+                  if (btn) {
+                    btn.classList.remove("opacity-75");
+                    btn.classList.add("ring-2", "ring-emerald-600", "bg-emerald-50", "font-bold");
+                  }
+                  if (txtDestaque) txtDestaque.textContent = "✓ Localização Ativa";
 
                   if (leafletMap) {
                     if (window._userMarker) leafletMap.removeLayer(window._userMarker);
                     window._userMarker = L.circleMarker([userLatitude, userLongitude], {
                       radius: 8,
-                      fillColor: "#0066cc",
+                      fillColor: "#059669",
                       color: "#ffffff",
-                      weight: 2,
+                      weight: 2.5,
                       opacity: 1,
-                      fillOpacity: 0.9
-                    }).addTo(leafletMap).bindPopup("<b>Sua Localização (GPS)</b>");
+                      fillOpacity: 0.95
+                    }).addTo(leafletMap).bindPopup("<b>Sua Posição Aproximada (GPS)</b>");
                   }
 
                   const gpsStatus = document.getElementById("gps-status");
+                  const gpsStatusText = document.getElementById("gps-status-text");
                   if (gpsStatus) {
                     gpsStatus.classList.remove("hidden");
                     gpsStatus.classList.add("flex");
+                  }
+                  if (gpsStatusText) {
+                    gpsStatusText.textContent = "✓ Localização identificada via GPS. Postos ordenados pela distância até você.";
                   }
 
                   const selectOrdem = document.getElementById("ordenar-select");
@@ -1839,15 +1941,22 @@
                     window.aplicarFiltros();
                   }
 
-                  // Rolagem suave até a lista de postos encontrados
-                  const secaoPostos = document.getElementById("titulo-resultados");
-                  if (secaoPostos) {
-                    secaoPostos.scrollIntoView({ behavior: "smooth", block: "start" });
+                  // Se não for carregamento silencioso de retorno, rola suavemente até os resultados
+                  if (!silencioso) {
+                    const secaoPostos = document.getElementById("titulo-resultados");
+                    if (secaoPostos) {
+                      secaoPostos.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
                   }
                 },
                 (err) => {
-                  btn.classList.remove("opacity-75");
-                  alert("Não foi possível obter sua localização. Verifique as permissões de GPS no seu navegador.");
+                  if (btn) btn.classList.remove("opacity-75");
+                  if (txtDestaque) txtDestaque.textContent = "Localizar Mais Próximos";
+                  if (!silencioso) {
+                    alert("Não foi possível obter sua localização. Digite seu CEP ou Bairro no campo de busca.");
+                    const inputBusca = document.getElementById("bairro-ubs-input");
+                    if (inputBusca) inputBusca.focus();
+                  }
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
               );
@@ -1906,6 +2015,16 @@
             window.desativarGps = function () {
               userLatitude = null;
               userLongitude = null;
+
+              try {
+                localStorage.removeItem('vacina_al_user_location');
+              } catch (e) {}
+
+              if (window._userMarker && leafletMap) {
+                leafletMap.removeLayer(window._userMarker);
+                window._userMarker = null;
+              }
+
               const gpsStatus = document.getElementById("gps-status");
               if (gpsStatus) {
                 gpsStatus.classList.remove("flex");
@@ -1913,7 +2032,11 @@
               }
               const btnGps = document.getElementById("btn-gps");
               if (btnGps) {
-                btnGps.classList.remove("ring-2", "ring-secondary", "bg-secondary/10", "font-bold", "opacity-75");
+                btnGps.classList.remove("ring-2", "ring-emerald-600", "ring-secondary", "bg-emerald-50", "bg-secondary/10", "font-bold", "opacity-75");
+              }
+              const txtDestaque = document.getElementById("btn-proximidade-texto");
+              if (txtDestaque) {
+                txtDestaque.textContent = "Localizar Mais Próximos";
               }
               window.aplicarFiltros();
             };
