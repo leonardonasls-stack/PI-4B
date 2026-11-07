@@ -433,7 +433,7 @@
                     <input
                       class="w-full h-12 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-container focus-visible:bg-surface-container-lowest transition-all border border-outline-variant/30"
                       id="bairro-ubs-input"
-                      placeholder="Ex: Poço, Jacintinho, Ponta Verde, Primavera..."
+                      placeholder="Digite o CEP (ex: 57010-000), bairro, endereço ou nome da unidade..."
                       type="text"
                       oninput="window.aplicarFiltros()"
                     >
@@ -1670,21 +1670,24 @@
             };
 
             window.aplicarFiltros = function () {
-              const termoBusca = (
-                document.getElementById("bairro-ubs-input")?.value || ""
-              )
-                .toLowerCase()
-                .trim();
+              const rawInput = (document.getElementById("bairro-ubs-input")?.value || "").trim();
+              const termoBusca = rawInput.toLowerCase();
+              const termoNumeros = rawInput.replace(/\D/g, "");
               const criterioOrdem =
                 document.getElementById("ordenar-select")?.value || "distancia";
 
               let filtrados = allPoints.filter((p) => {
-                const matchesTermo =
-                  !termoBusca ||
+                if (!termoBusca) return true;
+                const matchesTexto =
                   p.name.toLowerCase().includes(termoBusca) ||
-                  (p.neighborhood &&
-                    p.neighborhood.toLowerCase().includes(termoBusca)) ||
+                  (p.neighborhood && p.neighborhood.toLowerCase().includes(termoBusca)) ||
                   (p.address && p.address.toLowerCase().includes(termoBusca));
+
+                // Busca flexível de CEP (com ou sem hífen)
+                const pNumeros = (p.address || "").replace(/\D/g, "");
+                const matchesNumeros = termoNumeros.length >= 4 && pNumeros.includes(termoNumeros);
+
+                const matchesTermo = matchesTexto || matchesNumeros;
 
                 const matchesVacina =
                   filtroVacinaAtual === "todas" ||
