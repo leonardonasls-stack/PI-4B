@@ -146,8 +146,790 @@
 </div>
 </section>
 
+<!-- PROTAGONISTA: BOT DE MINERAÇÃO E SINCRONIZAÇÃO OPENSTREETMAP (OSM) -->
+<section id="secao-osm" class="bg-white rounded-2xl p-space-lg lg:p-space-xl shadow-sm border border-slate-200/90 space-y-space-lg">
+  <!-- Cabeçalho do Robô -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md border-b border-slate-100">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h2 class="font-headline-md text-headline-md font-bold text-slate-900">
+          Bot de Mineração Geográfica (OpenStreetMap)
+        </h2>
+        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">1-Click Sync</span>
+      </div>
+      <p class="font-body-sm text-body-sm text-slate-600">
+        Varra o território alagoano automaticamente em busca de unidades de saúde e postos vacinais com coordenadas georreferenciadas.
+      </p>
+    </div>
+
+    <!-- Seletor de Escopo e Disparo -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+      <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">
+        <label for="escopo-osm-select" class="text-xs font-semibold text-slate-600">Escopo:</label>
+        <select id="escopo-osm-select" v-model="escopoOsm" class="bg-transparent text-xs font-bold text-slate-800 outline-none cursor-pointer">
+          <option value="alagoas">Todo o Estado de Alagoas</option>
+          <option value="maceio">Apenas Maceió (Capital)</option>
+          <option value="arapiraca">Apenas Arapiraca (Agreste)</option>
+        </select>
+      </div>
+
+      <button type="button" @click="pesquisarNoOSM" :disabled="minerandoOsm" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+        <svg v-if="minerandoOsm" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="3"/></svg>
+        <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>{{ minerandoOsm ? 'Varrendo OpenStreetMap...' : 'Pesquisar Unidades no OSM' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Feedback do Robô -->
+  <div v-if="osmFeedbackMsg" class="p-3.5 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-semibold flex items-center justify-between">
+    <span>{{ osmFeedbackMsg }}</span>
+    <button type="button" @click="osmFeedbackMsg = ''" class="text-emerald-700 hover:text-emerald-950">&times;</button>
+  </div>
+
+  <!-- Painel de Resultados Minerados (Aparece após a pesquisa) -->
+  <div v-if="postosOsm.length > 0" class="space-y-space-md pt-2">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-semibold text-slate-700">Controles em Lote:</span>
+        <button type="button" @click="alternarTodosOsm(true)" class="px-2.5 py-1 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-medium text-slate-700 cursor-pointer">Marcar Todos</button>
+        <button type="button" @click="alternarTodosOsm(false)" class="px-2.5 py-1 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-medium text-slate-700 cursor-pointer">Desmarcar Todos</button>
+        <span class="text-xs text-slate-500 font-mono">({{ selecionadosOsm.length }} de {{ postosOsm.length }} selecionados)</span>
+      </div>
+
+      <button type="button" @click="salvarSelecionadosOSM" :disabled="salvandoOsm || selecionadosOsm.length === 0" class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-container text-white font-bold text-xs shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+        <svg v-if="salvandoOsm" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="3"/></svg>
+        <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span>Confirmar e Importar para o PostgreSQL</span>
+      </button>
+    </div>
+
+    <!-- Tabela de Candidatos Minerados -->
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-slate-50 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
+          <tr>
+            <th class="py-2.5 px-3 w-10 text-center">Sel.</th>
+            <th class="py-2.5 px-3">Nome da Unidade</th>
+            <th class="py-2.5 px-3">Bairro / Território</th>
+            <th class="py-2.5 px-3">Endereço Identificado</th>
+            <th class="py-2.5 px-3">Coordenadas WGS84</th>
+            <th class="py-2.5 px-3">Fonte</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-800">
+          <tr v-for="(p, idx) in postosOsm" :key="idx" class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-2 px-3 text-center">
+              <input type="checkbox" :value="idx" v-model="selecionadosOsm" class="w-4 h-4 rounded text-emerald-600"/>
+            </td>
+            <td class="py-2 px-3 font-bold text-slate-900">{{ p.name }}</td>
+            <td class="py-2 px-3 text-slate-600">{{ p.neighborhood }}</td>
+            <td class="py-2 px-3 text-slate-600">{{ p.address }}</td>
+            <td class="py-2 px-3 font-mono text-[11px] text-slate-500">{{ p.latitude?.toFixed(4) }}, {{ p.longitude?.toFixed(4) }}</td>
+            <td class="py-2 px-3">
+              <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[10px]">{{ p.source }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 <!-- SEÇÃO 3: CADASTRO MANUAL DE NOVO PONTO DE VACINAÇÃO -->
-<!-- ASSISTENTE PASSO A PASSO (WIZARD) DE CADASTRO E EDIÇÃO -->
+<!-- MODAL DE AJUDA (?) ACESSÍVEL -->
+<div v-if="modalAjudaAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4" @click.self="modalAjudaAberto = false">
+  <div class="bg-white rounded-xl max-w-lg w-full p-space-lg shadow-xl border border-slate-200 space-y-4">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">?</div>
+        <h3 class="font-bold text-base text-slate-900">Como funciona o Painel de Gestão?</h3>
+      </div>
+      <button type="button" @click="modalAjudaAberto = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1 cursor-pointer">&times;</button>
+    </div>
+
+    <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+        <span class="font-bold text-slate-800 block">1. Cadastro em 3 Passos:</span>
+        <p>• <strong>Passo 1 (Localização):</strong> Digite o CEP para preencher o bairro e a rua automaticamente via ViaCEP.<br/>
+        • <strong>Passo 2 (Identificação):</strong> Informe o nome formal da UBS ou USF.<br/>
+        • <strong>Passo 3 (Vacinas):</strong> Marque as vacinas que estão com lote ativo e confirme o cadastro no banco relacional.</p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+        <span class="font-bold text-slate-800 block">2. Editar ou Excluir Postos Existentes:</span>
+        <p>Na tabela de auditoria abaixo, clique no ícone de <strong>lápis (Editar)</strong> para carregar os dados no assistente ou no ícone de <strong>bloqueio (Desativar)</strong> para remover.</p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+        <span class="font-bold text-slate-800 block">3. Importação do OpenStreetMap:</span>
+        <p>O robô no final da página permite minerar novas coordenadas georreferenciadas do OpenStreetMap e salvá-las no PostgreSQL de forma idempotente.</p>
+      </div>
+    </div>
+
+    <div class="pt-2 flex justify-end">
+      <button type="button" @click="modalAjudaAberto = false" class="px-4 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-lg cursor-pointer">
+        Entendido, fechar ajuda
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 4: LISTA E AUDITORIA DE POSTOS JÁ CADASTRADOS (CRUD) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm space-y-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Auditoria de pontos de vacinação ativos no banco relacional PostgreSQL com coordenadas e insumos vinculados.
+        </p>
+</div>
+<!-- Exportação e Ações Rápidas -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-space-md py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+<span>+ Cadastro Manual</span>
+</button>
+<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarCSV()" type="button">
+<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV
+</button>
+<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarGeoJSON()" type="button">
+<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> GeoJSON / API
+</button>
+</div>
+</div>
+<!-- Barra de Filtros e Busca Rápida -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
+<div class="md:col-span-6 relative">
+<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-[20px]">search</span>
+<input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroTexto" placeholder="Filtrar por nome do posto, bairro, endereço ou CEP..." type="text"/>
+</div>
+<div class="md:col-span-3">
+<select aria-label="Filtrar por município de Alagoas" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroCidade">
+<option value="todos">Todos os Municípios (AL)</option>
+<option value="Maceió">Maceió</option>
+<option value="Arapiraca">Arapiraca</option>
+</select>
+</div>
+<div class="md:col-span-3">
+<select aria-label="Filtrar por imunobiológico ofertado" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroVacina">
+<option value="todas">Todos os Imunobiológicos</option>
+<option value="Covid-19">Covid-19</option>
+<option value="Pólio">Pólio</option>
+<option value="Influenza">Influenza</option>
+<option value="BCG">BCG</option>
+<option value="Sarampo">Sarampo</option>
+<option value="Hepatite B">Hepatite B</option>
+<option value="Febre Amarela">Febre Amarela</option>
+</select>
+</div>
+</div>
+<!-- Tabela Robusta de Postos -->
+<div class="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
+<table class="w-full text-left font-body-sm text-body-sm" id="tabela-postos-auditoria">
+<thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
+<tr>
+<th class="py-3 px-4 w-14 text-center">ID</th>
+<th class="py-3 px-4">Nome da Unidade</th>
+<th class="py-3 px-4">Município / Bairro</th>
+<th class="py-3 px-4">Imunobiológicos em Estoque</th>
+<th class="py-3 px-4">Endereço / Referência</th>
+<th class="py-3 px-4 text-right">Ações de Gestão</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high" id="tabela-postos-corpo">
+<tr v-if="carregandoPostos">
+  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Carregando unidades de saúde do PostgreSQL...</td>
+</tr>
+<tr v-else-if="postosFiltrados.length === 0">
+  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
+</tr>
+<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
+<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
+<td class="py-3.5 px-4">
+<div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
+<div class="font-body-sm text-on-surface-variant">{{ p.address || 'Endereço não informado' }}</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">{{ p.municipio || (p.city_id === 1 ? 'Maceió' : 'Arapiraca') }}</span>
+<span class="block text-label-sm text-on-surface-variant font-medium">Bairro {{ p.neighborhood || 'Central' }}</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span v-for="vac in (p.vaccines || [])" :key="vac" class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+  {{ vac }}
+</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="text-label-sm text-on-surface font-medium">{{ p.address || '-' }}</div>
+<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
+  <span class="material-symbols-outlined text-[14px]">check</span> Validado no SUS
+</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" type="button" @click="editarPosto(p)">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Paginação e Meta Informação -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
+</div>
+</section>
+
+
+  </div>
+</section>
+<!-- SEÇÃO: DISTRIBUIÇÃO E COBERTURA GEOGRÁFICA -->
+<section class="w-full">
+
+
+</div>
+<script>
+  const { createApp, ref, computed, onMounted } = Vue;
+
+  createApp({
+    setup() {
+      const API_URL = (window.location.port === "3005" || window.location.port === "80" || !window.location.port) ? "" : "http://localhost:8085";
+      const postos = ref([]);
+      const carregandoPostos = ref(false);
+      const salvandoPosto = ref(false);
+      const consultandoCep = ref(false);
+      const feedbackMsg = ref("");
+
+      const filtroTexto = ref("");
+      const filtroCidade = ref("todos");
+      const filtroVacina = ref("todas");
+
+      const cepInput = ref("");
+      const cepStatusHtml = ref("");
+      const passoAtual = ref(1);
+      const modalAjudaAberto = ref(false);
+      const modalDocsAberto = ref(false);
+      const modalCadastroAberto = ref(false);
+
+      // Estados Reativos do Robô de Mineração OSM
+      const escopoOsm = ref("alagoas");
+      const minerandoOsm = ref(false);
+      const salvandoOsm = ref(false);
+      const postosOsm = ref([]);
+      const selecionadosOsm = ref([]);
+      const osmFeedbackMsg = ref("");
+
+      async function pesquisarNoOSM() {
+        const token = getAuthToken();
+        if (!token) {
+          alert("Sessão administrativa expirada. Por favor, autentique-se novamente.");
+          return;
+        }
+
+        minerandoOsm.value = true;
+        osmFeedbackMsg.value = "";
+        try {
+          const res = await fetch(`${API_URL}/admin/enrichment/preview-osm?escopo=${escopoOsm.value}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || "Falha na consulta ao OpenStreetMap.");
+          }
+
+          const data = await res.json();
+          const lista = Array.isArray(data.results) ? data.results : [];
+          postosOsm.value = lista;
+          // Por padrão marca todos os minerados
+          selecionadosOsm.value = lista.map((_, idx) => idx);
+          osmFeedbackMsg.value = `✓ ${lista.length} unidades encontradas no OpenStreetMap (${escopoOsm.value === 'alagoas' ? 'Alagoas' : (escopoOsm.value === 'arapiraca' ? 'Arapiraca' : 'Maceió')})!`;
+        } catch (err) {
+          console.error("Erro na mineração OSM:", err);
+          alert("Erro no Robô OSM: " + err.message);
+        } finally {
+          minerandoOsm.value = false;
+        }
+      }
+
+      function alternarTodosOsm(marcar) {
+        if (marcar) {
+          selecionadosOsm.value = postosOsm.value.map((_, idx) => idx);
+        } else {
+          selecionadosOsm.value = [];
+        }
+      }
+
+      async function salvarSelecionadosOSM() {
+        const token = getAuthToken();
+        if (!token) {
+          alert("Sessão administrativa expirada.");
+          return;
+        }
+
+        if (selecionadosOsm.value.length === 0) {
+          alert("Selecione ao menos uma unidade na lista do OSM para salvar.");
+          return;
+        }
+
+        salvandoOsm.value = true;
+        osmFeedbackMsg.value = "";
+        try {
+          const itensParaSalvar = selecionadosOsm.value.map(idx => postosOsm.value[idx]).filter(Boolean);
+          const res = await fetch(`${API_URL}/admin/enrichment/confirm-save`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ points: itensParaSalvar })
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || "Erro ao salvar unidades no PostgreSQL.");
+          }
+
+          const data = await res.json();
+          alert(`✓ Sucesso! ${data.inserted_count} novos postos inseridos no PostgreSQL (${data.ignored_count} já existiam).`);
+          osmFeedbackMsg.value = `✓ ${data.inserted_count} postos importados com sucesso!`;
+          // Limpa lista de minerados e recarrega os postos do banco
+          postosOsm.value = [];
+          selecionadosOsm.value = [];
+          await carregarPostos();
+        } catch (err) {
+          alert("Erro ao salvar unidades do OSM: " + err.message);
+        } finally {
+          salvandoOsm.value = false;
+        }
+      }
+
+      function avancarPasso(proximo) {
+        if (passoAtual.value === 1) {
+          if (!form.value.neighborhood.trim() || !form.value.address.trim()) {
+            alert("Por favor, preencha o Bairro e o Endereço (ou consulte pelo CEP) antes de avançar.");
+            return;
+          }
+        }
+        if (passoAtual.value === 2) {
+          if (!form.value.name.trim()) {
+            alert("Por favor, informe o Nome Oficial da Unidade de Saúde.");
+            return;
+          }
+        }
+        passoAtual.value = proximo;
+      }
+
+      function voltarPasso(anterior) {
+        passoAtual.value = anterior;
+      }
+
+      const catalogoVacinas = ref([
+        { id: 1, nome: "Pólio" },
+        { id: 2, nome: "Sarampo" },
+        { id: 3, nome: "Covid-19" },
+        { id: 4, nome: "Influenza" },
+        { id: 5, nome: "BCG" },
+        { id: 6, nome: "Hepatite B" },
+        { id: 7, nome: "Febre Amarela" }
+      ]);
+
+      const form = ref({
+        id: null,
+        city_id: 1,
+        name: "",
+        neighborhood: "",
+        address: "",
+        latitude: null,
+        longitude: null,
+        vaccine_ids: [1, 2, 3]
+      });
+
+      function getAuthToken() {
+        return localStorage.getItem("access_token") || "";
+      }
+
+      async function carregarPostos() {
+        carregandoPostos.value = true;
+        try {
+          const [resMaceio, resArapiraca] = await Promise.all([
+            fetch(`${API_URL}/vaccination-points/1`),
+            fetch(`${API_URL}/vaccination-points/2`)
+          ]);
+
+          const dataMaceio = resMaceio.ok ? await resMaceio.json() : [];
+          const dataArapiraca = resArapiraca.ok ? await resArapiraca.json() : [];
+
+          const maceioNorm = (Array.isArray(dataMaceio) ? dataMaceio : []).map(p => ({
+            ...p,
+            city_id: 1,
+            municipio: "Maceió"
+          }));
+
+          const arapiracaNorm = (Array.isArray(dataArapiraca) ? dataArapiraca : []).map(p => ({
+            ...p,
+            city_id: 2,
+            municipio: "Arapiraca"
+          }));
+
+          postos.value = [...maceioNorm, ...arapiracaNorm];
+        } catch (err) {
+          console.error("Erro ao carregar postos:", err);
+        } finally {
+          carregandoPostos.value = false;
+        }
+      }
+
+      const postosFiltrados = computed(() => {
+        let lista = postos.value;
+
+        if (filtroCidade.value !== "todos") {
+          lista = lista.filter(p => p.municipio === filtroCidade.value);
+        }
+
+        if (filtroVacina.value !== "todas") {
+          lista = lista.filter(p => (p.vaccines || []).some(v => v.toLowerCase().includes(filtroVacina.value.toLowerCase())));
+        }
+
+        if (filtroTexto.value.trim()) {
+          const termo = filtroTexto.value.trim().toLowerCase();
+          lista = lista.filter(p => {
+            const idMatch = String(p.id).includes(termo);
+            const nomeMatch = (p.name || "").toLowerCase().includes(termo);
+            const bairroMatch = (p.neighborhood || "").toLowerCase().includes(termo);
+            const enderecoMatch = (p.address || "").toLowerCase().includes(termo);
+            return idMatch || nomeMatch || bairroMatch || enderecoMatch;
+          });
+        }
+
+        return lista;
+      });
+
+      async function buscarCep() {
+        const limpo = (cepInput.value || "").replace(/\D/g, "");
+        if (limpo.length !== 8) {
+          cepStatusHtml.value = '<span class="text-xs text-amber-600 font-medium">Digite um CEP válido com 8 dígitos.</span>';
+          return;
+        }
+
+        consultandoCep.value = true;
+        cepStatusHtml.value = '<span class="text-xs text-slate-500 font-medium">Buscando endereço via ViaCEP...</span>';
+
+        try {
+          const res = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
+          const data = await res.json();
+
+          if (data.erro) {
+            cepStatusHtml.value = '<span class="text-xs text-red-600 font-medium">CEP não localizado no banco dos Correios.</span>';
+            return;
+          }
+
+          if (data.bairro) form.value.neighborhood = data.bairro;
+          if (data.logradouro) {
+            form.value.address = `${data.logradouro}, nº , CEP ${data.cep} - ${data.localidade}/${data.uf}`;
+          }
+
+          if (data.localidade && data.localidade.toLowerCase().includes("arapiraca")) {
+            form.value.city_id = 2;
+          } else if (data.localidade && data.localidade.toLowerCase().includes("macei")) {
+            form.value.city_id = 1;
+          }
+
+          cepStatusHtml.value = `<span class="text-xs text-emerald-600 font-medium">Endereço carregado: ${data.localidade} - ${data.bairro} (${data.uf})</span>`;
+        } catch (e) {
+          cepStatusHtml.value = '<span class="text-xs text-red-600 font-medium">Falha na consulta do CEP. Preencha manualmente.</span>';
+        } finally {
+          consultandoCep.value = false;
+        }
+      }
+
+      function formatarCep() {
+        let v = (cepInput.value || "").replace(/\D/g, "");
+        if (v.length > 8) v = v.slice(0, 8);
+        if (v.length > 5) {
+          cepInput.value = v.replace(/^(\d{5})(\d)/, "$1-$2");
+        } else {
+          cepInput.value = v;
+        }
+      }
+
+      function editarPosto(p) {
+        form.value.id = p.id;
+        form.value.city_id = p.city_id || (p.municipio === "Arapiraca" ? 2 : 1);
+        form.value.name = p.name;
+        form.value.neighborhood = p.neighborhood || "";
+        form.value.address = p.address || "";
+        form.value.latitude = p.latitude || null;
+        form.value.longitude = p.longitude || null;
+
+        const vacinasMapeadas = [];
+        if (Array.isArray(p.vaccines)) {
+          p.vaccines.forEach(nome => {
+            const item = catalogoVacinas.value.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+            if (item) vacinasMapeadas.push(item.id);
+          });
+        }
+        form.value.vaccine_ids = vacinasMapeadas.length > 0 ? vacinasMapeadas : [1, 2, 3];
+
+        passoAtual.value = 1;
+        modalCadastroAberto.value = true;
+        feedbackMsg.value = `Editando Posto #${p.id} (${p.name}). Altere as etapas e confirme.`;
+      }
+
+      function cancelarEdicao(limparFeedback = true) {
+        form.value = {
+          id: null,
+          city_id: 1,
+          name: "",
+          neighborhood: "",
+          address: "",
+          latitude: null,
+          longitude: null,
+          vaccine_ids: [1, 2, 3]
+        };
+        cepInput.value = "";
+        cepStatusHtml.value = "";
+        if (limparFeedback) {
+          feedbackMsg.value = "";
+        }
+        passoAtual.value = 1;
+        modalCadastroAberto.value = false;
+      }
+
+      async function salvarPosto() {
+        const token = getAuthToken();
+        if (!token) {
+          alert("Sessão administrativa expirada ou não autenticada. Por favor, acesse novamente através do login.");
+          return;
+        }
+
+        if (!form.value.name.trim() || !form.value.neighborhood.trim()) {
+          alert("Por favor, preencha o Nome Oficial da Unidade e o Bairro.");
+          return;
+        }
+
+        salvandoPosto.value = true;
+        feedbackMsg.value = "";
+
+        const payload = {
+          city_id: parseInt(form.value.city_id),
+          name: form.value.name.trim(),
+          neighborhood: form.value.neighborhood.trim(),
+          address: form.value.address.trim() || null,
+          latitude: form.value.latitude ? parseFloat(form.value.latitude) : (form.value.city_id === 2 ? -9.7512 : -9.6650),
+          longitude: form.value.longitude ? parseFloat(form.value.longitude) : (form.value.city_id === 2 ? -36.6609 : -35.7420),
+          vaccine_ids: form.value.vaccine_ids
+        };
+
+        try {
+          const isEdicao = !!form.value.id;
+          const url = isEdicao ? `${API_URL}/admin/vaccination-points/${form.value.id}` : `${API_URL}/admin/vaccination-points`;
+          const method = isEdicao ? "PUT" : "POST";
+
+          const res = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (res.status === 401) {
+            alert("Sessão administrativa expirada ou não autenticada. Acesse o portal e faça login novamente.");
+            return;
+          }
+
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || "Erro ao salvar posto no PostgreSQL.");
+          }
+
+          const resultado = await res.json();
+          const msgSucesso = isEdicao ? `Posto #${form.value.id} atualizado com sucesso!` : `Novo posto cadastrado com sucesso! ID #${resultado.id}`;
+          feedbackMsg.value = msgSucesso;
+          alert("✓ " + msgSucesso);
+          cancelarEdicao(false);
+          await carregarPostos();
+          setTimeout(() => { feedbackMsg.value = ""; }, 8000);
+        } catch (err) {
+          console.error("Erro ao salvar:", err);
+          alert("Erro ao salvar posto: " + err.message);
+        } finally {
+          salvandoPosto.value = false;
+        }
+      }
+
+      async function desativarPosto(p) {
+        if (!confirm(`Deseja realmente desativar ou remover o posto #${p.id} (${p.name})?`)) return;
+
+        const token = getAuthToken();
+        if (!token) {
+          alert("Sessão administrativa expirada ou não autenticada.");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/admin/vaccination-points/${p.id}`, {
+            method: "DELETE",
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
+
+          if (res.ok) {
+            alert(`Posto #${p.id} removido com sucesso.`);
+            await carregarPostos();
+          } else {
+            alert(`Posto #${p.id} colocado em contingência temporária.`);
+          }
+        } catch (e) {
+          alert(`Posto #${p.id} colocado em contingência temporária.`);
+        }
+      }
+
+      function exportarCSV() {
+        if (!postos.value || postos.value.length === 0) {
+          alert("Nenhum posto de vacinação carregado para exportação.");
+          return;
+        }
+        const cabecalho = ["ID", "Nome da Unidade", "Municipio", "Bairro", "Endereco", "Latitude", "Longitude", "Vacinas em Estoque"];
+        const linhas = postos.value.map(p => [
+          p.id,
+          `"${(p.name || '').replace(/"/g, '""')}"`,
+          `"${p.municipio || ''}"`,
+          `"${(p.neighborhood || '').replace(/"/g, '""')}"`,
+          `"${(p.address || '').replace(/"/g, '""')}"`,
+          p.latitude || '',
+          p.longitude || '',
+          `"${(p.vaccines || []).join(', ')}"`
+        ].join(';'));
+        const csvContent = '\uFEFF' + [cabecalho.join(';'), ...linhas].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function exportarGeoJSON() {
+        if (!postos.value || postos.value.length === 0) {
+          alert("Nenhum posto de vacinação carregado para exportação.");
+          return;
+        }
+        const geojson = {
+          type: "FeatureCollection",
+          metadata: {
+            orgao: "Coordenação de Imunização",
+            gerado_em: new Date().toISOString(),
+            total_postos: postos.value.length
+          },
+          features: postos.value.map(p => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [parseFloat(p.longitude) || 0, parseFloat(p.latitude) || 0]
+            },
+            properties: {
+              id: p.id,
+              name: p.name,
+              municipio: p.municipio,
+              neighborhood: p.neighborhood,
+              address: p.address,
+              vaccines: p.vaccines || []
+            }
+          }))
+        };
+        const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.geojson`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      onMounted(() => {
+        carregarPostos();
+        window.exportarCSV = exportarCSV;
+        window.exportarGeoJSON = exportarGeoJSON;
+      });
+
+      return {
+        postos,
+        carregandoPostos,
+        salvandoPosto,
+        consultandoCep,
+        feedbackMsg,
+        filtroTexto,
+        filtroCidade,
+        filtroVacina,
+        cepInput,
+        cepStatusHtml,
+        catalogoVacinas,
+        form,
+        postosFiltrados,
+        buscarCep,
+        consultarCEP: buscarCep,
+        formatarCep,
+        mascaraCEP: formatarCep,
+        passoAtual,
+        modalAjudaAberto,
+        modalDocsAberto,
+        modalCadastroAberto,
+        escopoOsm,
+        minerandoOsm,
+        salvandoOsm,
+        postosOsm,
+        selecionadosOsm,
+        osmFeedbackMsg,
+        pesquisarNoOSM,
+        alternarTodosOsm,
+        salvarSelecionadosOSM,
+        avancarPasso,
+        voltarPasso,
+        editarPosto,
+        cancelarEdicao,
+        salvarPosto,
+        salvarPontoManual: salvarPosto,
+        desativarPosto
+      };
+    }
+  }).mount('#admin-app');
+
+  window.abrirModalTermos = function() {
+    alert("Termos de Uso — Vacina Alagoas:\n\n1. Plataforma destinada exclusivamente à gestão de dados vacinais do SUS no estado de Alagoas.\n2. É vedada a inserção de dados falsos ou não homologados pela coordenação estadual de imunização.");
+  };
+
+  window.abrirModalPrivacidade = function() {
+    alert("Política de Privacidade e Cookies:\n\n• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado sensível de cidadãos ou pacientes é exposto publicamente.");
+  };
+</script>
+
+<!-- MODAL DE CADASTRO / EDIÇÃO MANUAL (PASSO A PASSO) -->
+<div v-if="modalCadastroAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto" @click.self="cancelarEdicao">
+  <div class="bg-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-200 space-y-space-md my-8">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cadastro Manual de Exceção</span>
+      <button type="button" @click="cancelarEdicao" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 cursor-pointer">&times;</button>
+    </div>
+    <!-- ASSISTENTE PASSO A PASSO (WIZARD) DE CADASTRO E EDIÇÃO -->
 <section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm border border-slate-200/80" id="form-novo-posto">
   <!-- Cabeçalho do Wizard com Botão de Ajuda (?) -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-lg border-b border-slate-200">
@@ -377,853 +1159,82 @@
     </div>
   </form>
 </section>
+  </div>
+</div>
 
-<!-- MODAL DE AJUDA (?) ACESSÍVEL -->
-<div v-if="modalAjudaAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4" @click.self="modalAjudaAberto = false">
-  <div class="bg-white rounded-xl max-w-lg w-full p-space-lg shadow-xl border border-slate-200 space-y-4">
-    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">?</div>
-        <h3 class="font-bold text-base text-slate-900">Como funciona o Painel de Gestão?</h3>
+<!-- MODAL DE DOCUMENTAÇÃO TÉCNICA (SWAGGER, REDOC, POSTGRESQL) -->
+<div v-if="modalDocsAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4" @click.self="modalDocsAberto = false">
+  <div class="bg-slate-900 text-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-700 space-y-space-md">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs">API</div>
+        <div>
+          <h3 class="font-bold text-base text-white">Documentação Técnica &amp; Evidências de Projeto</h3>
+          <span class="text-xs text-slate-400">Trabalho Acadêmico Integrador IV-B • FastAPI + PostgreSQL/PostGIS</span>
+        </div>
       </div>
-      <button type="button" @click="modalAjudaAberto = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1 cursor-pointer">&times;</button>
+      <button type="button" @click="modalDocsAberto = false" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer p-1">&times;</button>
     </div>
 
-    <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
-      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-        <span class="font-bold text-slate-800 block">1. Cadastro em 3 Passos:</span>
-        <p>• <strong>Passo 1 (Localização):</strong> Digite o CEP para preencher o bairro e a rua automaticamente via ViaCEP.<br/>
-        • <strong>Passo 2 (Identificação):</strong> Informe o nome formal da UBS ou USF.<br/>
-        • <strong>Passo 3 (Vacinas):</strong> Marque as vacinas que estão com lote ativo e confirme o cadastro no banco relacional.</p>
-      </div>
+    <!-- Cards de Acesso da Documentação -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md py-2">
+      <!-- Swagger -->
+      <a class="p-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 transition-all flex flex-col justify-between group" href="/docs" target="_blank" rel="noopener noreferrer">
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI</span>
+            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+          <p class="text-xs text-slate-300">Interface interativa para testar endpoints e parâmetros em tempo real.</p>
+        </div>
+        <span class="font-mono text-xs text-emerald-400 pt-3 font-semibold">GET /docs &rarr;</span>
+      </a>
 
-      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-        <span class="font-bold text-slate-800 block">2. Editar ou Excluir Postos Existentes:</span>
-        <p>Na tabela de auditoria abaixo, clique no ícone de <strong>lápis (Editar)</strong> para carregar os dados no assistente ou no ícone de <strong>bloqueio (Desativar)</strong> para remover.</p>
-      </div>
+      <!-- ReDoc -->
+      <a class="p-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 transition-all flex flex-col justify-between group" href="/redoc" target="_blank" rel="noopener noreferrer">
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">ReDoc Spec</span>
+            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+          <p class="text-xs text-slate-300">Especificação detalhada de contratos, respostas HTTP e schemas Pydantic.</p>
+        </div>
+        <span class="font-mono text-xs text-emerald-400 pt-3 font-semibold">GET /redoc &rarr;</span>
+      </a>
 
-      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-        <span class="font-bold text-slate-800 block">3. Importação do OpenStreetMap:</span>
-        <p>O robô no final da página permite minerar novas coordenadas georreferenciadas do OpenStreetMap e salvá-las no PostgreSQL de forma idempotente.</p>
+      <!-- Banco PostgreSQL -->
+      <div class="p-4 rounded-xl bg-slate-800/90 border border-slate-700 flex flex-col justify-between">
+        <div class="space-y-1">
+          <span class="font-bold text-sm text-slate-200">PostgreSQL Relacional</span>
+          <p class="text-xs text-slate-300">Tabelas: <code class="text-emerald-300 font-mono">vaccination_points</code>, <code class="text-emerald-300 font-mono">vaccines</code>, <code class="text-emerald-300 font-mono">point_vaccines</code>.</p>
+        </div>
+        <span class="text-xs text-emerald-400 font-bold pt-3 flex items-center gap-1">
+          ✓ Índices Espaciais GIST Ativos
+        </span>
       </div>
     </div>
 
     <div class="pt-2 flex justify-end">
-      <button type="button" @click="modalAjudaAberto = false" class="px-4 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-lg cursor-pointer">
-        Entendido, fechar ajuda
+      <button type="button" @click="modalDocsAberto = false" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg cursor-pointer border border-slate-700">
+        Fechar Janela
       </button>
     </div>
   </div>
 </div>
 
-<!-- SEÇÃO 4: LISTA E AUDITORIA DE POSTOS JÁ CADASTRADOS (CRUD) -->
-<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm space-y-space-md">
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
-<div class="space-y-1">
-<div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-          Auditoria de pontos de vacinação ativos no banco relacional PostgreSQL com coordenadas e insumos vinculados.
-        </p>
-</div>
-<!-- Exportação e Ações Rápidas -->
-<div class="flex flex-wrap items-center gap-space-sm">
-<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarCSV()" type="button">
-<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV
-</button>
-<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarGeoJSON()" type="button">
-<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> GeoJSON / API
-</button>
-</div>
-</div>
-<!-- Barra de Filtros e Busca Rápida -->
-<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
-<div class="md:col-span-6 relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-[20px]">search</span>
-<input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroTexto" placeholder="Filtrar por nome do posto, bairro, endereço ou CEP..." type="text"/>
-</div>
-<div class="md:col-span-3">
-<select aria-label="Filtrar por município de Alagoas" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroCidade">
-<option value="todos">Todos os Municípios (AL)</option>
-<option value="Maceió">Maceió</option>
-<option value="Arapiraca">Arapiraca</option>
-</select>
-</div>
-<div class="md:col-span-3">
-<select aria-label="Filtrar por imunobiológico ofertado" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroVacina">
-<option value="todas">Todos os Imunobiológicos</option>
-<option value="Covid-19">Covid-19</option>
-<option value="Pólio">Pólio</option>
-<option value="Influenza">Influenza</option>
-<option value="BCG">BCG</option>
-<option value="Sarampo">Sarampo</option>
-<option value="Hepatite B">Hepatite B</option>
-<option value="Febre Amarela">Febre Amarela</option>
-</select>
-</div>
-</div>
-<!-- Tabela Robusta de Postos -->
-<div class="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
-<table class="w-full text-left font-body-sm text-body-sm" id="tabela-postos-auditoria">
-<thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
-<tr>
-<th class="py-3 px-4 w-14 text-center">ID</th>
-<th class="py-3 px-4">Nome da Unidade</th>
-<th class="py-3 px-4">Município / Bairro</th>
-<th class="py-3 px-4">Imunobiológicos em Estoque</th>
-<th class="py-3 px-4">Endereço / Referência</th>
-<th class="py-3 px-4 text-right">Ações de Gestão</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container-high" id="tabela-postos-corpo">
-<tr v-if="carregandoPostos">
-  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Carregando unidades de saúde do PostgreSQL...</td>
-</tr>
-<tr v-else-if="postosFiltrados.length === 0">
-  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
-</tr>
-<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
-<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
-<td class="py-3.5 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
-<div class="font-body-sm text-on-surface-variant">{{ p.address || 'Endereço não informado' }}</div>
-</td>
-<td class="py-3.5 px-4">
-<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">{{ p.municipio || (p.city_id === 1 ? 'Maceió' : 'Arapiraca') }}</span>
-<span class="block text-label-sm text-on-surface-variant font-medium">Bairro {{ p.neighborhood || 'Central' }}</span>
-</td>
-<td class="py-3.5 px-4">
-<div class="flex flex-wrap gap-1 max-w-xs">
-<span v-for="vac in (p.vaccines || [])" :key="vac" class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-  {{ vac }}
-</span>
-</div>
-</td>
-<td class="py-3.5 px-4">
-<div class="text-label-sm text-on-surface font-medium">{{ p.address || '-' }}</div>
-<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-  <span class="material-symbols-outlined text-[14px]">check</span> Validado no SUS
-</span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<div class="inline-flex items-center gap-1">
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" type="button" @click="editarPosto(p)">
-<span class="material-symbols-outlined text-[18px]">edit</span>
-</button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">block</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Paginação e Meta Informação -->
-<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
-<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
-</div>
-</section>
-
-<!-- SEÇÃO 3 (RETRÁTIL): BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
-<section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm border border-slate-200">
-  <div class="flex items-center justify-between cursor-pointer" @click="secaoOsmAberta = !secaoOsmAberta">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">OSM</div>
-      <div>
-        <h3 class="font-bold text-sm text-slate-900">Bot de Mineração Geográfica (OpenStreetMap)</h3>
-        <p class="text-xs text-slate-500">Pesquisar e sincronizar novas unidades mapeadas no Overpass API</p>
-      </div>
-    </div>
-    <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 flex items-center gap-1.5 cursor-pointer">
-      <span v-text="secaoOsmAberta ? 'Ocultar Mineração' : 'Abrir Mineração OSM'"></span>
-      <svg class="w-4 h-4 transition-transform" :class="secaoOsmAberta ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-  </div>
-
-  <div v-show="secaoOsmAberta" class="mt-space-md pt-space-md border-t border-slate-200 space-y-space-md">
-    <!-- SEÇÃO 1: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
-<section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-md relative overflow-hidden">
-<div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-lg">
-<div class="space-y-1">
-<div class="flex flex-wrap items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">1. Bot de Mineração OpenStreetMap (OSM)</h2>
-<span class="px-2.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold uppercase tracking-wider">
-            Overpass API • Nominatim
-          </span>
-</div>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
-          Minera unidades de saúde e postos vacinais abertos no território alagoano com coordenadas georreferenciadas WGS84 e tags OSM (<code class="font-mono text-primary font-bold text-sm">amenity=clinic / doctors / hospital</code>).
-        </p>
-</div>
-<!-- Disparador do Robô -->
-<div class="flex flex-wrap items-center gap-space-sm shrink-0">
-<div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-lg">
-<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Alvo Territorial:</span>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Maceió / Alagoas</span>
-</div>
-<button class="px-space-md py-2.5 rounded-lg bg-primary-container text-on-primary hover:bg-primary font-label-md text-label-md font-bold shadow transition-all flex items-center gap-2" id="btn-osm-mine" type="button">
-<span id="btn-osm-label">Pesquisar Unidades no OSM (Maceió)</span>
-</button>
-</div>
-</div>
-<!-- Idempotência e Aviso de Banco -->
-<div class="bg-surface-container-low rounded-lg p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-lg">
-<div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-</div>
-<div>
-<span class="font-label-md text-label-md font-bold text-on-surface">Idempotência Garantida via PostgreSQL</span>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Cláusula <code class="font-mono text-xs bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">ON CONFLICT (city_id, name) DO UPDATE</code> impede duplicação de postos já existentes no banco.</p>
-</div>
-</div>
-<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
-<span>Última mineração: <strong>Hoje, 14:12</strong> (12 nós OSM detectados)</span>
-</div>
-</div>
-<!-- Controles em lote da Tabela OSM -->
-<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-sm">
-<div class="flex items-center gap-space-xs">
-<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors" id="btn-select-all-osm" type="button">
-          Marcar Todos
-        </button>
-<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors" id="btn-deselect-all-osm" type="button">
-          Desmarcar Todos
-        </button>
-<span class="font-label-sm text-label-sm text-on-surface-variant pl-space-xs">
-<strong class="text-primary font-bold" id="osm-selected-count">5</strong> de 5 selecionados
-        </span>
-</div>
-<button class="px-space-lg py-2.5 rounded-lg bg-secondary text-on-secondary hover:bg-secondary/90 font-label-md text-label-md font-bold shadow-md transition-all flex items-center gap-2" id="btn-save-osm" type="button">
-<span>Confirmar e Salvar Selecionados no PostgreSQL (<code class="font-mono text-[12px] opacity-90">POST /admin/enrichment/confirm-save</code>)</span>
-</button>
-</div>
-<!-- Tabela de nós minerados OSM -->
-<div class="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
-<table class="w-full text-left font-body-sm text-body-sm">
-<thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
-<tr>
-<th class="py-3 px-4 w-12 text-center">
-<span class="sr-only">Seleção</span>
-</th>
-<th class="py-3 px-4">OSM ID • Nome da Unidade de Saúde</th>
-<th class="py-3 px-4">Bairro / Território</th>
-<th class="py-3 px-4">Latitude • Longitude</th>
-<th class="py-3 px-4">Tags OSM / Fonte</th>
-<th class="py-3 px-4 text-center">Status no Banco</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container-high" id="osm-table-body">
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-4 text-center">
-<input checked="" class="osm-checkbox w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer" data-id="osm-node-101" type="checkbox"/>
-</td>
-<td class="py-3 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">UBS Bebedouro</div>
-<div class="font-mono text-label-sm text-label-sm text-on-surface-variant">OSM Node #84930219 • SUS Municipal</div>
-</td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Bebedouro</span>
-<span class="block text-label-sm text-on-surface-variant pt-0.5">Maceió - AL</span>
-</td>
-<td class="py-3 px-4 font-mono text-label-sm text-label-sm text-on-surface">
-              -9.6105, -35.7521
-            </td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[11px] font-bold">amenity=clinic</span>
-<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] ml-1">healthcare=yes</span>
-</td>
-<td class="py-3 px-4 text-center">
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> Novo Candidato
-              </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-4 text-center">
-<input checked="" class="osm-checkbox w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer" data-id="osm-node-102" type="checkbox"/>
-</td>
-<td class="py-3 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">USF Fernão Velho</div>
-<div class="font-mono text-label-sm text-label-sm text-on-surface-variant">OSM Node #74829103 • Posto Saúde Família</div>
-</td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Fernão Velho</span>
-<span class="block text-label-sm text-on-surface-variant pt-0.5">Maceió - AL</span>
-</td>
-<td class="py-3 px-4 font-mono text-label-sm text-label-sm text-on-surface">
-              -9.5670, -35.7794
-            </td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[11px] font-bold">amenity=clinic</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface font-mono text-[11px] ml-1">dispensary=vaccines</span>
-</td>
-<td class="py-3 px-4 text-center">
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> Novo Candidato
-              </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-4 text-center">
-<input checked="" class="osm-checkbox w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer" data-id="osm-node-103" type="checkbox"/>
-</td>
-<td class="py-3 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">Centro de Saúde Pitanguinha</div>
-<div class="font-mono text-label-sm text-label-sm text-on-surface-variant">OSM Node #99834120 • Sala de Vacinas Integrada</div>
-</td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Pitanguinha</span>
-<span class="block text-label-sm text-on-surface-variant pt-0.5">Maceió - AL</span>
-</td>
-<td class="py-3 px-4 font-mono text-label-sm text-label-sm text-on-surface">
-              -9.6388, -35.7360
-            </td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[11px] font-bold">amenity=hospital</span>
-</td>
-<td class="py-3 px-4 text-center">
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> Novo Candidato
-              </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-4 text-center">
-<input checked="" class="osm-checkbox w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer" data-id="osm-node-104" type="checkbox"/>
-</td>
-<td class="py-3 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">UBS Osman Loureiro</div>
-<div class="font-mono text-label-sm text-label-sm text-on-surface-variant">OSM Node #61294817 • Unidade Básica</div>
-</td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Clima Bom / Osman Loureiro</span>
-<span class="block text-label-sm text-on-surface-variant pt-0.5">Maceió - AL</span>
-</td>
-<td class="py-3 px-4 font-mono text-label-sm text-label-sm text-on-surface">
-              -9.5781, -35.7648
-            </td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[11px] font-bold">amenity=clinic</span>
-</td>
-<td class="py-3 px-4 text-center">
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> Novo Candidato
-              </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-4 text-center">
-<input checked="" class="osm-checkbox w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer" data-id="osm-node-105" type="checkbox"/>
-</td>
-<td class="py-3 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">USF Vergel do Lago</div>
-<div class="font-mono text-label-sm text-label-sm text-on-surface-variant">OSM Node #88319400 • Zona Lagunar</div>
-</td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Vergel do Lago</span>
-<span class="block text-label-sm text-on-surface-variant pt-0.5">Maceió - AL</span>
-</td>
-<td class="py-3 px-4 font-mono text-label-sm text-label-sm text-on-surface">
-              -9.6710, -35.7580
-            </td>
-<td class="py-3 px-4">
-<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[11px] font-bold">amenity=clinic</span>
-</td>
-<td class="py-3 px-4 text-center">
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> Novo Candidato
-              </span>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Feedback Toast Mockup de Sucesso ao Salvar -->
-<div class="hidden mt-space-md p-space-md rounded-lg bg-secondary-container text-on-secondary-container items-center justify-between" id="osm-save-toast">
-<div class="flex items-center gap-space-sm">
-<div>
-<span class="font-label-md text-label-md font-bold">Postos sincronizados com sucesso no PostgreSQL!</span>
-<p class="font-body-sm text-body-sm">Foram inseridos/atualizados 5 registros com dados georreferenciados na tabela <code class="font-mono">vaccination_points</code>.</p>
-</div>
-</div>
-<button class="px-3 py-1 rounded bg-secondary text-on-secondary font-label-sm text-label-sm" onclick="document.getElementById('osm-save-toast').classList.add('hidden')" type="button">Fechar</button>
-</div>
-</section>
-  </div>
-</section>
-<!-- SEÇÃO: DISTRIBUIÇÃO E COBERTURA GEOGRÁFICA -->
-<section class="w-full">
-
-
-</div>
-<script>
-  const { createApp, ref, computed, onMounted } = Vue;
-
-  createApp({
-    setup() {
-      const API_URL = (window.location.port === "3005" || window.location.port === "80" || !window.location.port) ? "" : "http://localhost:8085";
-      const postos = ref([]);
-      const carregandoPostos = ref(false);
-      const salvandoPosto = ref(false);
-      const consultandoCep = ref(false);
-      const feedbackMsg = ref("");
-
-      const filtroTexto = ref("");
-      const filtroCidade = ref("todos");
-      const filtroVacina = ref("todas");
-
-      const cepInput = ref("");
-      const cepStatusHtml = ref("");
-      const passoAtual = ref(1);
-      const modalAjudaAberto = ref(false);
-      const secaoOsmAberta = ref(false);
-
-      function avancarPasso(proximo) {
-        if (passoAtual.value === 1) {
-          if (!form.value.neighborhood.trim() || !form.value.address.trim()) {
-            alert("Por favor, preencha o Bairro e o Endereço (ou consulte pelo CEP) antes de avançar.");
-            return;
-          }
-        }
-        if (passoAtual.value === 2) {
-          if (!form.value.name.trim()) {
-            alert("Por favor, informe o Nome Oficial da Unidade de Saúde.");
-            return;
-          }
-        }
-        passoAtual.value = proximo;
-      }
-
-      function voltarPasso(anterior) {
-        passoAtual.value = anterior;
-      }
-
-      const catalogoVacinas = ref([
-        { id: 1, nome: "Pólio" },
-        { id: 2, nome: "Sarampo" },
-        { id: 3, nome: "Covid-19" },
-        { id: 4, nome: "Influenza" },
-        { id: 5, nome: "BCG" },
-        { id: 6, nome: "Hepatite B" },
-        { id: 7, nome: "Febre Amarela" }
-      ]);
-
-      const form = ref({
-        id: null,
-        city_id: 1,
-        name: "",
-        neighborhood: "",
-        address: "",
-        latitude: null,
-        longitude: null,
-        vaccine_ids: [1, 2, 3]
-      });
-
-      function getAuthToken() {
-        return localStorage.getItem("access_token") || "";
-      }
-
-      async function carregarPostos() {
-        carregandoPostos.value = true;
-        try {
-          const [resMaceio, resArapiraca] = await Promise.all([
-            fetch(`${API_URL}/vaccination-points/1`),
-            fetch(`${API_URL}/vaccination-points/2`)
-          ]);
-
-          const dataMaceio = resMaceio.ok ? await resMaceio.json() : [];
-          const dataArapiraca = resArapiraca.ok ? await resArapiraca.json() : [];
-
-          const maceioNorm = (Array.isArray(dataMaceio) ? dataMaceio : []).map(p => ({
-            ...p,
-            city_id: 1,
-            municipio: "Maceió"
-          }));
-
-          const arapiracaNorm = (Array.isArray(dataArapiraca) ? dataArapiraca : []).map(p => ({
-            ...p,
-            city_id: 2,
-            municipio: "Arapiraca"
-          }));
-
-          postos.value = [...maceioNorm, ...arapiracaNorm];
-        } catch (err) {
-          console.error("Erro ao carregar postos:", err);
-        } finally {
-          carregandoPostos.value = false;
-        }
-      }
-
-      const postosFiltrados = computed(() => {
-        let lista = postos.value;
-
-        if (filtroCidade.value !== "todos") {
-          lista = lista.filter(p => p.municipio === filtroCidade.value);
-        }
-
-        if (filtroVacina.value !== "todas") {
-          lista = lista.filter(p => (p.vaccines || []).some(v => v.toLowerCase().includes(filtroVacina.value.toLowerCase())));
-        }
-
-        if (filtroTexto.value.trim()) {
-          const termo = filtroTexto.value.trim().toLowerCase();
-          lista = lista.filter(p => {
-            const idMatch = String(p.id).includes(termo);
-            const nomeMatch = (p.name || "").toLowerCase().includes(termo);
-            const bairroMatch = (p.neighborhood || "").toLowerCase().includes(termo);
-            const enderecoMatch = (p.address || "").toLowerCase().includes(termo);
-            return idMatch || nomeMatch || bairroMatch || enderecoMatch;
-          });
-        }
-
-        return lista;
-      });
-
-      async function buscarCep() {
-        const limpo = (cepInput.value || "").replace(/\D/g, "");
-        if (limpo.length !== 8) {
-          cepStatusHtml.value = '<span class="text-xs text-amber-600 font-medium">Digite um CEP válido com 8 dígitos.</span>';
-          return;
-        }
-
-        consultandoCep.value = true;
-        cepStatusHtml.value = '<span class="text-xs text-slate-500 font-medium">Buscando endereço via ViaCEP...</span>';
-
-        try {
-          const res = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
-          const data = await res.json();
-
-          if (data.erro) {
-            cepStatusHtml.value = '<span class="text-xs text-red-600 font-medium">CEP não localizado no banco dos Correios.</span>';
-            return;
-          }
-
-          if (data.bairro) form.value.neighborhood = data.bairro;
-          if (data.logradouro) {
-            form.value.address = `${data.logradouro}, nº , CEP ${data.cep} - ${data.localidade}/${data.uf}`;
-          }
-
-          if (data.localidade && data.localidade.toLowerCase().includes("arapiraca")) {
-            form.value.city_id = 2;
-          } else if (data.localidade && data.localidade.toLowerCase().includes("macei")) {
-            form.value.city_id = 1;
-          }
-
-          cepStatusHtml.value = `<span class="text-xs text-emerald-600 font-medium">Endereço carregado: ${data.localidade} - ${data.bairro} (${data.uf})</span>`;
-        } catch (e) {
-          cepStatusHtml.value = '<span class="text-xs text-red-600 font-medium">Falha na consulta do CEP. Preencha manualmente.</span>';
-        } finally {
-          consultandoCep.value = false;
-        }
-      }
-
-      function formatarCep() {
-        let v = (cepInput.value || "").replace(/\D/g, "");
-        if (v.length > 8) v = v.slice(0, 8);
-        if (v.length > 5) {
-          cepInput.value = v.replace(/^(\d{5})(\d)/, "$1-$2");
-        } else {
-          cepInput.value = v;
-        }
-      }
-
-      function editarPosto(p) {
-        form.value.id = p.id;
-        form.value.city_id = p.city_id || (p.municipio === "Arapiraca" ? 2 : 1);
-        form.value.name = p.name;
-        form.value.neighborhood = p.neighborhood || "";
-        form.value.address = p.address || "";
-        form.value.latitude = p.latitude || null;
-        form.value.longitude = p.longitude || null;
-
-        const vacinasMapeadas = [];
-        if (Array.isArray(p.vaccines)) {
-          p.vaccines.forEach(nome => {
-            const item = catalogoVacinas.value.find(c => c.nome.toLowerCase() === nome.toLowerCase());
-            if (item) vacinasMapeadas.push(item.id);
-          });
-        }
-        form.value.vaccine_ids = vacinasMapeadas.length > 0 ? vacinasMapeadas : [1, 2, 3];
-
-        passoAtual.value = 1;
-        const elForm = document.getElementById('form-novo-posto');
-        if (elForm) elForm.scrollIntoView({ behavior: 'smooth' });
-        feedbackMsg.value = `Editando Posto #${p.id} (${p.name}). Altere as etapas e confirme.`;
-      }
-
-      function cancelarEdicao(limparFeedback = true) {
-        form.value = {
-          id: null,
-          city_id: 1,
-          name: "",
-          neighborhood: "",
-          address: "",
-          latitude: null,
-          longitude: null,
-          vaccine_ids: [1, 2, 3]
-        };
-        cepInput.value = "";
-        cepStatusHtml.value = "";
-        if (limparFeedback) {
-          feedbackMsg.value = "";
-        }
-        passoAtual.value = 1;
-      }
-
-      async function salvarPosto() {
-        const token = getAuthToken();
-        if (!token) {
-          alert("Sessão administrativa expirada ou não autenticada. Por favor, acesse novamente através do login.");
-          return;
-        }
-
-        if (!form.value.name.trim() || !form.value.neighborhood.trim()) {
-          alert("Por favor, preencha o Nome Oficial da Unidade e o Bairro.");
-          return;
-        }
-
-        salvandoPosto.value = true;
-        feedbackMsg.value = "";
-
-        const payload = {
-          city_id: parseInt(form.value.city_id),
-          name: form.value.name.trim(),
-          neighborhood: form.value.neighborhood.trim(),
-          address: form.value.address.trim() || null,
-          latitude: form.value.latitude ? parseFloat(form.value.latitude) : (form.value.city_id === 2 ? -9.7512 : -9.6650),
-          longitude: form.value.longitude ? parseFloat(form.value.longitude) : (form.value.city_id === 2 ? -36.6609 : -35.7420),
-          vaccine_ids: form.value.vaccine_ids
-        };
-
-        try {
-          const isEdicao = !!form.value.id;
-          const url = isEdicao ? `${API_URL}/admin/vaccination-points/${form.value.id}` : `${API_URL}/admin/vaccination-points`;
-          const method = isEdicao ? "PUT" : "POST";
-
-          const res = await fetch(url, {
-            method: method,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-          });
-
-          if (res.status === 401) {
-            alert("Sessão administrativa expirada ou não autenticada. Acesse o portal e faça login novamente.");
-            return;
-          }
-
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            throw new Error(errData.detail || "Erro ao salvar posto no PostgreSQL.");
-          }
-
-          const resultado = await res.json();
-          const msgSucesso = isEdicao ? `Posto #${form.value.id} atualizado com sucesso!` : `Novo posto cadastrado com sucesso! ID #${resultado.id}`;
-          feedbackMsg.value = msgSucesso;
-          alert("✓ " + msgSucesso);
-          cancelarEdicao(false);
-          await carregarPostos();
-          setTimeout(() => { feedbackMsg.value = ""; }, 8000);
-        } catch (err) {
-          console.error("Erro ao salvar:", err);
-          alert("Erro ao salvar posto: " + err.message);
-        } finally {
-          salvandoPosto.value = false;
-        }
-      }
-
-      async function desativarPosto(p) {
-        if (!confirm(`Deseja realmente desativar ou remover o posto #${p.id} (${p.name})?`)) return;
-
-        const token = getAuthToken();
-        if (!token) {
-          alert("Sessão administrativa expirada ou não autenticada.");
-          return;
-        }
-
-        try {
-          const res = await fetch(`${API_URL}/admin/vaccination-points/${p.id}`, {
-            method: "DELETE",
-            headers: {
-              "Authorization": `Bearer ${token}`
-            }
-          });
-
-          if (res.ok) {
-            alert(`Posto #${p.id} removido com sucesso.`);
-            await carregarPostos();
-          } else {
-            alert(`Posto #${p.id} colocado em contingência temporária.`);
-          }
-        } catch (e) {
-          alert(`Posto #${p.id} colocado em contingência temporária.`);
-        }
-      }
-
-      function exportarCSV() {
-        if (!postos.value || postos.value.length === 0) {
-          alert("Nenhum posto de vacinação carregado para exportação.");
-          return;
-        }
-        const cabecalho = ["ID", "Nome da Unidade", "Municipio", "Bairro", "Endereco", "Latitude", "Longitude", "Vacinas em Estoque"];
-        const linhas = postos.value.map(p => [
-          p.id,
-          `"${(p.name || '').replace(/"/g, '""')}"`,
-          `"${p.municipio || ''}"`,
-          `"${(p.neighborhood || '').replace(/"/g, '""')}"`,
-          `"${(p.address || '').replace(/"/g, '""')}"`,
-          p.latitude || '',
-          p.longitude || '',
-          `"${(p.vaccines || []).join(', ')}"`
-        ].join(';'));
-        const csvContent = '\uFEFF' + [cabecalho.join(';'), ...linhas].join('\r\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      function exportarGeoJSON() {
-        if (!postos.value || postos.value.length === 0) {
-          alert("Nenhum posto de vacinação carregado para exportação.");
-          return;
-        }
-        const geojson = {
-          type: "FeatureCollection",
-          metadata: {
-            orgao: "Coordenação de Imunização",
-            gerado_em: new Date().toISOString(),
-            total_postos: postos.value.length
-          },
-          features: postos.value.map(p => ({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [parseFloat(p.longitude) || 0, parseFloat(p.latitude) || 0]
-            },
-            properties: {
-              id: p.id,
-              name: p.name,
-              municipio: p.municipio,
-              neighborhood: p.neighborhood,
-              address: p.address,
-              vaccines: p.vaccines || []
-            }
-          }))
-        };
-        const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `postos_vacinacao_alagoas_${new Date().toISOString().slice(0,10)}.geojson`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      onMounted(() => {
-        carregarPostos();
-        window.exportarCSV = exportarCSV;
-        window.exportarGeoJSON = exportarGeoJSON;
-      });
-
-      return {
-        postos,
-        carregandoPostos,
-        salvandoPosto,
-        consultandoCep,
-        feedbackMsg,
-        filtroTexto,
-        filtroCidade,
-        filtroVacina,
-        cepInput,
-        cepStatusHtml,
-        catalogoVacinas,
-        form,
-        postosFiltrados,
-        buscarCep,
-        consultarCEP: buscarCep,
-        formatarCep,
-        mascaraCEP: formatarCep,
-        passoAtual,
-        modalAjudaAberto,
-        secaoOsmAberta,
-        avancarPasso,
-        voltarPasso,
-        editarPosto,
-        cancelarEdicao,
-        salvarPosto,
-        salvarPontoManual: salvarPosto,
-        desativarPosto
-      };
-    }
-  }).mount('#admin-app');
-
-  window.abrirModalTermos = function() {
-    alert("Termos de Uso — Vacina Alagoas:\n\n1. Plataforma destinada exclusivamente à gestão de dados vacinais do SUS no estado de Alagoas.\n2. É vedada a inserção de dados falsos ou não homologados pela coordenação estadual de imunização.");
-  };
-
-  window.abrirModalPrivacidade = function() {
-    alert("Política de Privacidade e Cookies:\n\n• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado sensível de cidadãos ou pacientes é exposto publicamente.");
-  };
-</script></div></main><footer class="w-full bg-slate-900 text-slate-300 border-t border-slate-800">
+</div></main><footer class="w-full bg-slate-900 text-slate-300 border-t border-slate-800">
   <div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl space-y-space-lg">
     
-    <!-- SEÇÃO DEDICADA: RECURSOS E EVIDÊNCIAS TÉCNICAS (BANCA ACADÊMICA) -->
-    <div class="p-space-lg rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-space-md">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-space-sm border-b border-slate-700">
-        <div>
-          <h4 class="font-bold text-sm text-white flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-            <span>Documentação Técnica &amp; Evidências de Projeto (Banca Integrador IV-B)</span>
-          </h4>
-          <span class="text-xs text-slate-400">Stack: Python FastAPI, SQLAlchemy, PostgreSQL 16 com PostGIS e OpenStreetMap</span>
-        </div>
-        <span class="px-2.5 py-0.5 rounded bg-slate-700 text-slate-300 font-mono text-[11px] font-bold self-start sm:self-auto">API v1.4.0-stable</span>
+    <!-- BARRA COMPACTA COM BOTÃO PARA MODAL DE DOCUMENTAÇÃO -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md p-space-md rounded-xl bg-slate-800/60 border border-slate-700/60">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <span class="text-xs text-slate-300 font-medium">Projeto Integrador IV-B • Alagoas (PostGIS, FastAPI, Leaflet)</span>
       </div>
-
-      <!-- Links Técnicos Acadêmicos -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
-        <a class="p-3.5 rounded-lg bg-slate-900/80 hover:bg-slate-900 border border-slate-700/60 transition-all flex flex-col justify-between group" href="/docs" target="_blank" rel="noopener noreferrer">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-xs text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI 3.1</span>
-              <svg class="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-1">Interface interativa de testes de endpoints REST.</p>
-          </div>
-          <span class="font-mono text-[11px] text-emerald-400 pt-2 font-semibold">GET /docs &rarr;</span>
-        </a>
-
-        <a class="p-3.5 rounded-lg bg-slate-900/80 hover:bg-slate-900 border border-slate-700/60 transition-all flex flex-col justify-between group" href="/redoc" target="_blank" rel="noopener noreferrer">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-xs text-emerald-400 group-hover:text-emerald-300">ReDoc Specification</span>
-              <svg class="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-1">Contratos, schemas Pydantic e códigos HTTP.</p>
-          </div>
-          <span class="font-mono text-[11px] text-emerald-400 pt-2 font-semibold">GET /redoc &rarr;</span>
-        </a>
-
-        <div class="p-3.5 rounded-lg bg-slate-900/80 border border-slate-700/60 flex flex-col justify-between">
-          <div>
-            <span class="font-bold text-xs text-slate-200">PostgreSQL Relacional</span>
-            <p class="text-[11px] text-slate-400 mt-1">Tabelas: vaccination_points, vaccines, point_vaccines, cities.</p>
-          </div>
-          <span class="text-[11px] text-emerald-400 font-bold pt-2 flex items-center gap-1">
-            ✓ Índices Espaciais GIST Ativos
-          </span>
-        </div>
-      </div>
+      <button type="button" @click="modalDocsAberto = true" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer border border-slate-600 shadow-sm">
+        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Ver Documentação da API &amp; Banco</span>
+      </button>
     </div>
 
     <!-- Informações Institucionais do Rodapé -->

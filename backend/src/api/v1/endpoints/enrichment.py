@@ -1,8 +1,9 @@
-from typing import List, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List, Dict, Any, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 from src.core.security import get_current_admin
 from src.core.services.enrichment_service import (
+    fetch_osm_health_centers,
     fetch_osm_health_centers_maceio,
     save_points_to_database
 )
@@ -22,15 +23,18 @@ class ConfirmSaveRequest(BaseModel):
     points: List[OsmPointItem]
 
 @router.get("/preview-osm", summary="Listar Resultados da Pesquisa do Bot OSM (Sem Salvar)", dependencies=[Depends(get_current_admin)])
-async def preview_osm_data():
+async def preview_osm_data(
+    escopo: str = Query("alagoas", description="Escopo territorial da mineração: 'alagoas', 'maceio' ou 'arapiraca'")
+):
     """
     Executa a pesquisa e mineração nos dados do OpenStreetMap e retorna
     a lista completa de unidades encontradas para conferência do administrador,
     sem gravar no banco de dados.
     """
-    points = fetch_osm_health_centers_maceio()
+    points = fetch_osm_health_centers(escopo=escopo)
     return {
         "status": "sucesso",
+        "escopo": escopo,
         "total_encontrados": len(points),
         "results": points
     }
@@ -59,7 +63,7 @@ async def confirm_save_osm_data(payload: ConfirmSaveRequest):
 
 @router.post("/sync-osm", summary="Legado: Disparar Enriquecimento Automático", dependencies=[Depends(get_current_admin)])
 async def sync_osm_legacy():
-    points = fetch_osm_health_centers_maceio()
+    points = fetch_osm_health_centers(escopo="alagoas")
     result = await save_points_to_database(points)
     return {
         "status": "concluido",

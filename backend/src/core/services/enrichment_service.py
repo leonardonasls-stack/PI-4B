@@ -10,25 +10,44 @@ OVERPASS_URLS = [
     "https://lz4.overpass-api.de/api/interpreter"
 ]
 
-def fetch_osm_health_centers_maceio() -> List[Dict[str, Any]]:
+def fetch_osm_health_centers(escopo: str = "alagoas") -> List[Dict[str, Any]]:
     """
-    Busca unidades de saúde e postos em Maceió via OpenStreetMap.
-    Utiliza consultas via Nominatim (com fallback em Overpass API) garantindo resiliência e dados reais.
+    Busca unidades de saúde e postos via OpenStreetMap por escopo:
+    - 'alagoas': Varredura estadual (Maceió, Arapiraca e cidades pólo de AL)
+    - 'maceio': Apenas capital Maceió
+    - 'arapiraca': Apenas região agreste / Arapiraca
     """
     headers = {"User-Agent": "VacinaAlagoasApp/1.0 (academic.project.alagoas@gmail.com)"}
     points: List[Dict[str, Any]] = []
     seen_names = set()
 
-    # 1. Estratégia Principal: Busca assertiva via Nominatim OpenStreetMap
-    queries = [
-        "UBS Maceió",
-        "USF Maceió",
-        "Unidade de Saúde Maceió",
-        "Posto de Saúde Maceió",
-        "Centro de Saúde Maceió"
-    ]
+    escopo_lower = escopo.lower()
+    
+    if escopo_lower == "maceio":
+        queries = [
+            ("UBS Maceió", 1, "Maceió"),
+            ("USF Maceió", 1, "Maceió"),
+            ("Posto de Saúde Maceió", 1, "Maceió"),
+            ("Centro de Saúde Maceió", 1, "Maceió")
+        ]
+    elif escopo_lower == "arapiraca":
+        queries = [
+            ("UBS Arapiraca", 2, "Arapiraca"),
+            ("USF Arapiraca", 2, "Arapiraca"),
+            ("Posto de Saúde Arapiraca", 2, "Arapiraca"),
+            ("Centro de Saúde Arapiraca", 2, "Arapiraca")
+        ]
+    else:  # Todo o estado de Alagoas
+        queries = [
+            ("UBS Maceió Alagoas", 1, "Maceió"),
+            ("USF Maceió Alagoas", 1, "Maceió"),
+            ("UBS Arapiraca Alagoas", 2, "Arapiraca"),
+            ("USF Arapiraca Alagoas", 2, "Arapiraca"),
+            ("Posto de Saúde Alagoas", 1, "Maceió"),
+            ("Unidade de Saúde Alagoas", 1, "Maceió")
+        ]
 
-    for q in queries:
+    for q, default_city_id, default_city_name in queries:
         try:
             params = {"q": q, "format": "json", "limit": 10, "addressdetails": 1}
             r = requests.get(NOMINATIM_URL, params=params, headers=headers, timeout=6)
@@ -41,12 +60,18 @@ def fetch_osm_health_centers_maceio() -> List[Dict[str, Any]]:
 
                     seen_names.add(name)
                     addr = item.get("address", {})
+                    
+                    # Detectar cidade
+                    city_detected = addr.get("city") or addr.get("town") or addr.get("municipality") or default_city_name
+                    city_id = 2 if "arapiraca" in city_detected.lower() else 1
+
                     neighborhood = (
                         addr.get("suburb") or 
                         addr.get("neighbourhood") or 
                         addr.get("city_district") or 
-                        "Maceió"
+                        city_detected
                     ).strip()
+                    
                     street = (
                         addr.get("road") or 
                         addr.get("street") or 
@@ -57,24 +82,31 @@ def fetch_osm_health_centers_maceio() -> List[Dict[str, Any]]:
                     lon = item.get("lon")
 
                     points.append({
-                        "city_id": 1,
+                        "city_id": city_id,
                         "name": name,
                         "neighborhood": neighborhood,
                         "address": street,
                         "latitude": float(lat) if lat else None,
                         "longitude": float(lon) if lon else None,
-                        "source": "OpenStreetMap"
+                        "source": "OpenStreetMap Nominatim"
                     })
         except Exception as e:
             print(f"[OSM BOT] Erro na consulta Nominatim '{q}': {e}")
 
-    # 2. Se Nominatim não trouxe resultados, tenta Overpass API
+    # Fallback Overpass se nada vier pelo Nominatim
     if not points:
-        overpass_query = """
+        if escopo_lower == "arapiraca":
+            bbox = "(-9.85,-36.75,-9.65,-36.55)"
+            c_id = 2
+        else:
+            bbox = "(-9.75,-35.85,-9.55,-35.65)"
+            c_id = 1
+
+        overpass_query = f"""
         [out:json][timeout:20];
         (
-          node["amenity"="clinic"](-9.75,-35.85,-9.55,-35.65);
-          node["healthcare"="centre"](-9.75,-35.85,-9.55,-35.65);
+          node["amenity"="clinic"]{bbox};
+          node["healthcare"="centre"]{bbox};
         );
         out center 25;
         """
@@ -92,9 +124,9 @@ def fetch_osm_health_centers_maceio() -> List[Dict[str, Any]]:
                         lat = el.get("lat") or el.get("center", {}).get("lat")
                         lon = el.get("lon") or el.get("center", {}).get("lon")
                         points.append({
-                            "city_id": 1,
+                            "city_id": c_id,
                             "name": name.strip(),
-                            "neighborhood": tags.get("addr:suburb", "Maceió").strip(),
+                            "neighborhood": tags.get("addr:suburb", "Centro").strip(),
                             "address": tags.get("addr:street", "Endereço via OpenStreetMap").strip(),
                             "latitude": float(lat) if lat else None,
                             "longitude": float(lon) if lon else None,
@@ -106,6 +138,9 @@ def fetch_osm_health_centers_maceio() -> List[Dict[str, Any]]:
                 print(f"[OSM BOT] Falha no servidor Overpass {server}: {e}")
 
     return points
+
+def fetch_osm_health_centers_maceio() -> List[Dict[str, Any]]:
+    return fetch_osm_health_centers(escopo="maceio")
 
 async def save_points_to_database(points_to_save: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
@@ -155,8 +190,7 @@ async def save_points_to_database(points_to_save: List[Dict[str, Any]]) -> Dict[
     }
 
 async def run_enrichment_worker() -> int:
-    """Worker legado para execução automática sem confirmação prévia."""
-    extracted = fetch_osm_health_centers_maceio()
+    extracted = fetch_osm_health_centers(escopo="alagoas")
     if not extracted:
         return 0
     res = await save_points_to_database(extracted)
