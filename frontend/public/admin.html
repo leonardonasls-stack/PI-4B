@@ -145,7 +145,405 @@
 </div>
 </div>
 </section>
-<!-- SEÇÃO 1: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
+
+<!-- SEÇÃO 3: CADASTRO MANUAL DE NOVO PONTO DE VACINAÇÃO -->
+<!-- ASSISTENTE PASSO A PASSO (WIZARD) DE CADASTRO E EDIÇÃO -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm border border-slate-200/80" id="form-novo-posto">
+  <!-- Cabeçalho do Wizard com Botão de Ajuda (?) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-lg border-b border-slate-200">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold font-mono">1-3</span>
+        <h2 class="font-headline-md text-headline-md font-bold text-on-surface">
+          {{ form.id ? `Editar Posto #${form.id}` : 'Assistente de Cadastro de Unidade' }}
+        </h2>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">
+        Cadastre ou atualize unidades do SUS em 3 etapas guiadas e objetivas.
+      </p>
+    </div>
+    
+    <!-- Botão de Ajuda (?) Acessível -->
+    <div class="flex items-center gap-2">
+      <button type="button" @click="modalAjudaAberto = true" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 shadow-sm" title="Ajuda sobre o preenchimento">
+        <svg class="w-4 h-4 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Como funciona?</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicador Visual de Progresso das Etapas (Stepper) -->
+  <div class="py-space-md mb-space-sm">
+    <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+      <!-- Etapa 1 -->
+      <button type="button" @click="passoAtual = 1" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 1 ? 'bg-primary text-white font-bold shadow' : (passoAtual > 1 ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-slate-100 text-slate-500')">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 1 ? 'bg-white text-primary' : (passoAtual > 1 ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700')">
+          {{ passoAtual > 1 ? '✓' : '1' }}
+        </span>
+        <span class="text-xs sm:text-sm truncate">1. Localização &amp; CEP</span>
+      </button>
+
+      <!-- Etapa 2 -->
+      <button type="button" @click="form.neighborhood && form.address ? passoAtual = 2 : null" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 2 ? 'bg-primary text-white font-bold shadow' : (passoAtual > 2 ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-slate-100 text-slate-500')">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 2 ? 'bg-white text-primary' : (passoAtual > 2 ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700')">
+          {{ passoAtual > 2 ? '✓' : '2' }}
+        </span>
+        <span class="text-xs sm:text-sm truncate">2. Identificação</span>
+      </button>
+
+      <!-- Etapa 3 -->
+      <button type="button" @click="form.name ? passoAtual = 3 : null" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 3 ? 'bg-primary text-white font-bold shadow' : 'bg-slate-100 text-slate-500'">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 3 ? 'bg-white text-primary' : 'bg-slate-300 text-slate-700'">
+          3
+        </span>
+        <span class="text-xs sm:text-sm truncate">3. Vacinas &amp; Salvar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO COM AS 3 ETAPAS -->
+  <form @submit.prevent="salvarPosto" class="space-y-space-md">
+    
+    <!-- ==================== ETAPA 1: LOCALIZAÇÃO & CEP ==================== -->
+    <div v-show="passoAtual === 1" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <span>Passo 1 de 3: Jurisdição e Endereço Oficial</span>
+        </h3>
+        <span class="text-xs text-slate-500">Preencha o CEP para autocompletar</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+        <!-- Município -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-municipio">
+            Município de Alagoas *
+          </label>
+          <select v-model="form.city_id" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-municipio" required>
+            <option :value="1">Maceió (Região Metropolitana / Capital - ID: 1)</option>
+            <option :value="2">Arapiraca (Região do Agreste Alagoano - ID: 2)</option>
+          </select>
+          <span class="text-[11px] text-slate-500 mt-1 block">Jurisdição sanitária municipal correspondente.</span>
+        </div>
+
+        <!-- Consulta de CEP -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-cep">
+            CEP da Unidade (Preenchimento Automático)
+          </label>
+          <div class="relative flex items-center">
+            <input v-model="cepInput" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
+            <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary hover:bg-primary-container text-white rounded-md text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Buscar</span>
+            </button>
+          </div>
+          <div class="mt-1 min-h-[18px]">
+            <span class="text-xs text-slate-600" v-html="cepStatusHtml"></span>
+          </div>
+        </div>
+
+        <!-- Bairro -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-bairro">
+            Bairro / Comunidade *
+          </label>
+          <input v-model="form.neighborhood" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-bairro" placeholder="Ex: Trapiche da Barra" required type="text"/>
+          <span class="text-[11px] text-slate-500 mt-1 block">Região demográfica para geolocalização e rotas.</span>
+        </div>
+
+        <!-- Endereço Completo -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-endereco">
+            Endereço Completo com Logradouro e Número *
+          </label>
+          <input v-model="form.address" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" required type="text"/>
+          <span class="text-[11px] text-slate-500 mt-1 block">Referência presencial para o cidadão no mapa.</span>
+        </div>
+      </div>
+
+      <!-- Navegação da Etapa 1 -->
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+        <button type="button" @click="cancelarEdicao" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer">
+          Limpar Campos
+        </button>
+        <button type="button" @click="avancarPasso(2)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
+          <span>Avançar para Identificação</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ETAPA 2: IDENTIFICAÇÃO DA UNIDADE ==================== -->
+    <div v-show="passoAtual === 2" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <span>Passo 2 de 3: Identificação Oficial da Unidade</span>
+        </h3>
+        <span class="text-xs text-slate-500">Cadastro formal CNES</span>
+      </div>
+
+      <!-- Resumo do Passo 1 -->
+      <div class="p-3 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
+        <div>
+          <span class="font-bold">Localização definida:</span>
+          <span> {{ form.city_id === 2 ? 'Arapiraca' : 'Maceió' }} • Bairro {{ form.neighborhood }} • {{ form.address }}</span>
+        </div>
+        <button type="button" @click="voltarPasso(1)" class="text-emerald-800 hover:underline font-semibold ml-2 shrink-0 cursor-pointer">
+          Alterar Endereço
+        </button>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-nome">
+          Nome Oficial da Unidade de Saúde (CNES) *
+        </label>
+        <input v-model="form.name" class="w-full h-12 px-4 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-nome" placeholder="Ex: UBS Bebedouro / USF Trapiche da Barra" required type="text"/>
+        <span class="text-[11px] text-slate-500 mt-1 block">Designação formal cadastrada na rede estadual de saúde.</span>
+      </div>
+
+      <!-- Navegação da Etapa 2 -->
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+        <button type="button" @click="voltarPasso(1)" class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>Voltar ao Endereço</span>
+        </button>
+        <button type="button" @click="avancarPasso(3)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
+          <span>Avançar para Vacinas</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ETAPA 3: VACINAS & SALVAR ==================== -->
+    <div v-show="passoAtual === 3" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <span>Passo 3 de 3: Catálogo de Imunobiológicos &amp; Confirmação</span>
+        </h3>
+        <span class="text-xs text-slate-500">Selecione as vacinas com estoque</span>
+      </div>
+
+      <!-- Resumo Geral da Unidade Antes de Salvar -->
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2 text-xs">
+        <div class="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Revisão dos Dados Cadastrais</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600">
+          <div><strong>Unidade:</strong> {{ form.name || 'Não informado' }}</div>
+          <div><strong>Município:</strong> {{ form.city_id === 2 ? 'Arapiraca' : 'Maceió' }}</div>
+          <div><strong>Bairro:</strong> {{ form.neighborhood || 'Não informado' }}</div>
+          <div><strong>Endereço:</strong> {{ form.address || 'Não informado' }}</div>
+        </div>
+      </div>
+
+      <!-- Grade de Vacinas -->
+      <div class="space-y-2">
+        <label class="block font-semibold text-xs text-slate-700">
+          Imunobiológicos Habilitados nesta Unidade:
+        </label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+          <label v-for="v in catalogoVacinas" :key="v.id" class="flex items-center gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-emerald-500 transition-colors shadow-xs">
+            <input type="checkbox" class="w-4 h-4 rounded text-secondary" :value="v.id" v-model="form.vaccine_ids"/>
+            <span class="text-xs font-semibold text-slate-800">{{ v.nome }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Navegação da Etapa 3 e Botão de Salvar Final -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
+        <button type="button" @click="voltarPasso(2)" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>Voltar para Identificação</span>
+        </button>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button type="button" @click="cancelarEdicao" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-medium cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" :disabled="salvandoPosto" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span>{{ form.id ? `Confirmar Atualização (#${form.id})` : 'Salvar no PostgreSQL' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback de Sucesso/Alerta -->
+    <div v-if="feedbackMsg" class="p-3.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold flex items-center gap-2">
+      <svg class="w-4 h-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span>{{ feedbackMsg }}</span>
+    </div>
+  </form>
+</section>
+
+<!-- MODAL DE AJUDA (?) ACESSÍVEL -->
+<div v-if="modalAjudaAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4" @click.self="modalAjudaAberto = false">
+  <div class="bg-white rounded-xl max-w-lg w-full p-space-lg shadow-xl border border-slate-200 space-y-4">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">?</div>
+        <h3 class="font-bold text-base text-slate-900">Como funciona o Painel de Gestão?</h3>
+      </div>
+      <button type="button" @click="modalAjudaAberto = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1 cursor-pointer">&times;</button>
+    </div>
+
+    <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+        <span class="font-bold text-slate-800 block">1. Cadastro em 3 Passos:</span>
+        <p>• <strong>Passo 1 (Localização):</strong> Digite o CEP para preencher o bairro e a rua automaticamente via ViaCEP.<br/>
+        • <strong>Passo 2 (Identificação):</strong> Informe o nome formal da UBS ou USF.<br/>
+        • <strong>Passo 3 (Vacinas):</strong> Marque as vacinas que estão com lote ativo e confirme o cadastro no banco relacional.</p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+        <span class="font-bold text-slate-800 block">2. Editar ou Excluir Postos Existentes:</span>
+        <p>Na tabela de auditoria abaixo, clique no ícone de <strong>lápis (Editar)</strong> para carregar os dados no assistente ou no ícone de <strong>bloqueio (Desativar)</strong> para remover.</p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+        <span class="font-bold text-slate-800 block">3. Importação do OpenStreetMap:</span>
+        <p>O robô no final da página permite minerar novas coordenadas georreferenciadas do OpenStreetMap e salvá-las no PostgreSQL de forma idempotente.</p>
+      </div>
+    </div>
+
+    <div class="pt-2 flex justify-end">
+      <button type="button" @click="modalAjudaAberto = false" class="px-4 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-lg cursor-pointer">
+        Entendido, fechar ajuda
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 4: LISTA E AUDITORIA DE POSTOS JÁ CADASTRADOS (CRUD) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm space-y-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Auditoria de pontos de vacinação ativos no banco relacional PostgreSQL com coordenadas e insumos vinculados.
+        </p>
+</div>
+<!-- Exportação e Ações Rápidas -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarCSV()" type="button">
+<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV
+</button>
+<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarGeoJSON()" type="button">
+<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> GeoJSON / API
+</button>
+</div>
+</div>
+<!-- Barra de Filtros e Busca Rápida -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
+<div class="md:col-span-6 relative">
+<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-[20px]">search</span>
+<input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroTexto" placeholder="Filtrar por nome do posto, bairro, endereço ou CEP..." type="text"/>
+</div>
+<div class="md:col-span-3">
+<select aria-label="Filtrar por município de Alagoas" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroCidade">
+<option value="todos">Todos os Municípios (AL)</option>
+<option value="Maceió">Maceió</option>
+<option value="Arapiraca">Arapiraca</option>
+</select>
+</div>
+<div class="md:col-span-3">
+<select aria-label="Filtrar por imunobiológico ofertado" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroVacina">
+<option value="todas">Todos os Imunobiológicos</option>
+<option value="Covid-19">Covid-19</option>
+<option value="Pólio">Pólio</option>
+<option value="Influenza">Influenza</option>
+<option value="BCG">BCG</option>
+<option value="Sarampo">Sarampo</option>
+<option value="Hepatite B">Hepatite B</option>
+<option value="Febre Amarela">Febre Amarela</option>
+</select>
+</div>
+</div>
+<!-- Tabela Robusta de Postos -->
+<div class="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
+<table class="w-full text-left font-body-sm text-body-sm" id="tabela-postos-auditoria">
+<thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
+<tr>
+<th class="py-3 px-4 w-14 text-center">ID</th>
+<th class="py-3 px-4">Nome da Unidade</th>
+<th class="py-3 px-4">Município / Bairro</th>
+<th class="py-3 px-4">Imunobiológicos em Estoque</th>
+<th class="py-3 px-4">Endereço / Referência</th>
+<th class="py-3 px-4 text-right">Ações de Gestão</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high" id="tabela-postos-corpo">
+<tr v-if="carregandoPostos">
+  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Carregando unidades de saúde do PostgreSQL...</td>
+</tr>
+<tr v-else-if="postosFiltrados.length === 0">
+  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
+</tr>
+<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
+<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
+<td class="py-3.5 px-4">
+<div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
+<div class="font-body-sm text-on-surface-variant">{{ p.address || 'Endereço não informado' }}</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">{{ p.municipio || (p.city_id === 1 ? 'Maceió' : 'Arapiraca') }}</span>
+<span class="block text-label-sm text-on-surface-variant font-medium">Bairro {{ p.neighborhood || 'Central' }}</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-wrap gap-1 max-w-xs">
+<span v-for="vac in (p.vaccines || [])" :key="vac" class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+  {{ vac }}
+</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="text-label-sm text-on-surface font-medium">{{ p.address || '-' }}</div>
+<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
+  <span class="material-symbols-outlined text-[14px]">check</span> Validado no SUS
+</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" type="button" @click="editarPosto(p)">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Paginação e Meta Informação -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
+</div>
+</section>
+
+<!-- SEÇÃO 3 (RETRÁTIL): BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
+<section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm border border-slate-200">
+  <div class="flex items-center justify-between cursor-pointer" @click="secaoOsmAberta = !secaoOsmAberta">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">OSM</div>
+      <div>
+        <h3 class="font-bold text-sm text-slate-900">Bot de Mineração Geográfica (OpenStreetMap)</h3>
+        <p class="text-xs text-slate-500">Pesquisar e sincronizar novas unidades mapeadas no Overpass API</p>
+      </div>
+    </div>
+    <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 flex items-center gap-1.5 cursor-pointer">
+      <span v-text="secaoOsmAberta ? 'Ocultar Mineração' : 'Abrir Mineração OSM'"></span>
+      <svg class="w-4 h-4 transition-transform" :class="secaoOsmAberta ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+
+  <div v-show="secaoOsmAberta" class="mt-space-md pt-space-md border-t border-slate-200 space-y-space-md">
+    <!-- SEÇÃO 1: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
 <section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-md relative overflow-hidden">
 <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-lg">
 <div class="space-y-1">
@@ -353,323 +751,12 @@
 <button class="px-3 py-1 rounded bg-secondary text-on-secondary font-label-sm text-label-sm" onclick="document.getElementById('osm-save-toast').classList.add('hidden')" type="button">Fechar</button>
 </div>
 </section>
-<!-- SEÇÃO 3: CADASTRO MANUAL DE NOVO PONTO DE VACINAÇÃO -->
-<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm">
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg">
-<div class="space-y-1">
-<div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">2. Cadastro Manual de Ponto de Vacinação</h2>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-          Inserção direta no repositório estadual via <code class="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[12px] text-primary">POST /admin/vaccination-points</code>.
-        </p>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant">
-        * Campos com validação obrigatória
-      </span>
-</div>
-<form class="space-y-space-lg" id="form-novo-posto" @submit.prevent="salvarPosto">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
-<!-- Município -->
-<div>
-<label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-municipio">
-            Município de Alagoas *
-          </label>
-<div class="relative">
-<select v-model="form.city_id" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-municipio" required>
-<option :value="1">Maceió (Região Metropolitana / Capital - ID: 1)</option>
-<option :value="2">Arapiraca (Região do Agreste Alagoano - ID: 2)</option>
-</select>
-</div>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Selecione a jurisdição sanitária municipal correspondente.</span>
-</div>
-<!-- Nome Oficial -->
-<div>
-<label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-nome">
-            Nome Oficial da Unidade de Saúde (CNES) *
-          </label>
-<input v-model="form.name" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-nome" placeholder="Ex: USF Trapiche da Barra" required type="text"/>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Designação formal cadastrada no Cadastro Nacional de Estabelecimentos.</span>
-</div>
-
-<!-- Consulta de CEP com Preenchimento Automático -->
-<div class="md:col-span-2 bg-surface-container-low/60 p-4 rounded-xl border border-outline-variant/30">
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-end">
-    <div class="md:col-span-4">
-      <label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-cep">
-        CEP da Unidade (Busca Automática)
-      </label>
-      <div class="relative flex items-center">
-        <input v-model="cepInput" class="w-full h-11 px-4 rounded bg-surface-container-lowest text-on-surface font-body-md text-body-md outline-none shadow-sm border border-outline-variant/40 focus:border-primary transition-all" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
-        <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary text-white rounded text-xs font-semibold hover:bg-primary-container transition-colors cursor-pointer flex items-center gap-1">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <span>Buscar</span>
-        </button>
-      </div>
-    </div>
-    <div class="md:col-span-8">
-      <span class="text-xs text-on-surface-variant flex items-center gap-1.5" v-html="cepStatusHtml"></span>
-    </div>
   </div>
-</div>
-
-<!-- Bairro -->
-<div>
-<label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-bairro">
-            Bairro / Comunidade *
-          </label>
-<input v-model="form.neighborhood" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-bairro" placeholder="Ex: Trapiche da Barra" required type="text"/>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Região demográfica para geolocalização e rotas cidadãs.</span>
-</div>
-<!-- Endereço Completo -->
-<div>
-<label class="block font-label-md text-label-md font-semibold text-on-surface mb-1" for="campo-endereco">
-            Endereço Completo com Logradouro e Número *
-          </label>
-<input v-model="form.address" class="w-full h-12 px-4 rounded bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest outline-none shadow-sm transition-all" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" required type="text"/>
-<span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Referência pública física para deslocamento presencial do usuário.</span>
-</div>
-</div>
-<!-- Checklist de Imunobiológicos em Estoque -->
-<div class="bg-surface-container-low rounded-lg p-space-md space-y-space-sm">
-<div class="flex items-center justify-between">
-<div>
-<span class="font-label-md text-label-md font-bold text-on-surface">Imunobiológicos Disponíveis em Estoque (PNI)</span>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Selecione os imunizantes habilitados para administração nesta unidade:</p>
-</div>
-<span class="font-label-sm text-label-sm text-secondary font-bold">Atualizado em tempo real</span>
-</div>
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-space-sm pt-space-xs">
-<label v-for="v in catalogoVacinas" :key="v.id" class="vaccine-badge-label flex items-center gap-2 p-2.5 rounded bg-surface-container-lowest cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm">
-<input type="checkbox" class="w-4 h-4 rounded text-secondary" :value="v.id" v-model="form.vaccine_ids"/>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">{{ v.nome }}</span>
-</label>
-</div>
-</div>
-<!-- Ações do Formulário -->
-<div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
-<button class="w-full sm:w-auto px-5 h-11 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-sm transition-colors cursor-pointer" @click="cancelarEdicao" type="button">
-  Limpar / Cancelar Edição
-</button>
-<button class="w-full sm:w-auto px-6 h-11 rounded-md bg-primary hover:bg-primary-container text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" :disabled="salvandoPosto" type="submit">
-  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-  <span>{{ form.id ? `Atualizar Posto #${form.id} no PostgreSQL` : 'Cadastrar Ponto de Vacinação no PostgreSQL' }}</span>
-</button>
-</div>
-<!-- Feedback de Inserção -->
-<div v-if="feedbackMsg" class="p-3 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-300 text-sm font-medium">
-  {{ feedbackMsg }}
-</div>
-</form>
-</section>
-<!-- SEÇÃO 4: LISTA E AUDITORIA DE POSTOS JÁ CADASTRADOS (CRUD) -->
-<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm space-y-space-md">
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
-<div class="space-y-1">
-<div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-          Auditoria de pontos de vacinação ativos no banco relacional PostgreSQL com coordenadas e insumos vinculados.
-        </p>
-</div>
-<!-- Exportação e Ações Rápidas -->
-<div class="flex flex-wrap items-center gap-space-sm">
-<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarCSV()" type="button">
-<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV
-</button>
-<button class="px-space-md py-2 rounded bg-surface-container-high text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="window.exportarGeoJSON()" type="button">
-<svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> GeoJSON / API
-</button>
-</div>
-</div>
-<!-- Barra de Filtros e Busca Rápida -->
-<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
-<div class="md:col-span-6 relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-[20px]">search</span>
-<input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroTexto" placeholder="Filtrar por nome do posto, bairro, endereço ou CEP..." type="text"/>
-</div>
-<div class="md:col-span-3">
-<select aria-label="Filtrar por município de Alagoas" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroCidade">
-<option value="todos">Todos os Municípios (AL)</option>
-<option value="Maceió">Maceió</option>
-<option value="Arapiraca">Arapiraca</option>
-</select>
-</div>
-<div class="md:col-span-3">
-<select aria-label="Filtrar por imunobiológico ofertado" class="w-full h-11 px-3 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroVacina">
-<option value="todas">Todos os Imunobiológicos</option>
-<option value="Covid-19">Covid-19</option>
-<option value="Pólio">Pólio</option>
-<option value="Influenza">Influenza</option>
-<option value="BCG">BCG</option>
-<option value="Sarampo">Sarampo</option>
-<option value="Hepatite B">Hepatite B</option>
-<option value="Febre Amarela">Febre Amarela</option>
-</select>
-</div>
-</div>
-<!-- Tabela Robusta de Postos -->
-<div class="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
-<table class="w-full text-left font-body-sm text-body-sm" id="tabela-postos-auditoria">
-<thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
-<tr>
-<th class="py-3 px-4 w-14 text-center">ID</th>
-<th class="py-3 px-4">Nome da Unidade</th>
-<th class="py-3 px-4">Município / Bairro</th>
-<th class="py-3 px-4">Imunobiológicos em Estoque</th>
-<th class="py-3 px-4">Endereço / Referência</th>
-<th class="py-3 px-4 text-right">Ações de Gestão</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container-high" id="tabela-postos-corpo">
-<tr v-if="carregandoPostos">
-  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Carregando unidades de saúde do PostgreSQL...</td>
-</tr>
-<tr v-else-if="postosFiltrados.length === 0">
-  <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
-</tr>
-<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
-<td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
-<td class="py-3.5 px-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
-<div class="font-body-sm text-on-surface-variant">{{ p.address || 'Endereço não informado' }}</div>
-</td>
-<td class="py-3.5 px-4">
-<span class="inline-flex items-center gap-1 font-label-md text-label-md font-bold text-on-surface">{{ p.municipio || (p.city_id === 1 ? 'Maceió' : 'Arapiraca') }}</span>
-<span class="block text-label-sm text-on-surface-variant font-medium">Bairro {{ p.neighborhood || 'Central' }}</span>
-</td>
-<td class="py-3.5 px-4">
-<div class="flex flex-wrap gap-1 max-w-xs">
-<span v-for="vac in (p.vaccines || [])" :key="vac" class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-  {{ vac }}
-</span>
-</div>
-</td>
-<td class="py-3.5 px-4">
-<div class="text-label-sm text-on-surface font-medium">{{ p.address || '-' }}</div>
-<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-  <span class="material-symbols-outlined text-[14px]">check</span> Validado no SUS
-</span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<div class="inline-flex items-center gap-1">
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" type="button" @click="editarPosto(p)">
-<span class="material-symbols-outlined text-[18px]">edit</span>
-</button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">block</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Paginação e Meta Informação -->
-<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
-<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
-</div>
 </section>
 <!-- SEÇÃO: DISTRIBUIÇÃO E COBERTURA GEOGRÁFICA -->
 <section class="w-full">
-<!-- Mini Resumo Gráfico e Arquitetura -->
-<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
-<div class="flex items-center justify-between">
-<div>
-<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Capacidade e Distribuição por Macrorregião</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Maceió (I Macrorregião) e Arapiraca (II Macrorregião de Saúde)</p>
-</div>
-<span class="px-2.5 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">Auditado</span>
-</div>
-<!-- Barras SVG de Distribuição Proporcional -->
-<div class="space-y-space-md pt-space-xs">
-<div>
-<div class="flex justify-between font-label-sm text-label-sm mb-1">
-<span class="text-on-surface font-semibold">Maceió • Região Metropolitana (20 postos)</span>
-<span class="font-mono text-primary font-bold">83.3% do contingente estadual</span>
-</div>
-<div class="w-full h-3 rounded-full bg-surface-container overflow-hidden">
-<div class="h-full rounded-full bg-primary" style="width: 83.33%;"></div>
-</div>
-</div>
-<div>
-<div class="flex justify-between font-label-sm text-label-sm mb-1">
-<span class="text-on-surface font-semibold">Arapiraca • Pólo do Agreste e Sertão (4 postos)</span>
-<span class="font-mono text-secondary font-bold">16.7% do contingente estadual</span>
-</div>
-<div class="w-full h-3 rounded-full bg-surface-container overflow-hidden">
-<div class="h-full rounded-full bg-secondary" style="width: 16.67%;"></div>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-3 gap-space-sm pt-space-sm text-center">
-<div class="p-3 rounded bg-surface-container-low">
-<span class="block font-headline-sm text-headline-sm font-bold text-primary">100%</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">PostGIS Coordenadas</span>
-</div>
-<div class="p-3 rounded bg-surface-container-low">
-<span class="block font-headline-sm text-headline-sm font-bold text-secondary">0</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Postos Duplicados</span>
-</div>
-<div class="p-3 rounded bg-surface-container-low">
-<span class="block font-headline-sm text-headline-sm font-bold text-tertiary-container">7/7</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Vacinas no Catálogo</span>
-</div>
-</div>
-</div>
-</section>
-<!-- NOTAS DE INTEGRAÇÃO & DOCS PARA BANCA ACADÊMICA -->
-<section class="bg-surface-container rounded-xl p-space-lg shadow-sm space-y-space-md" id="swagger-docs">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-sm border-b border-surface-container-highest">
-<div class="flex items-center gap-space-sm">
-<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
-</div>
-<div>
-<h4 class="font-headline-sm text-headline-sm font-bold text-on-surface">Documentação Técnica &amp; Evidências de Projeto (Banca Integrador IV-B)</h4>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Stack: Python FastAPI, SQLAlchemy, PostgreSQL com Extensão PostGIS e OpenStreetMap</span>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<span class="px-2.5 py-1 rounded bg-surface-container-highest text-on-surface font-mono text-[12px] font-bold">API v1.4.0-stable</span>
-</div>
-</div>
-<!-- Grid de Atalhos de Documentação Acadêmica -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
-<a class="p-space-md rounded-lg bg-surface-container-lowest hover:bg-surface-container-high transition-colors shadow-sm flex flex-col justify-between group" href="/docs" rel="noopener noreferrer" target="_blank">
-<div class="space-y-1">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md font-bold text-primary group-hover:text-primary-container">Swagger OpenAPI 3.1</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">open_in_new</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Interface interativa para teste de endpoints REST em tempo real.</p>
-</div>
-<span class="font-mono text-label-sm text-label-sm text-primary pt-space-sm font-semibold">GET /docs &rarr;</span>
-</a>
-<a class="p-space-md rounded-lg bg-surface-container-lowest hover:bg-surface-container-high transition-colors shadow-sm flex flex-col justify-between group" href="/redoc" rel="noopener noreferrer" target="_blank">
-<div class="space-y-1">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md font-bold text-primary group-hover:text-primary-container">ReDoc Specification</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">open_in_new</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Documentação formal de contratos, schemas Pydantic e respostas HTTP.</p>
-</div>
-<span class="font-mono text-label-sm text-label-sm text-primary pt-space-sm font-semibold">GET /redoc &rarr;</span>
-</a>
-<div class="p-space-md rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-<div class="space-y-1">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md font-bold text-on-surface">PostgreSQL Relacional</span>
-<span class="material-symbols-outlined text-[18px] text-secondary">storage</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Tabelas: <code class="font-mono text-xs">vaccination_points</code>, <code class="font-mono text-xs">vaccines</code>, <code class="font-mono text-xs">point_vaccines</code> e <code class="font-mono text-xs">cities</code>.</p>
-</div>
-<span class="font-label-sm text-label-sm text-secondary font-bold pt-space-sm flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">check_circle</span> Índices Espaciais GIST Ativos
-        </span>
-</div>
-</div>
-</section>
+
+
 </div>
 <script>
   const { createApp, ref, computed, onMounted } = Vue;
@@ -689,6 +776,29 @@
 
       const cepInput = ref("");
       const cepStatusHtml = ref("");
+      const passoAtual = ref(1);
+      const modalAjudaAberto = ref(false);
+      const secaoOsmAberta = ref(false);
+
+      function avancarPasso(proximo) {
+        if (passoAtual.value === 1) {
+          if (!form.value.neighborhood.trim() || !form.value.address.trim()) {
+            alert("Por favor, preencha o Bairro e o Endereço (ou consulte pelo CEP) antes de avançar.");
+            return;
+          }
+        }
+        if (passoAtual.value === 2) {
+          if (!form.value.name.trim()) {
+            alert("Por favor, informe o Nome Oficial da Unidade de Saúde.");
+            return;
+          }
+        }
+        passoAtual.value = proximo;
+      }
+
+      function voltarPasso(anterior) {
+        passoAtual.value = anterior;
+      }
 
       const catalogoVacinas = ref([
         { id: 1, nome: "Pólio" },
@@ -837,8 +947,10 @@
         }
         form.value.vaccine_ids = vacinasMapeadas.length > 0 ? vacinasMapeadas : [1, 2, 3];
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        feedbackMsg.value = `Editando Posto #${p.id}. Ajuste os dados e salve para atualizar no PostgreSQL.`;
+        passoAtual.value = 1;
+        const elForm = document.getElementById('form-novo-posto');
+        if (elForm) elForm.scrollIntoView({ behavior: 'smooth' });
+        feedbackMsg.value = `Editando Posto #${p.id} (${p.name}). Altere as etapas e confirme.`;
       }
 
       function cancelarEdicao(limparFeedback = true) {
@@ -857,6 +969,7 @@
         if (limparFeedback) {
           feedbackMsg.value = "";
         }
+        passoAtual.value = 1;
       }
 
       async function salvarPosto() {
@@ -1040,6 +1153,11 @@
         consultarCEP: buscarCep,
         formatarCep,
         mascaraCEP: formatarCep,
+        passoAtual,
+        modalAjudaAberto,
+        secaoOsmAberta,
+        avancarPasso,
+        voltarPasso,
         editarPosto,
         cancelarEdicao,
         salvarPosto,
@@ -1056,4 +1174,57 @@
   window.abrirModalPrivacidade = function() {
     alert("Política de Privacidade e Cookies:\n\n• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado sensível de cidadãos ou pacientes é exposto publicamente.");
   };
-</script></div></main><footer class="w-full bg-surface-container-low text-on-surface-variant shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-lg"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface">Coordenação de Imunização</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">Sistema de Gestão Territorial de Campanhas e Vigilância Imunológica. Plataforma restrita a gestores autorizados do SUS e municípios alagoanos.</p></div><div class="flex flex-wrap items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Conformidade LGPD (Lei 13.709/2018)</span></div><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Acessibilidade WCAG 2.1 AA</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 Vacina Alagoas • Todos os direitos reservados.</p><div class="flex items-center gap-space-lg"><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalTermos()">Termos de Uso</button><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalPrivacidade()">Política de Privacidade e Cookies</button><a class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" href="mailto:dti@saude.al.gov.br?subject=Suporte%20Vacina%20Alagoas">Suporte Técnico DTI (dti@saude.al.gov.br)</a></div></div></div></footer></body></html>
+</script></div></main><footer class="w-full bg-slate-900 text-slate-300 border-t border-slate-800">
+  <div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl space-y-space-lg">
+    
+    <!-- SEÇÃO DEDICADA: RECURSOS E EVIDÊNCIAS TÉCNICAS (BANCA ACADÊMICA) -->
+    <div class="p-space-lg rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-space-md">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-space-sm border-b border-slate-700">
+        <div>
+          <h4 class="font-bold text-sm text-white flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>Documentação Técnica &amp; Evidências de Projeto (Banca Integrador IV-B)</span>
+          </h4>
+          <span class="text-xs text-slate-400">Stack: Python FastAPI, SQLAlchemy, PostgreSQL 16 com PostGIS e OpenStreetMap</span>
+        </div>
+        <span class="px-2.5 py-0.5 rounded bg-slate-700 text-slate-300 font-mono text-[11px] font-bold self-start sm:self-auto">API v1.4.0-stable</span>
+      </div>
+
+      <!-- Links Técnicos Acadêmicos -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+        <a class="p-3.5 rounded-lg bg-slate-900/80 hover:bg-slate-900 border border-slate-700/60 transition-all flex flex-col justify-between group" href="/docs" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI 3.1</span>
+              <svg class="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Interface interativa de testes de endpoints REST.</p>
+          </div>
+          <span class="font-mono text-[11px] text-emerald-400 pt-2 font-semibold">GET /docs &rarr;</span>
+        </a>
+
+        <a class="p-3.5 rounded-lg bg-slate-900/80 hover:bg-slate-900 border border-slate-700/60 transition-all flex flex-col justify-between group" href="/redoc" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-emerald-400 group-hover:text-emerald-300">ReDoc Specification</span>
+              <svg class="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Contratos, schemas Pydantic e códigos HTTP.</p>
+          </div>
+          <span class="font-mono text-[11px] text-emerald-400 pt-2 font-semibold">GET /redoc &rarr;</span>
+        </a>
+
+        <div class="p-3.5 rounded-lg bg-slate-900/80 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <span class="font-bold text-xs text-slate-200">PostgreSQL Relacional</span>
+            <p class="text-[11px] text-slate-400 mt-1">Tabelas: vaccination_points, vaccines, point_vaccines, cities.</p>
+          </div>
+          <span class="text-[11px] text-emerald-400 font-bold pt-2 flex items-center gap-1">
+            ✓ Índices Espaciais GIST Ativos
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Institucionais do Rodapé -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-md border-b border-slate-800"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface">Coordenação de Imunização</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">Sistema de Gestão Territorial de Campanhas e Vigilância Imunológica. Plataforma restrita a gestores autorizados do SUS e municípios alagoanos.</p></div><div class="flex flex-wrap items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Conformidade LGPD (Lei 13.709/2018)</span></div><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Acessibilidade WCAG 2.1 AA</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 Vacina Alagoas • Todos os direitos reservados.</p><div class="flex items-center gap-space-lg"><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalTermos()">Termos de Uso</button><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalPrivacidade()">Política de Privacidade e Cookies</button><a class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" href="mailto:dti@saude.al.gov.br?subject=Suporte%20Vacina%20Alagoas">Suporte Técnico DTI (dti@saude.al.gov.br)</a></div></div></div></footer></body></html>
