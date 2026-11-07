@@ -896,6 +896,12 @@
         statusBadge.textContent = "Sessão Ativa (JWT Conectado)";
         statusBadge.className = "px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300";
       }
+    } else if (!authToken) {
+      const statusBadge = document.getElementById("jwt-status-badge");
+      if (statusBadge) {
+        statusBadge.textContent = "Não Autenticado (Acesso Restrito)";
+        statusBadge.className = "px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300";
+      }
     }
 
     // Realizar Login Administrativo
@@ -915,6 +921,12 @@
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: body
         });
+
+        if (res.status === 429) {
+          const errData = await res.json().catch(() => ({}));
+          alert(errData.detail || "Muitas tentativas de login consecutivas. Por segurança, aguarde 1 minuto.");
+          return;
+        }
 
         if (!res.ok) throw new Error("Credenciais inválidas");
         const data = await res.json();
