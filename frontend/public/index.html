@@ -240,108 +240,112 @@
     </script>
   </head>
   <body class="bg-surface font-body-md text-on-surface antialiased">
-    <header
-      class="fixed top-0 w-full z-50 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)]"
-    >
-      <div class="bg-primary text-on-primary text-label-sm font-label-sm">
-        <div
-          class="max-w-7xl mx-auto px-margin-sm lg:px-margin h-8 flex items-center justify-between"
+    <header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+  <!-- Barra Superior de Utilidades / Acessibilidade -->
+  <div class="bg-slate-900 text-white text-xs">
+    <div class="max-w-7xl mx-auto px-margin-sm lg:px-margin h-8 flex items-center justify-between">
+      <div class="flex items-center gap-space-md">
+        <span class="tracking-wide uppercase text-[11px] font-semibold text-slate-300">Consulta de Imunização • Alagoas</span>
+      </div>
+      <div class="flex items-center gap-space-md">
+        <button
+          class="text-slate-300 hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+          onclick="window.alternarAltoContraste()"
+          title="Alternar Alto Contraste"
+          type="button"
         >
-          <div class="flex items-center gap-space-md">
-            <span class="tracking-wide uppercase opacity-90"
-              >Governo de Alagoas • SESAU</span
-            ><span class="hidden sm:inline-block opacity-40">|</span
-            ><a
-              class="hidden sm:inline-block opacity-90 hover:opacity-100 transition-opacity"
-              href="https://transparencia.al.gov.br"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Portal da Transparência</a
-            >
-          </div>
-          <div class="flex items-center gap-space-md">
-            <button
-              class="hover:text-primary-fixed transition-colors flex items-center gap-space-xs cursor-pointer"
-              onclick="window.alternarAltoContraste()"
-              title="Alternar Alto Contraste"
-              type="button"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/></svg>
-              <span class="hidden md:inline">Alto Contraste</span>
-            </button>
-            <div class="flex items-center gap-space-xs font-bold">
-              <button
-                class="hover:text-primary-fixed px-space-xs cursor-pointer"
-                onclick="window.alterarTamanhoFonte(-1)"
-                title="Diminuir Fonte"
-                type="button"
-              >
-                A-</button
-              ><button
-                class="hover:text-primary-fixed px-space-xs cursor-pointer"
-                onclick="window.alterarTamanhoFonte(1)"
-                title="Aumentar Fonte"
-                type="button"
-              >
-                A+
-              </button>
-            </div>
-            <button
-              class="opacity-90 hover:opacity-100 hidden lg:inline-block cursor-pointer bg-transparent border-0 p-0 text-inherit text-xs"
-              onclick="window.abrirModalAcessibilidade()"
-              type="button"
-              >Acessibilidade WCAG 2.1</button
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="h-20 max-w-7xl mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-space-lg"
-      >
-        <div class="flex items-center gap-space-md">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-primary-container text-on-primary shadow-sm">
-            <svg class="w-5 h-5 text-primary-fixed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-          </div>
-          <div class="flex flex-col">
-            <span
-              class="font-headline-sm text-headline-sm text-primary leading-tight tracking-tight"
-              >Vacina Alagoas</span
-            ><span
-              class="font-label-sm text-label-sm text-on-surface-variant font-normal leading-tight hidden sm:block"
-              >SESAU • Sistema Único de Saúde</span
-            >
-          </div>
-        </div>
-        <nav class="flex items-center gap-2 sm:gap-4 md:gap-6 overflow-x-auto">
-          <a
-            class="text-xs sm:text-sm font-semibold text-primary hover:text-primary-container transition-colors border-b-2 border-primary pb-1 cursor-pointer whitespace-nowrap"
-            href="#search-form"
-            onclick="window.rolarPara('search-form', event)"
-            >Consulta de Postos</a
-          >
-          <a
-            class="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1 cursor-pointer whitespace-nowrap"
-            href="#painel-mapa"
-            onclick="window.alternarVisao('mapa'); window.rolarPara('painel-mapa', event);"
-            >Mapa Integrado</a
-          >
-          <a
-            class="text-xs sm:text-sm font-medium text-slate-600 hover:text-primary transition-colors pb-1 cursor-pointer whitespace-nowrap"
-            href="#guia-cidadao"
-            onclick="window.rolarPara('guia-cidadao', event)"
-            >Guia de Vacinação</a
-          >
-        </nav>
-        <div class="flex items-center gap-space-md shrink-0">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/></svg>
+          <span class="hidden md:inline">Alto Contraste</span>
+        </button>
+        <div class="flex items-center gap-1 font-bold">
           <button
-            class="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm transition-all shadow-sm whitespace-nowrap cursor-pointer"
+            class="text-slate-300 hover:text-white px-1 cursor-pointer"
+            onclick="window.alterarTamanhoFonte(-1)"
+            title="Diminuir Fonte"
             type="button"
-            onclick="window.abrirModalLoginAdmin()"
-          ><span class="hidden sm:inline">Painel Administrativo &rarr;</span><span class="sm:hidden">Admin &rarr;</span></button>
+          >
+            A-
+          </button>
+          <button
+            class="text-slate-300 hover:text-white px-1 cursor-pointer"
+            onclick="window.alterarTamanhoFonte(1)"
+            title="Aumentar Fonte"
+            type="button"
+          >
+            A+
+          </button>
         </div>
+        <button
+          class="text-slate-300 hover:text-white hidden lg:inline-block cursor-pointer bg-transparent border-0 p-0 text-inherit text-xs"
+          onclick="window.abrirModalAcessibilidade()"
+          type="button"
+        >
+          Acessibilidade
+        </button>
       </div>
-    </header>
-    <main id="public-app" v-cloak class="w-full pt-28 bg-surface min-h-[calc(100vh-280px)]">
+    </div>
+  </div>
+
+  <!-- Barra Principal -->
+  <div class="h-16 max-w-7xl mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-space-lg">
+    <!-- Brand / Logo -->
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-emerald-600 text-white shadow-sm transition-transform group-hover:scale-105">
+        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M12 8v8"/>
+          <path d="M8 12h8"/>
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-bold text-base text-slate-900 leading-tight tracking-tight">Vacina Alagoas</span>
+        <span class="text-xs text-slate-500 font-normal leading-tight hidden sm:block">Guia de Postos e Vacinas</span>
+      </div>
+    </a>
+
+    <!-- Menu Simplificado com Ícones -->
+    <nav class="flex items-center gap-1 sm:gap-2">
+      <a
+        class="px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#search-form"
+        onclick="window.rolarPara('search-form', event)"
+      >
+        <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Buscar Postos</span>
+      </a>
+      <a
+        class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#painel-mapa"
+        onclick="window.alternarVisao('mapa'); window.rolarPara('painel-mapa', event);"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>Mapa</span>
+      </a>
+      <a
+        class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#guia-cidadao"
+        onclick="window.rolarPara('guia-cidadao', event)"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Calendário</span>
+      </a>
+    </nav>
+
+    <!-- Botão Painel Administrativo -->
+    <div class="flex items-center gap-space-md shrink-0">
+      <button
+        class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-md border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 hover:text-slate-900 font-medium text-xs sm:text-sm transition-all shadow-sm whitespace-nowrap cursor-pointer"
+        type="button"
+        onclick="window.abrirModalLoginAdmin()"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="hidden sm:inline">Área Restrita</span>
+        <span class="sm:hidden">Entrar</span>
+      </button>
+    </div>
+  </div>
+</header>
+    <main id="public-app" v-cloak class="w-full pt-24 bg-surface min-h-[calc(100vh-280px)]">
       <div class="flex flex-col w-full">
         <!-- HERO INSTITUCIONAL & BUSCA GEOLOCALIZADA -->
         <section
@@ -410,7 +414,7 @@
                       onchange="window.executarBusca()"
                     >
                       <option value="" disabled selected>
-                        Carregando cidades da SESAU...
+                        Carregando municípios...
                       </option>
                     </select>
                     <svg class="w-4 h-4 absolute right-space-md top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
@@ -864,7 +868,7 @@
                     class="font-body-sm text-body-sm text-on-surface-variant mb-space-md"
                   >
                     Acompanhe o cronograma prioritário estabelecido pela
-                    Secretaria de Estado da Saúde (SESAU):
+                    Coordenação de Saúde:
                   </p>
                   <div
                     class="flex flex-col gap-space-sm font-body-sm text-body-sm text-on-surface"
