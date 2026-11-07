@@ -368,7 +368,7 @@
         * Campos com validação obrigatória
       </span>
 </div>
-<form class="space-y-space-lg" id="form-novo-posto" @submit.prevent="salvarPontoManual">
+<form class="space-y-space-lg" id="form-novo-posto" @submit.prevent="salvarPosto">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
 <!-- Município -->
 <div>
@@ -841,7 +841,7 @@
         feedbackMsg.value = `Editando Posto #${p.id}. Ajuste os dados e salve para atualizar no PostgreSQL.`;
       }
 
-      function cancelarEdicao() {
+      function cancelarEdicao(limparFeedback = true) {
         form.value = {
           id: null,
           city_id: 1,
@@ -854,7 +854,9 @@
         };
         cepInput.value = "";
         cepStatusHtml.value = "";
-        feedbackMsg.value = "";
+        if (limparFeedback) {
+          feedbackMsg.value = "";
+        }
       }
 
       async function salvarPosto() {
@@ -897,7 +899,7 @@
           });
 
           if (res.status === 401) {
-            alert("Sessão expirada. Faça login novamente.");
+            alert("Sessão administrativa expirada ou não autenticada. Acesse o portal e faça login novamente.");
             return;
           }
 
@@ -907,11 +909,15 @@
           }
 
           const resultado = await res.json();
-          feedbackMsg.value = isEdicao ? `Posto #${form.value.id} atualizado com sucesso!` : `Novo posto cadastrado com sucesso! ID #${resultado.id}`;
-          cancelarEdicao();
+          const msgSucesso = isEdicao ? `Posto #${form.value.id} atualizado com sucesso!` : `Novo posto cadastrado com sucesso! ID #${resultado.id}`;
+          feedbackMsg.value = msgSucesso;
+          alert("✓ " + msgSucesso);
+          cancelarEdicao(false);
           await carregarPostos();
+          setTimeout(() => { feedbackMsg.value = ""; }, 8000);
         } catch (err) {
-          alert("Erro: " + err.message);
+          console.error("Erro ao salvar:", err);
+          alert("Erro ao salvar posto: " + err.message);
         } finally {
           salvandoPosto.value = false;
         }
@@ -1037,6 +1043,7 @@
         editarPosto,
         cancelarEdicao,
         salvarPosto,
+        salvarPontoManual: salvarPosto,
         desativarPosto
       };
     }
