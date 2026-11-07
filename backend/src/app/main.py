@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.app.config import settings
+from src.core.rate_limiter import RateLimiterMiddleware
 from src.api.v1.api import api_router
 from src.api.v1.endpoints import auth, cities, points, enrichment
 
@@ -15,6 +16,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+# Rate Limiter Middleware: Máximo de 5 tentativas de login por minuto por IP (Proteção contra Brute Force)
+app.add_middleware(RateLimiterMiddleware, max_requests=5, window_seconds=60)
 
 # RNF-03: CORS habilitado
 app.add_middleware(
