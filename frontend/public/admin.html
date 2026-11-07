@@ -194,40 +194,51 @@
   </div>
 </section>
 
-<!-- SEÇÃO 3: CADASTRO MANUAL DE NOVO PONTO DE VACINAÇÃO -->
-<!-- MODAL DE AJUDA (?) ACESSÍVEL -->
-<div v-if="modalAjudaAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4" @click.self="modalAjudaAberto = false">
-  <div class="bg-white rounded-xl max-w-lg w-full p-space-lg shadow-xl border border-slate-200 space-y-4">
-    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">?</div>
-        <h3 class="font-bold text-base text-slate-900">Como funciona o Painel de Gestão?</h3>
+<!-- MODAL DE AJUDA / GUIA DO OPERADOR (Z-INDEX 80 PARA SOBREPOR QUALQUER OUTRO MODAL) -->
+<div v-if="modalAjudaAberto" class="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4" @click.self="modalAjudaAberto = false">
+  <div class="bg-white rounded-2xl max-w-lg w-full p-space-lg shadow-2xl border border-slate-200 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-base shadow-xs">?</div>
+        <div>
+          <h3 class="font-bold text-base text-slate-900">Guia Prático do Operador</h3>
+          <span class="text-xs text-slate-500">Orientação para gestão e cadastro de unidades</span>
+        </div>
       </div>
-      <button type="button" @click="modalAjudaAberto = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1 cursor-pointer">&times;</button>
+      <button type="button" @click="modalAjudaAberto = false" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1 cursor-pointer">&times;</button>
     </div>
 
     <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
-      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-        <span class="font-bold text-slate-800 block">1. Cadastro em 3 Passos:</span>
-        <p>• <strong>Passo 1 (Localização):</strong> Digite o CEP para preencher o bairro e a rua automaticamente via ViaCEP.<br/>
-        • <strong>Passo 2 (Identificação):</strong> Informe o nome formal da UBS ou USF.<br/>
-        • <strong>Passo 3 (Vacinas):</strong> Marque as vacinas que estão com lote ativo e confirme o cadastro no banco relacional.</p>
+      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+        <span class="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
+          <span class="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[11px] font-bold">1</span>
+          Assistente de Cadastro em 3 Etapas:
+        </span>
+        <p>• <strong>Etapa 1 (Jurisdição &amp; Endereço):</strong> Escolha o município (Maceió ou Arapiraca) e digite o CEP para preenchimento automático via ViaCEP.<br/>
+        • <strong>Etapa 2 (Identificação Formal):</strong> Informe o nome oficial da unidade de saúde (UBS/USF).<br/>
+        • <strong>Etapa 3 (Vacinas &amp; Salvar):</strong> Selecione os imunobiológicos disponíveis em estoque e confirme para salvar no banco relacional PostgreSQL.</p>
       </div>
 
-      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-        <span class="font-bold text-slate-800 block">2. Editar ou Excluir Postos Existentes:</span>
-        <p>Na tabela de auditoria abaixo, clique no ícone de <strong>lápis (Editar)</strong> para carregar os dados no assistente ou no ícone de <strong>bloqueio (Desativar)</strong> para remover.</p>
+      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+        <span class="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[11px] font-bold">2</span>
+          Mineração Geográfica (OpenStreetMap):
+        </span>
+        <p>No topo da página, use o <strong>Robô OSM</strong> escolhendo o escopo (Todo o Estado de Alagoas, Maceió ou Arapiraca) para sincronizar postos georreferenciados diretamente para o banco relacional.</p>
       </div>
 
-      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-        <span class="font-bold text-slate-800 block">3. Importação do OpenStreetMap:</span>
-        <p>O robô no final da página permite minerar novas coordenadas georreferenciadas do OpenStreetMap e salvá-las no PostgreSQL de forma idempotente.</p>
+      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+        <span class="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[11px] font-bold">3</span>
+          Edição e Desativação Segura:
+        </span>
+        <p>Na tabela de auditoria, clique no <strong>ícone de lápis</strong> para carregar o posto no assistente ou no <strong>ícone de bloqueio</strong> para desativar a unidade com confirmação personalizada do sistema.</p>
       </div>
     </div>
 
     <div class="pt-2 flex justify-end">
-      <button type="button" @click="modalAjudaAberto = false" class="px-4 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-lg cursor-pointer">
-        Entendido, fechar ajuda
+      <button type="button" @click="modalAjudaAberto = false" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-sm">
+        Entendido, Fechar Guia
       </button>
     </div>
   </div>
@@ -367,7 +378,7 @@
 </section>
 
 <!-- MODAL DE CADASTRO / EDIÇÃO MANUAL (PASSO A PASSO) -->
-<div v-if="modalCadastroAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto" @click.self="cancelarEdicao">
+<div v-if="modalCadastroAberto" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto" @click.self="cancelarEdicao">
   <div class="bg-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-200 space-y-space-md my-8">
     <div class="flex items-center justify-between pb-2 border-b border-slate-200">
       <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cadastro Manual de Exceção</span>
@@ -607,7 +618,7 @@
 </div>
 
 <!-- MODAL DE DOCUMENTAÇÃO TÉCNICA (SWAGGER, REDOC, POSTGRESQL) -->
-<div v-if="modalDocsAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4" @click.self="modalDocsAberto = false">
+<div v-if="modalDocsAberto" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4" @click.self="modalDocsAberto = false">
   <div class="bg-slate-900 text-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-700 space-y-space-md">
     <div class="flex items-center justify-between pb-3 border-b border-slate-700">
       <div class="flex items-center gap-2.5">
@@ -666,6 +677,43 @@
   </div>
 </div>
 
+<!-- MODAL DE DIÁLOGOS, FEEDBACK E CONFIRMAÇÕES PERSONALIZADAS DO SISTEMA (SUBSTITUTO DOS ALERTS E CONFIRMS) -->
+<div v-if="modalFeedback.aberto" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 backdrop-blur-xs p-4" @click.self="fecharFeedback">
+  <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div class="flex items-start gap-3.5">
+      <!-- Ícone dinâmico -->
+      <div v-if="modalFeedback.tipo === 'sucesso'" class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-xs">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div v-else-if="modalFeedback.tipo === 'erro'" class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 shadow-xs">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <div v-else-if="modalFeedback.tipo === 'confirmacao'" class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 shadow-xs">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div v-else class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-xs">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+
+      <div class="space-y-1 flex-1">
+        <h3 class="font-bold text-base text-slate-900 leading-snug">{{ modalFeedback.titulo }}</h3>
+        <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{{ modalFeedback.mensagem }}</p>
+      </div>
+    </div>
+
+    <!-- Botões de Ação do Diálogo -->
+    <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+      <button v-if="modalFeedback.textoCancelar" type="button" @click="cancelarFeedback" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer">
+        {{ modalFeedback.textoCancelar }}
+      </button>
+      <button type="button" @click="confirmarFeedback" :class="modalFeedback.tipo === 'confirmacao' ? 'bg-rose-600 hover:bg-rose-700 text-white' : (modalFeedback.tipo === 'erro' ? 'bg-slate-800 hover:bg-slate-900 text-white' : 'bg-emerald-700 hover:bg-emerald-800 text-white')" class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer">
+        {{ modalFeedback.textoConfirmar }}
+      </button>
+    </div>
+  </div>
+</div>
+
+
 </div>
 </div>
 
@@ -712,6 +760,73 @@
       const modalDocsAberto = ref(false);
       const modalCadastroAberto = ref(false);
 
+      // Sistema de Diálogos e Modais de Feedback Personalizados
+      const modalFeedback = ref({
+        aberto: false,
+        tipo: 'sucesso', // 'sucesso', 'erro', 'aviso', 'confirmacao'
+        titulo: '',
+        mensagem: '',
+        textoConfirmar: 'OK, Entendido',
+        textoCancelar: '',
+        onConfirmar: null,
+        onCancelar: null
+      });
+
+      function notificar(titulo, mensagem, tipo = 'sucesso') {
+        modalFeedback.value = {
+          aberto: true,
+          tipo: tipo,
+          titulo: titulo,
+          mensagem: mensagem,
+          textoConfirmar: 'OK, Entendido',
+          textoCancelar: '',
+          onConfirmar: () => { modalFeedback.value.aberto = false; },
+          onCancelar: null
+        };
+      }
+
+      function confirmarAcao(titulo, mensagem, onConfirmar, textoConfirmar = 'Sim, Confirmar') {
+        modalFeedback.value = {
+          aberto: true,
+          tipo: 'confirmacao',
+          titulo: titulo,
+          mensagem: mensagem,
+          textoConfirmar: textoConfirmar,
+          textoCancelar: 'Cancelar',
+          onConfirmar: () => {
+            modalFeedback.value.aberto = false;
+            if (onConfirmar) onConfirmar();
+          },
+          onCancelar: () => {
+            modalFeedback.value.aberto = false;
+          }
+        };
+      }
+
+      function confirmarFeedback() {
+        if (modalFeedback.value.onConfirmar) {
+          modalFeedback.value.onConfirmar();
+        } else {
+          modalFeedback.value.aberto = false;
+        }
+      }
+
+      function cancelarFeedback() {
+        if (modalFeedback.value.onCancelar) {
+          modalFeedback.value.onCancelar();
+        }
+        modalFeedback.value.aberto = false;
+      }
+
+      function fecharFeedback() {
+        if (!modalFeedback.value.textoCancelar) {
+          modalFeedback.value.aberto = false;
+        }
+      }
+
+      window.notificar = notificar;
+      window.confirmarAcao = confirmarAcao;
+
       // Estados Reativos do Robô de Mineração OSM
       const escopoOsm = ref("alagoas");
       const minerandoOsm = ref(false);
@@ -723,7 +838,7 @@
       async function pesquisarNoOSM() {
         const token = getAuthToken();
         if (!token) {
-          alert("Sessão administrativa expirada. Por favor, autentique-se novamente.");
+          notificar("Sessão Expirada", "Sessão administrativa expirada. Por favor, autentique-se novamente no portal.", "aviso");
           return;
         }
 
@@ -747,7 +862,7 @@
           osmFeedbackMsg.value = `✓ ${lista.length} unidades encontradas no OpenStreetMap (${escopoOsm.value === 'alagoas' ? 'Alagoas' : (escopoOsm.value === 'arapiraca' ? 'Arapiraca' : 'Maceió')})!`;
         } catch (err) {
           console.error("Erro na mineração OSM:", err);
-          alert("Erro no Robô OSM: " + err.message);
+          notificar("Falha na Mineração OSM", err.message, "erro");
         } finally {
           minerandoOsm.value = false;
         }
@@ -764,12 +879,12 @@
       async function salvarSelecionadosOSM() {
         const token = getAuthToken();
         if (!token) {
-          alert("Sessão administrativa expirada.");
+          notificar("Sessão Expirada", "Sua sessão expirou. Faça login novamente.", "aviso");
           return;
         }
 
         if (selecionadosOsm.value.length === 0) {
-          alert("Selecione ao menos uma unidade na lista do OSM para salvar.");
+          notificar("Seleção Necessária", "Por favor, marque ao menos uma unidade na lista do OpenStreetMap para confirmar a importação.", "aviso");
           return;
         }
 
@@ -792,14 +907,14 @@
           }
 
           const data = await res.json();
-          alert(`✓ Sucesso! ${data.inserted_count} novos postos inseridos no PostgreSQL (${data.ignored_count} já existiam).`);
+          notificar("Importação Concluída com Sucesso!", `${data.inserted_count} novos postos de vacinação foram cadastrados no PostgreSQL.\n(${data.ignored_count} unidades já constavam no banco).`, "sucesso");
           osmFeedbackMsg.value = `✓ ${data.inserted_count} postos importados com sucesso!`;
           // Limpa lista de minerados e recarrega os postos do banco
           postosOsm.value = [];
           selecionadosOsm.value = [];
           await carregarPostos();
         } catch (err) {
-          alert("Erro ao salvar unidades do OSM: " + err.message);
+          notificar("Erro na Importação", err.message, "erro");
         } finally {
           salvandoOsm.value = false;
         }
@@ -808,13 +923,13 @@
       function avancarPasso(proximo) {
         if (passoAtual.value === 1) {
           if (!form.value.neighborhood.trim() || !form.value.address.trim()) {
-            alert("Por favor, preencha o Bairro e o Endereço (ou consulte pelo CEP) antes de avançar.");
+            notificar("Dados Obrigatórios", "Por favor, preencha o Bairro e o Endereço (ou consulte pelo CEP) antes de avançar para a próxima etapa.", "aviso");
             return;
           }
         }
         if (passoAtual.value === 2) {
           if (!form.value.name.trim()) {
-            alert("Por favor, informe o Nome Oficial da Unidade de Saúde.");
+            notificar("Identificação Obrigatória", "Por favor, informe o Nome Oficial da Unidade de Saúde para prosseguir.", "aviso");
             return;
           }
         }
@@ -1007,12 +1122,12 @@
       async function salvarPosto() {
         const token = getAuthToken();
         if (!token) {
-          alert("Sessão administrativa expirada ou não autenticada. Por favor, acesse novamente através do login.");
+          notificar("Sessão Expirada", "Sessão administrativa expirada ou não autenticada. Acesse através do login.", "aviso");
           return;
         }
 
         if (!form.value.name.trim() || !form.value.neighborhood.trim()) {
-          alert("Por favor, preencha o Nome Oficial da Unidade e o Bairro.");
+          notificar("Campos Incompletos", "Por favor, informe o Nome Oficial da Unidade e o Bairro.", "aviso");
           return;
         }
 
@@ -1044,7 +1159,7 @@
           });
 
           if (res.status === 401) {
-            alert("Sessão administrativa expirada ou não autenticada. Acesse o portal e faça login novamente.");
+            notificar("Sessão Expirada", "Sua sessão expirou. Faça login novamente.", "aviso");
             return;
           }
 
@@ -1056,49 +1171,54 @@
           const resultado = await res.json();
           const msgSucesso = isEdicao ? `Posto #${form.value.id} atualizado com sucesso!` : `Novo posto cadastrado com sucesso! ID #${resultado.id}`;
           feedbackMsg.value = msgSucesso;
-          alert("✓ " + msgSucesso);
+          notificar("Sucesso!", msgSucesso, "sucesso");
           cancelarEdicao(false);
           await carregarPostos();
           setTimeout(() => { feedbackMsg.value = ""; }, 8000);
         } catch (err) {
           console.error("Erro ao salvar:", err);
-          alert("Erro ao salvar posto: " + err.message);
+          notificar("Erro ao Salvar", err.message, "erro");
         } finally {
           salvandoPosto.value = false;
         }
       }
 
-      async function desativarPosto(p) {
-        if (!confirm(`Deseja realmente desativar ou remover o posto #${p.id} (${p.name})?`)) return;
-
-        const token = getAuthToken();
-        if (!token) {
-          alert("Sessão administrativa expirada ou não autenticada.");
-          return;
-        }
-
-        try {
-          const res = await fetch(`${API_URL}/admin/vaccination-points/${p.id}`, {
-            method: "DELETE",
-            headers: {
-              "Authorization": `Bearer ${token}`
+      function desativarPosto(p) {
+        confirmarAcao(
+          "Desativar Unidade de Saúde",
+          `Deseja realmente desativar ou remover o posto "${p.name}" (ID #${p.id})?\nEsta alteração atualizará a base de dados do PostgreSQL.`,
+          async () => {
+            const token = getAuthToken();
+            if (!token) {
+              notificar("Sessão Expirada", "Sessão administrativa expirada ou não autenticada.", "aviso");
+              return;
             }
-          });
 
-          if (res.ok) {
-            alert(`Posto #${p.id} removido com sucesso.`);
-            await carregarPostos();
-          } else {
-            alert(`Posto #${p.id} colocado em contingência temporária.`);
-          }
-        } catch (e) {
-          alert(`Posto #${p.id} colocado em contingência temporária.`);
-        }
+            try {
+              const res = await fetch(`${API_URL}/admin/vaccination-points/${p.id}`, {
+                method: "DELETE",
+                headers: {
+                  "Authorization": `Bearer ${token}`
+                }
+              });
+
+              if (res.ok) {
+                notificar("Unidade Desativada", `Posto #${p.id} (${p.name}) removido com sucesso do catálogo ativo.`, "sucesso");
+                await carregarPostos();
+              } else {
+                notificar("Aviso", `Posto #${p.id} mantido em contingência no sistema.`, "aviso");
+              }
+            } catch (e) {
+              notificar("Erro ao Desativar", e.message || "Falha na comunicação com o servidor.", "erro");
+            }
+          },
+          "Sim, Desativar Posto"
+        );
       }
 
       function exportarCSV() {
         if (!postos.value || postos.value.length === 0) {
-          alert("Nenhum posto de vacinação carregado para exportação.");
+          notificar("Sem Dados para Exportação", "Nenhum posto de vacinação carregado no momento para exportação.", "aviso");
           return;
         }
         const cabecalho = ["ID", "Nome da Unidade", "Municipio", "Bairro", "Endereco", "Latitude", "Longitude", "Vacinas em Estoque"];
@@ -1125,7 +1245,7 @@
 
       function exportarGeoJSON() {
         if (!postos.value || postos.value.length === 0) {
-          alert("Nenhum posto de vacinação carregado para exportação.");
+          notificar("Sem Dados para Exportação", "Nenhum posto de vacinação carregado no momento para exportação.", "aviso");
           return;
         }
         const geojson = {
@@ -1190,6 +1310,12 @@
         modalDocsAberto,
         abrirModalDocs,
         carregarPostos,
+        modalFeedback,
+        notificar,
+        confirmarAcao,
+        confirmarFeedback,
+        cancelarFeedback,
+        fecharFeedback,
         modalCadastroAberto,
         escopoOsm,
         minerandoOsm,
@@ -1212,11 +1338,19 @@
   }).mount('#admin-app');
 
   window.abrirModalTermos = function() {
-    alert("Termos de Uso — Vacina Alagoas:\n\n1. Plataforma destinada exclusivamente à gestão de dados vacinais do SUS no estado de Alagoas.\n2. É vedada a inserção de dados falsos ou não homologados pela coordenação estadual de imunização.");
+    window.notificar(
+      "Termos de Uso — Vacina Alagoas",
+      "1. Plataforma destinada exclusivamente à gestão de dados vacinais do SUS no estado de Alagoas.\n2. É vedada a inserção de dados falsos ou não homologados pela coordenação de imunização.\n3. O acesso é auditado e monitorado em conformidade com as diretrizes do SUS.",
+      "aviso"
+    );
   };
 
   window.abrirModalPrivacidade = function() {
-    alert("Política de Privacidade e Cookies:\n\n• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado sensível de cidadãos ou pacientes é exposto publicamente.");
+    window.notificar(
+      "Política de Privacidade e Cookies",
+      "• Conformidade estrita com a LGPD (Lei nº 13.709/2018).\n• Nenhum dado pessoal sensível de pacientes ou cidadãos é exposto ou coletado indevidamente.\n• Autenticações administrativas utilizam criptografia JWT segura.",
+      "aviso"
+    );
   };
 </script>
 
