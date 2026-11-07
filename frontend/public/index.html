@@ -12,6 +12,7 @@
     <title>Vacina Alagoas — Consulta Pública e Busca</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&amp;display=swap"
       rel="stylesheet"
@@ -39,6 +40,9 @@
       }
       ::-webkit-scrollbar {
         display: none;
+      }
+      [v-cloak] {
+        display: none !important;
       }
     </style>
     <script>
@@ -337,7 +341,7 @@
         </div>
       </div>
     </header>
-    <main class="w-full pt-28 bg-surface min-h-[calc(100vh-280px)]">
+    <main id="public-app" v-cloak class="w-full pt-28 bg-surface min-h-[calc(100vh-280px)]">
       <div class="flex flex-col w-full">
         <!-- HERO INSTITUCIONAL & BUSCA GEOLOCALIZADA -->
         <section
@@ -1339,6 +1343,16 @@
         </div>
         <!-- SCRIPT DE INTERAÇÕES E FILTROS DINÂMICOS -->
         <script>
+  // Inicialização e montagem com Vue 3
+  const { createApp } = Vue;
+
+  createApp({
+    setup() {
+      return {};
+    }
+  }).mount('#public-app');
+
+
           (function () {
             const API_URL = "http://localhost:8085";
             let allPoints = [];
@@ -2204,162 +2218,3 @@
             });
           })();
         </script>
-      </div>
-    </main>
-    <footer class="w-full bg-primary text-on-primary mt-space-2xl">
-      <div class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-2xl">
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-xl mb-space-2xl"
-        >
-          <div class="flex flex-col gap-space-md">
-            <div class="flex items-center gap-space-sm">
-              <div
-                class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center shadow-sm"
-              >
-                <svg class="w-5 h-5 text-primary-fixed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-              </div>
-              <span class="font-headline-sm text-headline-sm text-primary-fixed"
-                >Vacina Alagoas</span
-              >
-            </div>
-            <p
-              class="font-body-sm text-body-sm text-primary-fixed-dim leading-relaxed"
-            >
-              Portal Oficial de Transparência e Consulta de Imunização da
-              Secretaria de Estado da Saúde de Alagoas em alinhamento com o SUS.
-            </p>
-            <div class="flex items-center gap-space-sm mt-space-xs">
-              <span
-                class="inline-flex items-center px-space-sm py-space-xs rounded bg-primary-container text-on-primary font-label-sm text-label-sm"
-                >WCAG 2.1 AA/AAA</span
-              ><span
-                class="inline-flex items-center px-space-sm py-space-xs rounded bg-primary-container text-on-primary font-label-sm text-label-sm"
-                >e-MAG</span
-              >
-            </div>
-          </div>
-          <div class="flex flex-col gap-space-sm">
-            <h4
-              class="font-label-lg text-label-lg text-primary-fixed font-bold mb-space-xs"
-            >
-              Canais de Atendimento
-            </h4>
-            <div class="flex items-start gap-space-sm">
-              <svg class="w-4 h-4 text-tertiary-fixed-dim mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <div>
-                <span class="font-label-md text-label-md block text-on-primary"
-                  >Disque Saúde 136</span
-                ><span class="font-body-sm text-body-sm text-primary-fixed-dim"
-                  >Atendimento 24h em todo o país</span
-                >
-              </div>
-            </div>
-            <div class="flex items-start gap-space-sm mt-space-xs">
-              <svg class="w-4 h-4 text-tertiary-fixed-dim mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <div>
-                <span class="font-label-md text-label-md block text-on-primary"
-                  >Ouvidoria SESAU / AL</span
-                ><span class="font-body-sm text-body-sm text-primary-fixed-dim"
-                  >0800 284 0011 • Seg a Sex, 8h às 17h</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col gap-space-sm">
-            <h4
-              class="font-label-lg text-label-lg text-primary-fixed font-bold mb-space-xs"
-            >
-              Navegação Institucional
-            </h4>
-            <ul
-              class="flex flex-col gap-space-xs font-body-sm text-body-sm text-primary-fixed-dim"
-            >
-              <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  href="#search-form"
-                  >Consulta de Postos Ativos</a
-                >
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                  onclick="window.abrirModalCalendario()"
-                  >Calendário Estadual de Imunização</button
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-on-primary transition-colors"
-                  href="http://localhost:8085/docs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >Dados Abertos e API Pública</a
-                >
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                  onclick="window.abrirModalFaq()"
-                  >Perguntas Frequentes (FAQ)</button
-                >
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                  onclick="window.abrirModalLoginAdmin()"
-                  >Acesso Restrito aos Operadores</button
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="flex flex-col gap-space-sm">
-            <h4
-              class="font-label-lg text-label-lg text-primary-fixed font-bold mb-space-xs"
-            >
-              Governança e Dados
-            </h4>
-            <p
-              class="font-body-sm text-body-sm text-primary-fixed-dim leading-relaxed"
-            >
-              Em conformidade com a Lei Geral de Proteção de Dados Pessoais
-              (LGPD - Lei nº 13.709/2018) e a Lei de Acesso à Informação (LAI).
-            </p>
-            <div
-              class="flex flex-col gap-space-xs pt-space-xs font-body-sm text-body-sm text-primary-fixed-dim"
-            >
-              <button
-                type="button"
-                class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                onclick="window.abrirModalTermos()"
-                >Termos de Uso e Privacidade</button
-              ><button
-                type="button"
-                class="hover:text-on-primary transition-colors bg-transparent border-0 p-0 text-inherit cursor-pointer text-left"
-                onclick="window.abrirModalPrivacidade()"
-                >Política de Cookies</button
-              >
-            </div>
-          </div>
-        </div>
-        <div
-          class="pt-space-lg border-t border-primary-container flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-primary-fixed-dim"
-        >
-          <div class="text-center md:text-left">
-            © 2025 Governo do Estado de Alagoas • Secretaria de Estado da Saúde
-            (SESAU). Todos os direitos reservados.
-          </div>
-          <div
-            class="flex items-center gap-space-lg text-label-sm font-label-sm"
-          >
-            <span class="text-primary-fixed">SUS • Sistema Único de Saúde</span
-            ><span class="opacity-40">•</span><span>Alagoas Te Faz Feliz</span>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </body>
-</html>
