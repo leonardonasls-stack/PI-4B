@@ -392,14 +392,310 @@
 </div>
 </section>
 
-
+<!-- MODAL DE CADASTRO / EDIÇÃO MANUAL (PASSO A PASSO) -->
+<div v-if="modalCadastroAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto" @click.self="cancelarEdicao">
+  <div class="bg-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-200 space-y-space-md my-8">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cadastro Manual de Exceção</span>
+      <button type="button" @click="cancelarEdicao" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 cursor-pointer">&times;</button>
+    </div>
+    <!-- ASSISTENTE PASSO A PASSO (WIZARD) DE CADASTRO E EDIÇÃO -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm border border-slate-200/80" id="form-novo-posto">
+  <!-- Cabeçalho do Wizard com Botão de Ajuda (?) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-lg border-b border-slate-200">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold font-mono">1-3</span>
+        <h2 class="font-headline-md text-headline-md font-bold text-on-surface">
+          {{ form.id ? `Editar Posto #${form.id}` : 'Assistente de Cadastro de Unidade' }}
+        </h2>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">
+        Cadastre ou atualize unidades do SUS em 3 etapas guiadas e objetivas.
+      </p>
+    </div>
+    
+    <!-- Botão de Ajuda (?) Acessível -->
+    <div class="flex items-center gap-2">
+      <button type="button" @click="modalAjudaAberto = true" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 shadow-sm" title="Ajuda sobre o preenchimento">
+        <svg class="w-4 h-4 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Como funciona?</span>
+      </button>
+    </div>
   </div>
-</section>
-<!-- SEÇÃO: DISTRIBUIÇÃO E COBERTURA GEOGRÁFICA -->
-<section class="w-full">
 
+  <!-- Indicador Visual de Progresso das Etapas (Stepper) -->
+  <div class="py-space-md mb-space-sm">
+    <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+      <!-- Etapa 1 -->
+      <button type="button" @click="passoAtual = 1" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 1 ? 'bg-primary text-white font-bold shadow' : (passoAtual > 1 ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-slate-100 text-slate-500')">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 1 ? 'bg-white text-primary' : (passoAtual > 1 ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700')">
+          {{ passoAtual > 1 ? '✓' : '1' }}
+        </span>
+        <span class="text-xs sm:text-sm truncate">1. Localização &amp; CEP</span>
+      </button>
+
+      <!-- Etapa 2 -->
+      <button type="button" @click="form.neighborhood && form.address ? passoAtual = 2 : null" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 2 ? 'bg-primary text-white font-bold shadow' : (passoAtual > 2 ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-slate-100 text-slate-500')">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 2 ? 'bg-white text-primary' : (passoAtual > 2 ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700')">
+          {{ passoAtual > 2 ? '✓' : '2' }}
+        </span>
+        <span class="text-xs sm:text-sm truncate">2. Identificação</span>
+      </button>
+
+      <!-- Etapa 3 -->
+      <button type="button" @click="form.name ? passoAtual = 3 : null" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 3 ? 'bg-primary text-white font-bold shadow' : 'bg-slate-100 text-slate-500'">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 3 ? 'bg-white text-primary' : 'bg-slate-300 text-slate-700'">
+          3
+        </span>
+        <span class="text-xs sm:text-sm truncate">3. Vacinas &amp; Salvar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO COM AS 3 ETAPAS -->
+  <form @submit.prevent="salvarPosto" class="space-y-space-md">
+    
+    <!-- ==================== ETAPA 1: LOCALIZAÇÃO & CEP ==================== -->
+    <div v-show="passoAtual === 1" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <span>Passo 1 de 3: Jurisdição e Endereço Oficial</span>
+        </h3>
+        <span class="text-xs text-slate-500">Preencha o CEP para autocompletar</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+        <!-- Município -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-municipio">
+            Município de Alagoas *
+          </label>
+          <select v-model="form.city_id" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-municipio">
+            <option :value="1">Maceió (Região Metropolitana / Capital - ID: 1)</option>
+            <option :value="2">Arapiraca (Região do Agreste Alagoano - ID: 2)</option>
+          </select>
+          <span class="text-[11px] text-slate-500 mt-1 block">Jurisdição sanitária municipal correspondente.</span>
+        </div>
+
+        <!-- Consulta de CEP -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-cep">
+            CEP da Unidade (Preenchimento Automático)
+          </label>
+          <div class="relative flex items-center">
+            <input v-model="cepInput" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
+            <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary hover:bg-primary-container text-white rounded-md text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Buscar</span>
+            </button>
+          </div>
+          <div class="mt-1 min-h-[18px]">
+            <span class="text-xs text-slate-600" v-html="cepStatusHtml"></span>
+          </div>
+        </div>
+
+        <!-- Bairro -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-bairro">
+            Bairro / Comunidade *
+          </label>
+          <input v-model="form.neighborhood" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-bairro" placeholder="Ex: Trapiche da Barra" type="text"/>
+          <span class="text-[11px] text-slate-500 mt-1 block">Região demográfica para geolocalização e rotas.</span>
+        </div>
+
+        <!-- Endereço Completo -->
+        <div>
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-endereco">
+            Endereço Completo com Logradouro e Número *
+          </label>
+          <input v-model="form.address" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" type="text"/>
+          <span class="text-[11px] text-slate-500 mt-1 block">Referência presencial para o cidadão no mapa.</span>
+        </div>
+      </div>
+
+      <!-- Navegação da Etapa 1 -->
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+        <button type="button" @click="cancelarEdicao" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer">
+          Limpar Campos
+        </button>
+        <button type="button" @click="avancarPasso(2)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
+          <span>Avançar para Identificação</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ETAPA 2: IDENTIFICAÇÃO DA UNIDADE ==================== -->
+    <div v-show="passoAtual === 2" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <span>Passo 2 de 3: Identificação Oficial da Unidade</span>
+        </h3>
+        <span class="text-xs text-slate-500">Cadastro formal CNES</span>
+      </div>
+
+      <!-- Resumo do Passo 1 -->
+      <div class="p-3 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
+        <div>
+          <span class="font-bold">Localização definida:</span>
+          <span> {{ form.city_id === 2 ? 'Arapiraca' : 'Maceió' }} • Bairro {{ form.neighborhood }} • {{ form.address }}</span>
+        </div>
+        <button type="button" @click="voltarPasso(1)" class="text-emerald-800 hover:underline font-semibold ml-2 shrink-0 cursor-pointer">
+          Alterar Endereço
+        </button>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-nome">
+          Nome Oficial da Unidade de Saúde (CNES) *
+        </label>
+        <input v-model="form.name" class="w-full h-12 px-4 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-nome" placeholder="Ex: UBS Bebedouro / USF Trapiche da Barra" type="text"/>
+        <span class="text-[11px] text-slate-500 mt-1 block">Designação formal cadastrada na rede estadual de saúde.</span>
+      </div>
+
+      <!-- Navegação da Etapa 2 -->
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+        <button type="button" @click="voltarPasso(1)" class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>Voltar ao Endereço</span>
+        </button>
+        <button type="button" @click="avancarPasso(3)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
+          <span>Avançar para Vacinas</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ETAPA 3: VACINAS & SALVAR ==================== -->
+    <div v-show="passoAtual === 3" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <span>Passo 3 de 3: Catálogo de Imunobiológicos &amp; Confirmação</span>
+        </h3>
+        <span class="text-xs text-slate-500">Selecione as vacinas com estoque</span>
+      </div>
+
+      <!-- Resumo Geral da Unidade Antes de Salvar -->
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2 text-xs">
+        <div class="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Revisão dos Dados Cadastrais</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600">
+          <div><strong>Unidade:</strong> {{ form.name || 'Não informado' }}</div>
+          <div><strong>Município:</strong> {{ form.city_id === 2 ? 'Arapiraca' : 'Maceió' }}</div>
+          <div><strong>Bairro:</strong> {{ form.neighborhood || 'Não informado' }}</div>
+          <div><strong>Endereço:</strong> {{ form.address || 'Não informado' }}</div>
+        </div>
+      </div>
+
+      <!-- Grade de Vacinas -->
+      <div class="space-y-2">
+        <label class="block font-semibold text-xs text-slate-700">
+          Imunobiológicos Habilitados nesta Unidade:
+        </label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+          <label v-for="v in catalogoVacinas" :key="v.id" class="flex items-center gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-emerald-500 transition-colors shadow-xs">
+            <input type="checkbox" class="w-4 h-4 rounded text-secondary" :value="v.id" v-model="form.vaccine_ids"/>
+            <span class="text-xs font-semibold text-slate-800">{{ v.nome }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Navegação da Etapa 3 e Botão de Salvar Final -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
+        <button type="button" @click="voltarPasso(2)" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>Voltar para Identificação</span>
+        </button>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button type="button" @click="cancelarEdicao" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-medium cursor-pointer">
+            Cancelar
+          </button>
+          <button type="button" @click="salvarPosto" :disabled="salvandoPosto" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span>{{ form.id ? `Confirmar Atualização (#${form.id})` : 'Salvar no PostgreSQL' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback de Sucesso/Alerta -->
+    <div v-if="feedbackMsg" class="p-3.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold flex items-center gap-2">
+      <svg class="w-4 h-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span>{{ feedbackMsg }}</span>
+    </div>
+  </form>
+</section>
+  </div>
+</div>
+
+<!-- MODAL DE DOCUMENTAÇÃO TÉCNICA (SWAGGER, REDOC, POSTGRESQL) -->
+<div v-if="modalDocsAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4" @click.self="modalDocsAberto = false">
+  <div class="bg-slate-900 text-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-700 space-y-space-md">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs">API</div>
+        <div>
+          <h3 class="font-bold text-base text-white">Documentação Técnica &amp; Evidências de Projeto</h3>
+          <span class="text-xs text-slate-400">Trabalho Acadêmico Integrador IV-B • FastAPI + PostgreSQL/PostGIS</span>
+        </div>
+      </div>
+      <button type="button" @click="modalDocsAberto = false" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer p-1">&times;</button>
+    </div>
+
+    <!-- Cards de Acesso da Documentação -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md py-2">
+      <!-- Swagger -->
+      <a class="p-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 transition-all flex flex-col justify-between group" href="/docs" target="_blank" rel="noopener noreferrer">
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI</span>
+            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+          <p class="text-xs text-slate-300">Interface interativa para testar endpoints e parâmetros em tempo real.</p>
+        </div>
+        <span class="font-mono text-xs text-emerald-400 pt-3 font-semibold">GET /docs &rarr;</span>
+      </a>
+
+      <!-- ReDoc -->
+      <a class="p-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 transition-all flex flex-col justify-between group" href="/redoc" target="_blank" rel="noopener noreferrer">
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">ReDoc Spec</span>
+            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+          <p class="text-xs text-slate-300">Especificação detalhada de contratos, respostas HTTP e schemas Pydantic.</p>
+        </div>
+        <span class="font-mono text-xs text-emerald-400 pt-3 font-semibold">GET /redoc &rarr;</span>
+      </a>
+
+      <!-- Banco PostgreSQL -->
+      <div class="p-4 rounded-xl bg-slate-800/90 border border-slate-700 flex flex-col justify-between">
+        <div class="space-y-1">
+          <span class="font-bold text-sm text-slate-200">PostgreSQL Relacional</span>
+          <p class="text-xs text-slate-300">Tabelas: <code class="text-emerald-300 font-mono">vaccination_points</code>, <code class="text-emerald-300 font-mono">vaccines</code>, <code class="text-emerald-300 font-mono">point_vaccines</code>.</p>
+        </div>
+        <span class="text-xs text-emerald-400 font-bold pt-3 flex items-center gap-1">
+          ✓ Índices Espaciais GIST Ativos
+        </span>
+      </div>
+    </div>
+
+    <div class="pt-2 flex justify-end">
+      <button type="button" @click="modalDocsAberto = false" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg cursor-pointer border border-slate-700">
+        Fechar Janela
+      </button>
+    </div>
+  </div>
+</div>
 
 </div>
+</div>
+</main>
+
 <script>
   const { createApp, ref, computed, onMounted } = Vue;
 
@@ -922,307 +1218,9 @@
   };
 </script>
 
-<!-- MODAL DE CADASTRO / EDIÇÃO MANUAL (PASSO A PASSO) -->
-<div v-if="modalCadastroAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto" @click.self="cancelarEdicao">
-  <div class="bg-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-200 space-y-space-md my-8">
-    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cadastro Manual de Exceção</span>
-      <button type="button" @click="cancelarEdicao" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1 cursor-pointer">&times;</button>
-    </div>
-    <!-- ASSISTENTE PASSO A PASSO (WIZARD) DE CADASTRO E EDIÇÃO -->
-<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm border border-slate-200/80" id="form-novo-posto">
-  <!-- Cabeçalho do Wizard com Botão de Ajuda (?) -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-lg border-b border-slate-200">
-    <div class="space-y-1">
-      <div class="flex items-center gap-2">
-        <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold font-mono">1-3</span>
-        <h2 class="font-headline-md text-headline-md font-bold text-on-surface">
-          {{ form.id ? `Editar Posto #${form.id}` : 'Assistente de Cadastro de Unidade' }}
-        </h2>
-      </div>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">
-        Cadastre ou atualize unidades do SUS em 3 etapas guiadas e objetivas.
-      </p>
-    </div>
-    
-    <!-- Botão de Ajuda (?) Acessível -->
-    <div class="flex items-center gap-2">
-      <button type="button" @click="modalAjudaAberto = true" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 shadow-sm" title="Ajuda sobre o preenchimento">
-        <svg class="w-4 h-4 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>Como funciona?</span>
-      </button>
-    </div>
-  </div>
 
-  <!-- Indicador Visual de Progresso das Etapas (Stepper) -->
-  <div class="py-space-md mb-space-sm">
-    <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-      <!-- Etapa 1 -->
-      <button type="button" @click="passoAtual = 1" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 1 ? 'bg-primary text-white font-bold shadow' : (passoAtual > 1 ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-slate-100 text-slate-500')">
-        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 1 ? 'bg-white text-primary' : (passoAtual > 1 ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700')">
-          {{ passoAtual > 1 ? '✓' : '1' }}
-        </span>
-        <span class="text-xs sm:text-sm truncate">1. Localização &amp; CEP</span>
-      </button>
 
-      <!-- Etapa 2 -->
-      <button type="button" @click="form.neighborhood && form.address ? passoAtual = 2 : null" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 2 ? 'bg-primary text-white font-bold shadow' : (passoAtual > 2 ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-slate-100 text-slate-500')">
-        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 2 ? 'bg-white text-primary' : (passoAtual > 2 ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700')">
-          {{ passoAtual > 2 ? '✓' : '2' }}
-        </span>
-        <span class="text-xs sm:text-sm truncate">2. Identificação</span>
-      </button>
-
-      <!-- Etapa 3 -->
-      <button type="button" @click="form.name ? passoAtual = 3 : null" class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2.5 rounded-lg transition-all cursor-pointer text-left" :class="passoAtual === 3 ? 'bg-primary text-white font-bold shadow' : 'bg-slate-100 text-slate-500'">
-        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" :class="passoAtual === 3 ? 'bg-white text-primary' : 'bg-slate-300 text-slate-700'">
-          3
-        </span>
-        <span class="text-xs sm:text-sm truncate">3. Vacinas &amp; Salvar</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- FORMULÁRIO COM AS 3 ETAPAS -->
-  <form @submit.prevent="salvarPosto" class="space-y-space-md">
-    
-    <!-- ==================== ETAPA 1: LOCALIZAÇÃO & CEP ==================== -->
-    <div v-show="passoAtual === 1" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-          <span>Passo 1 de 3: Jurisdição e Endereço Oficial</span>
-        </h3>
-        <span class="text-xs text-slate-500">Preencha o CEP para autocompletar</span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
-        <!-- Município -->
-        <div>
-          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-municipio">
-            Município de Alagoas *
-          </label>
-          <select v-model="form.city_id" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-municipio" required>
-            <option :value="1">Maceió (Região Metropolitana / Capital - ID: 1)</option>
-            <option :value="2">Arapiraca (Região do Agreste Alagoano - ID: 2)</option>
-          </select>
-          <span class="text-[11px] text-slate-500 mt-1 block">Jurisdição sanitária municipal correspondente.</span>
-        </div>
-
-        <!-- Consulta de CEP -->
-        <div>
-          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-cep">
-            CEP da Unidade (Preenchimento Automático)
-          </label>
-          <div class="relative flex items-center">
-            <input v-model="cepInput" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
-            <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary hover:bg-primary-container text-white rounded-md text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <span>Buscar</span>
-            </button>
-          </div>
-          <div class="mt-1 min-h-[18px]">
-            <span class="text-xs text-slate-600" v-html="cepStatusHtml"></span>
-          </div>
-        </div>
-
-        <!-- Bairro -->
-        <div>
-          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-bairro">
-            Bairro / Comunidade *
-          </label>
-          <input v-model="form.neighborhood" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-bairro" placeholder="Ex: Trapiche da Barra" required type="text"/>
-          <span class="text-[11px] text-slate-500 mt-1 block">Região demográfica para geolocalização e rotas.</span>
-        </div>
-
-        <!-- Endereço Completo -->
-        <div>
-          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-endereco">
-            Endereço Completo com Logradouro e Número *
-          </label>
-          <input v-model="form.address" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" required type="text"/>
-          <span class="text-[11px] text-slate-500 mt-1 block">Referência presencial para o cidadão no mapa.</span>
-        </div>
-      </div>
-
-      <!-- Navegação da Etapa 1 -->
-      <div class="flex items-center justify-between pt-3 border-t border-slate-200">
-        <button type="button" @click="cancelarEdicao" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer">
-          Limpar Campos
-        </button>
-        <button type="button" @click="avancarPasso(2)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
-          <span>Avançar para Identificação</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- ==================== ETAPA 2: IDENTIFICAÇÃO DA UNIDADE ==================== -->
-    <div v-show="passoAtual === 2" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-          <span>Passo 2 de 3: Identificação Oficial da Unidade</span>
-        </h3>
-        <span class="text-xs text-slate-500">Cadastro formal CNES</span>
-      </div>
-
-      <!-- Resumo do Passo 1 -->
-      <div class="p-3 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-        <div>
-          <span class="font-bold">Localização definida:</span>
-          <span> {{ form.city_id === 2 ? 'Arapiraca' : 'Maceió' }} • Bairro {{ form.neighborhood }} • {{ form.address }}</span>
-        </div>
-        <button type="button" @click="voltarPasso(1)" class="text-emerald-800 hover:underline font-semibold ml-2 shrink-0 cursor-pointer">
-          Alterar Endereço
-        </button>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-nome">
-          Nome Oficial da Unidade de Saúde (CNES) *
-        </label>
-        <input v-model="form.name" class="w-full h-12 px-4 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-nome" placeholder="Ex: UBS Bebedouro / USF Trapiche da Barra" required type="text"/>
-        <span class="text-[11px] text-slate-500 mt-1 block">Designação formal cadastrada na rede estadual de saúde.</span>
-      </div>
-
-      <!-- Navegação da Etapa 2 -->
-      <div class="flex items-center justify-between pt-3 border-t border-slate-200">
-        <button type="button" @click="voltarPasso(1)" class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          <span>Voltar ao Endereço</span>
-        </button>
-        <button type="button" @click="avancarPasso(3)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
-          <span>Avançar para Vacinas</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- ==================== ETAPA 3: VACINAS & SALVAR ==================== -->
-    <div v-show="passoAtual === 3" class="space-y-space-md p-space-md rounded-xl bg-slate-50/70 border border-slate-200/60">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-          <span>Passo 3 de 3: Catálogo de Imunobiológicos &amp; Confirmação</span>
-        </h3>
-        <span class="text-xs text-slate-500">Selecione as vacinas com estoque</span>
-      </div>
-
-      <!-- Resumo Geral da Unidade Antes de Salvar -->
-      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2 text-xs">
-        <div class="font-bold text-slate-800 text-sm flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Revisão dos Dados Cadastrais</span>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600">
-          <div><strong>Unidade:</strong> {{ form.name || 'Não informado' }}</div>
-          <div><strong>Município:</strong> {{ form.city_id === 2 ? 'Arapiraca' : 'Maceió' }}</div>
-          <div><strong>Bairro:</strong> {{ form.neighborhood || 'Não informado' }}</div>
-          <div><strong>Endereço:</strong> {{ form.address || 'Não informado' }}</div>
-        </div>
-      </div>
-
-      <!-- Grade de Vacinas -->
-      <div class="space-y-2">
-        <label class="block font-semibold text-xs text-slate-700">
-          Imunobiológicos Habilitados nesta Unidade:
-        </label>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
-          <label v-for="v in catalogoVacinas" :key="v.id" class="flex items-center gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-emerald-500 transition-colors shadow-xs">
-            <input type="checkbox" class="w-4 h-4 rounded text-secondary" :value="v.id" v-model="form.vaccine_ids"/>
-            <span class="text-xs font-semibold text-slate-800">{{ v.nome }}</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Navegação da Etapa 3 e Botão de Salvar Final -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
-        <button type="button" @click="voltarPasso(2)" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          <span>Voltar para Identificação</span>
-        </button>
-
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button type="button" @click="cancelarEdicao" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-medium cursor-pointer">
-            Cancelar
-          </button>
-          <button type="submit" :disabled="salvandoPosto" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            <span>{{ form.id ? `Confirmar Atualização (#${form.id})` : 'Salvar no PostgreSQL' }}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Feedback de Sucesso/Alerta -->
-    <div v-if="feedbackMsg" class="p-3.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold flex items-center gap-2">
-      <svg class="w-4 h-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      <span>{{ feedbackMsg }}</span>
-    </div>
-  </form>
-</section>
-  </div>
-</div>
-
-<!-- MODAL DE DOCUMENTAÇÃO TÉCNICA (SWAGGER, REDOC, POSTGRESQL) -->
-<div v-if="modalDocsAberto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4" @click.self="modalDocsAberto = false">
-  <div class="bg-slate-900 text-white rounded-2xl max-w-3xl w-full p-space-lg lg:p-space-xl shadow-2xl border border-slate-700 space-y-space-md">
-    <div class="flex items-center justify-between pb-3 border-b border-slate-700">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs">API</div>
-        <div>
-          <h3 class="font-bold text-base text-white">Documentação Técnica &amp; Evidências de Projeto</h3>
-          <span class="text-xs text-slate-400">Trabalho Acadêmico Integrador IV-B • FastAPI + PostgreSQL/PostGIS</span>
-        </div>
-      </div>
-      <button type="button" @click="modalDocsAberto = false" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer p-1">&times;</button>
-    </div>
-
-    <!-- Cards de Acesso da Documentação -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md py-2">
-      <!-- Swagger -->
-      <a class="p-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 transition-all flex flex-col justify-between group" href="/docs" target="_blank" rel="noopener noreferrer">
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI</span>
-            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </div>
-          <p class="text-xs text-slate-300">Interface interativa para testar endpoints e parâmetros em tempo real.</p>
-        </div>
-        <span class="font-mono text-xs text-emerald-400 pt-3 font-semibold">GET /docs &rarr;</span>
-      </a>
-
-      <!-- ReDoc -->
-      <a class="p-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 transition-all flex flex-col justify-between group" href="/redoc" target="_blank" rel="noopener noreferrer">
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">ReDoc Spec</span>
-            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </div>
-          <p class="text-xs text-slate-300">Especificação detalhada de contratos, respostas HTTP e schemas Pydantic.</p>
-        </div>
-        <span class="font-mono text-xs text-emerald-400 pt-3 font-semibold">GET /redoc &rarr;</span>
-      </a>
-
-      <!-- Banco PostgreSQL -->
-      <div class="p-4 rounded-xl bg-slate-800/90 border border-slate-700 flex flex-col justify-between">
-        <div class="space-y-1">
-          <span class="font-bold text-sm text-slate-200">PostgreSQL Relacional</span>
-          <p class="text-xs text-slate-300">Tabelas: <code class="text-emerald-300 font-mono">vaccination_points</code>, <code class="text-emerald-300 font-mono">vaccines</code>, <code class="text-emerald-300 font-mono">point_vaccines</code>.</p>
-        </div>
-        <span class="text-xs text-emerald-400 font-bold pt-3 flex items-center gap-1">
-          ✓ Índices Espaciais GIST Ativos
-        </span>
-      </div>
-    </div>
-
-    <div class="pt-2 flex justify-end">
-      <button type="button" @click="modalDocsAberto = false" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg cursor-pointer border border-slate-700">
-        Fechar Janela
-      </button>
-    </div>
-  </div>
-</div>
-
-</div></main><footer class="w-full bg-slate-900 text-slate-300 border-t border-slate-800">
+<footer class="w-full bg-slate-900 text-slate-300 border-t border-slate-800">
   <div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl space-y-space-lg">
     
     <!-- BARRA COMPACTA COM BOTÃO PARA MODAL DE DOCUMENTAÇÃO -->
