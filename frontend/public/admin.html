@@ -10,7 +10,7 @@
   <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="#form-novo-posto">Novo Posto</a>
   <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="#secao-osm">Mineração OSM</a>
   <a class="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors rounded" href="index.html">Portal Cidadão &rarr;</a>
-</nav><div class="flex items-center gap-space-md shrink-0"><div class="hidden md:flex flex-col items-end text-right"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span><span class="font-label-sm text-label-sm text-on-primary">admin.sesau</span><span class="font-label-sm text-label-sm text-on-primary-container text-[10px]">(JWT Ativo)</span></div><span class="font-label-sm text-label-sm text-on-primary-container text-[11px]">Coordenação de Imunização Estadual</span></div><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col w-full gap-space-xl">
+</nav><div class="flex items-center gap-space-md shrink-0"><div class="hidden md:flex flex-col items-end text-right"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span><span class="font-label-sm text-label-sm text-on-primary">admin.sesau</span></div><span class="font-label-sm text-label-sm text-on-primary-container text-[11px]">Coordenação de Imunização Estadual</span></div><button type="button" onclick="localStorage.removeItem('access_token'); window.location.href='index.html';" class="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 text-white font-label-sm text-xs transition-colors flex items-center gap-1 cursor-pointer" title="Encerrar Sessão"><span>Sair</span><span class="material-symbols-outlined text-[16px]">logout</span></button></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col w-full gap-space-xl">
 <!-- BANNER DE CONTEXTO E STATUS DO SISTEMA -->
 <section id="visao-geral" class="relative overflow-hidden bg-primary text-on-primary rounded-xl shadow-lg p-space-lg lg:p-space-xl">
 <div class="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-surface-tint/20 blur-3xl pointer-events-none"></div>
@@ -41,7 +41,7 @@
 </div>
 </div>
 <!-- KPI Cards Rápidos -->
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md pt-space-md">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md pt-space-md">
 <!-- KPI 1 -->
 <div class="bg-primary-container/80 rounded-lg p-space-md flex flex-col justify-between shadow-sm">
 <div class="flex items-center justify-between">
@@ -82,99 +82,16 @@
 <p class="font-body-sm text-body-sm text-primary-fixed-dim mt-0.5">PostgreSQL PostGIS Conectado</p>
 </div>
 </div>
-<!-- KPI 4 -->
-<div class="bg-primary-container/80 rounded-lg p-space-md flex flex-col justify-between shadow-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-sm text-label-sm text-primary-fixed uppercase">Sessão Administrativa</span>
-</div>
-<div class="mt-space-sm">
-<div class="flex items-baseline gap-space-xs">
-<span class="font-headline-lg text-headline-lg font-bold text-on-primary">admin</span>
-<span class="font-label-sm text-label-sm text-tertiary-fixed font-semibold">118 min</span>
-</div>
-<div class="flex items-center justify-between mt-space-xs">
-<span class="font-label-sm text-label-sm text-primary-fixed-dim">Super Administrador</span>
-<button class="text-tertiary-fixed hover:text-on-primary font-label-sm text-label-sm font-bold underline cursor-pointer" id="btn-quick-renew" onclick="window.realizarLoginAdmin()" type="button">Renovar</button>
-</div>
 </div>
 </div>
 </div>
 </section>
-<!-- SEÇÃO 1: STATUS DE AUTENTICAÇÃO E SEGURANÇA (JWT BEARER) -->
-<section class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm">
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md">
-<div class="space-y-1">
-<div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">1. Autenticação &amp; Segurança (JWT Bearer Token)</h2>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-          Controle de acesso às rotas restritas via cabeçalho <code class="px-1.5 py-0.5 rounded bg-surface-container-high font-mono text-[12px] text-primary">Authorization: Bearer &lt;token&gt;</code>.
-        </p>
-</div>
-<div class="flex items-center gap-space-sm">
-<span class="px-2.5 py-1 rounded bg-secondary/10 text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">lock</span> Sessão Criptografada (HS256)
-        </span>
-</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
-<!-- Bloco de Visualização do Token -->
-<div class="lg:col-span-8 bg-surface-container-low rounded-lg p-space-md space-y-space-sm">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-space-xs">
-<span class="font-label-md text-label-md text-on-surface font-semibold">JWT Payload Atual</span>
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-primary-container text-on-primary">role: super_admin</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">exp: 2025-05-18T16:42:00Z</span>
-</div>
-<div class="flex items-center gap-space-sm bg-surface-container-lowest rounded p-space-sm">
-<span class="material-symbols-outlined text-on-surface-variant text-[18px] shrink-0">code</span>
-<input aria-label="Token JWT Bearer autenticado" class="w-full bg-transparent font-mono text-body-sm text-on-surface font-normal select-all outline-none" id="jwt-token-input" readonly="" type="text" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJzdXBlcl9hZG1pbiIsImV4cCI6MTc0NzU4NjUyMH0.K2bZ_EXAMPLE_SESAU_AL_AUTHENTICATED_SECURE_TOKEN_XYZ"/>
-<button class="shrink-0 px-space-md py-1.5 rounded bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1" id="btn-copy-token" type="button">
-<span class="material-symbols-outlined text-[16px]">content_copy</span>
-<span id="copy-token-text">Copiar Bearer</span>
-</button>
-</div>
-<div class="flex flex-wrap items-center justify-between text-body-sm text-on-surface-variant pt-1">
-<span class="flex items-center gap-1 font-label-sm text-label-sm">
-<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span> Autenticado no endpoint <code class="font-mono text-primary font-bold">POST /auth/login</code>
-</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Issuer: <strong class="text-on-surface">sesau.al.gov.br</strong></span>
-</div>
-</div>
-<!-- Formulário Rápido de Re-login -->
-<div class="lg:col-span-4 bg-surface-container rounded-lg p-space-md space-y-space-sm">
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md font-bold text-on-surface">Reautenticação Rápida</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">Uvicorn Auth</span>
-</div>
-<div class="space-y-space-xs">
-<div>
-<label class="block font-label-sm text-label-sm text-on-surface-variant mb-0.5">Usuário</label>
-<input class="w-full bg-surface-container-lowest px-3 py-1.5 rounded font-label-sm text-label-sm text-on-surface outline-none" id="admin-user-input" type="text" value="admin"/>
-</div>
-<div>
-<label class="block font-label-sm text-label-sm text-on-surface-variant mb-0.5">Credencial / Senha</label>
-<input class="w-full bg-surface-container-lowest px-3 py-1.5 rounded font-label-sm text-label-sm text-on-surface outline-none" id="admin-pass-input" type="password" value="admin123"/>
-</div>
-</div>
-<div class="flex items-center gap-space-xs pt-space-xs">
-<button class="w-full py-2 rounded bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer" id="btn-login-admin" onclick="window.realizarLoginAdmin()" type="button">
-  Renovar Token / Autenticar
-</button>
-<button class="w-auto px-3 py-2 rounded bg-surface-container-highest text-on-surface hover:bg-surface-dim font-label-sm text-label-sm font-semibold transition-colors cursor-pointer" onclick="localStorage.removeItem('access_token'); location.reload();" title="Encerrar Sessão" type="button">
-  Sair
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- SEÇÃO 2: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
+<!-- SEÇÃO 1: BOT DE ENRIQUECIMENTO OPENSTREETMAP (OSM) -->
 <section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-md relative overflow-hidden">
 <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-lg">
 <div class="space-y-1">
 <div class="flex flex-wrap items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">2. Bot de Mineração OpenStreetMap (OSM)</h2>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">1. Bot de Mineração OpenStreetMap (OSM)</h2>
 <span class="px-2.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold uppercase tracking-wider">
             Overpass API • Nominatim
           </span>
@@ -382,7 +299,7 @@
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg">
 <div class="space-y-1">
 <div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Cadastro Manual de Ponto de Vacinação</h2>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">2. Cadastro Manual de Ponto de Vacinação</h2>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
           Inserção direta no repositório estadual via <code class="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[12px] text-primary">POST /admin/vaccination-points</code>.
@@ -509,7 +426,7 @@
 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
 <div class="space-y-1">
 <div class="flex items-center gap-space-xs">
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">4. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">3. Lista e Auditoria de Postos Cadastrados (Repositório SUS/AL)</h2>
 </div>
 <p class="font-body-sm text-body-sm text-on-surface-variant">
           Auditoria de pontos de vacinação ativos no banco relacional PostgreSQL com coordenadas e insumos vinculados.
