@@ -10,7 +10,7 @@ class PointService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def list_by_city(self, city_id: int) -> List[VaccinationPointResponse]:
+    async def list_by_city(self, city_id: int, q: Optional[str] = None) -> List[VaccinationPointResponse]:
         # Validação de existência da cidade (RF-03)
         city_res = await self.db.execute(select(City).where(City.id == city_id))
         city = city_res.scalars().first()
@@ -20,8 +20,8 @@ class PointService:
                 detail="Cidade especificada não existe"
             )
 
-        # Consulta otimizada com agregação nativa de vacinas no PostgreSQL
-        query = text("""
+        # Consulta otimizada com agregação nativa de vacinas no PostgreSQL e filtro textual/CEP
+        sql = """
             SELECT 
                 vp.id,
                 vp.name,
@@ -37,11 +37,24 @@ class PointService:
             LEFT JOIN point_vaccines pv ON vp.id = pv.point_id
             LEFT JOIN vaccines v ON pv.vaccine_id = v.id
             WHERE vp.city_id = :city_id
+        """
+        params = {"city_id": city_id}
+        if q and q.strip():
+            sql += """
+                AND (
+                    vp.name ILIKE :q
+                    OR vp.neighborhood ILIKE :q
+                    OR vp.address ILIKE :q
+                )
+            """
+            params["q"] = f"%{q.strip()}%"
+
+        sql += """
             GROUP BY vp.id, vp.name, vp.neighborhood, vp.address, vp.latitude, vp.longitude
             ORDER BY vp.name ASC;
-        """)
+        """
 
-        result = await self.db.execute(query, {"city_id": city_id})
+        result = await self.db.execute(text(sql), params)
         rows = result.mappings().all()
 
         return [

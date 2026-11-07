@@ -18,9 +18,13 @@ async def get_point_by_id(point_id: int, db: AsyncSession = Depends(get_db)):
     return await service.get_by_id(point_id)
 
 @router.get("/{city_id}", response_model=List[VaccinationPointResponse], summary="Listar Pontos de Vacinação por Cidade (RF-03)")
-async def get_points_by_city(city_id: int, db: AsyncSession = Depends(get_db)):
+async def get_points_by_city(
+    city_id: int,
+    q: str | None = None,
+    db: AsyncSession = Depends(get_db)
+):
     service = PointService(db)
-    return await service.list_by_city(city_id)
+    return await service.list_by_city(city_id, q=q)
 
 @router.post("", status_code=status.HTTP_201_CREATED, summary="Inserção Administrativa de Postos (RF-05)", dependencies=[Depends(get_current_admin)])
 async def create_vaccination_point(
