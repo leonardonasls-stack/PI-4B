@@ -74,13 +74,14 @@
         <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Postos Homologados</span>
       </a>
-      <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-3 py-1.5 text-xs lg:text-sm font-semibold text-emerald-300 bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-600/40 rounded-md transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+      <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-3 py-1.5 text-xs lg:text-sm font-semibold text-slate-200 bg-slate-800/90 hover:bg-slate-800 hover:text-white border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs" title="Cadastrar nova unidade de saúde manualmente">
         <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>+ Novo Posto</span>
+        <span>Novo Posto</span>
       </button>
-      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="index.html" target="_blank" title="Abrir portal do cidadão em nova aba">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <a class="px-3.5 py-1.5 text-xs lg:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg shadow-sm border border-emerald-500/50 transition-all flex items-center gap-2 cursor-pointer group" href="index.html" target="_blank" title="Abrir o Portal Público de Vacinação (Visão do Cidadão)">
+        <svg class="w-4 h-4 text-emerald-100 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         <span>Ver Portal</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
       </a>
     </nav>
 
@@ -248,7 +249,7 @@
   <!-- Botão Principal de Cadastro -->
   <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    <span>+ Novo Posto</span>
+    <span>Novo Posto</span>
   </button>
 
   <!-- Botão de Auxílio: Atualizar Dados em Tempo Real -->
