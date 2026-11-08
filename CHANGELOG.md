@@ -6,6 +6,7 @@ Histórico detalhado de commits e evolução do projeto **Vacina Alagoas — Pro
 
 | Código do Commit | Data / Hora | Autor | Descrição das Alterações |
 | :--- | :---: | :---: | :--- |
+| [`a4bd4fb`](https://github.com/leonardonasls-stack/PI-4B/commit/a4bd4fbdd593d5d81027640053f2a93bba0be4d1) | 08/11/2026 14:58 | Leonardo Nascimento | **Otimização de UI: remoção do atalho redundante de Mapa e exclusão de ações de impressão**<br>• Remoção do link de mapa na barra de navegação superior (navbar), preservando a alternância direta Lista/Mapa no painel de resultados.<br>• Exclusão de botões e ações de impressão (`window.print`) da seção de vacinas por idade e do modal de detalhes da unidade. |
 | [`c7afbe6`](https://github.com/leonardonasls-stack/PI-4B/commit/c7afbe69fdb80f884f966a07c4987c8870209af1) | 08/11/2026 11:34 | Leonardo Nascimento | **Proteção de rota e redirecionamento automático por expiração de sessão**<br>• Bloqueio preventivo no cabeçalho de `admin.html`: se não houver token ou se o JWT já estiver expirado, a tela de administração nem sequer é renderizada, redirecionando instantaneamente ao portal (`index.html?sessao=expirada`).<br>• Novo endpoint `GET /auth/verify` no FastAPI para checagem ativa da integridade do token no ciclo de vida `onMounted` do painel.<br>• Interceptação unificada de respostas `401 Unauthorized` em todas as rotas restritas (OSM, CRUD de postos, remoção), invalidando o token local e acionando o redirecionamento.<br>• Recepção no portal com abertura automática do modal de login acompanhado de alerta explicativo para reautenticação. |
 | [`e0441fd`](https://github.com/leonardonasls-stack/PI-4B/commit/e0441fdd5961972d62fd36529a1a33d620f23451) | 08/11/2026 01:11 | Leonardo Nascimento | **Ajuste de arquivos ignorados no repositório**<br>• Inclusão de arquivos auxiliares de IA e digests no `.gitignore`. |
 | [`a025257`](https://github.com/leonardonasls-stack/PI-4B/commit/a025257ca6f65839ce6952467d0f98beae0a0f67) | 08/11/2026 01:08 | Leonardo Nascimento | **Atualização da documentação principal com normalização de endereços**<br>• Atualização do `README.md` com diagramação ASCII do banco de dados refletindo as colunas `logradouro`, `number` e `cep`. |
@@ -79,6 +80,7 @@ Histórico detalhado de commits e evolução do projeto **Vacina Alagoas — Pro
 
 ### Resumo dos Identificadores de Commit (Hash Completo)
 
+- `a4bd4fbdd593d5d81027640053f2a93bba0be4d1`
 - `c7afbe69fdb80f884f966a07c4987c8870209af1`
 - `e0441fdd5961972d62fd36529a1a33d620f23451`
 - `a025257ca6f65839ce6952467d0f98beae0a0f67`
