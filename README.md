@@ -14,14 +14,15 @@ Plataforma unificada para localização geográfica, consulta pública e adminis
 ## Recursos Principais
 
 ### Consulta Pública (Cidadão)
-* **Busca Multi-critério em Tempo Real:** Filtre unidades de saúde por município, bairro, endereço, CEP ou tipo de imunobiológico em estoque.
+* **Busca Multi-critério em Tempo Real:** Filtre unidades de saúde por município, bairro, logradouro, CEP ou tipo de imunobiológico em estoque.
 * **Geolocalização "Meu GPS":** Detecção da posição do usuário no navegador com cálculo de distância (Fórmula de Haversine) e ordenação por proximidade.
 * **Mapa Interativo (Leaflet / OpenStreetMap):** Visualização de marcadores dinâmicos, enquadramento automático de raio de cobertura e traçado de rotas ponto a ponto no Google Maps.
 * **Acessibilidade e Usabilidade:** Interface construída com base nas diretrizes WCAG 2.1 (AA), contrastes adequados, navegação por teclado e semântica institucional limpa.
-* **Canais de Apoio:** Acesso rápido ao Disque Saúde (136), calendário vacinal completo e orientações para grupos prioritários.
+* **Canais de Apoio:** Acesso rápido ao Disque Saúde (136), calendário de vacinas por idade e fase da vida e orientações para grupos prioritários.
 
 ### Gestão e Auditoria (Painel Administrativo)
 * **CRUD Completo de Unidades:** Inclusão, edição cadastral, detalhamento e exclusão lógica de postos de saúde com proteção via JWT (OAuth2 Bearer).
+* **Normalização Granular de Endereços:** Separação precisa de CEP, Município, Bairro, Logradouro e Número predial para conferência e integridade cadastral.
 * **Autocompletar por CEP (ViaCEP):** Preenchimento automático de logradouro e bairro ao informar o código postal da unidade.
 * **Bot de Enriquecimento Territorial (OpenStreetMap / Overpass API):** Mineração de dados públicos de unidades de saúde com fluxo seguro de pré-visualização antes da confirmação e persistência no banco.
 * **Exportação de Dados:** Download de relatórios tabulares em CSV ou camadas espaciais em GeoJSON para uso em SIG e epidemiologia.
@@ -177,27 +178,29 @@ A API adota respostas padronizadas em JSON e códigos de status HTTP semânticos
 O banco relacional modela a integridade referencial com chaves primárias, estrangeiras e restrições de unicidade:
 
 ```
-┌─────────────────┐       ┌─────────────────┐       ┌───────────────────────┐
-│     states      │ 1   N │     cities      │ 1   N │  vaccination_points   │
-├─────────────────┤◄─────►├─────────────────┤◄─────►├───────────────────────┤
-│ id (PK)         │       │ id (PK)         │       │ id (PK)               │
-│ name            │       │ state_id (FK)   │       │ city_id (FK)          │
-│ uf (CHAR 2)     │       │ name            │       │ name (UNIQUE c/ city) │
-└─────────────────┘       └─────────────────┘       │ neighborhood          │
-                                                    │ address               │
-┌─────────────────┐       ┌─────────────────┐       │ latitude              │
-│   admin_users   │       │    vaccines     │       │ longitude             │
-├─────────────────┤       ├─────────────────┤       │ created_at            │
-│ id (PK)         │       │ id (PK)         │       └───────────┬───────────┘
-│ username (UQ)   │       │ name (UNIQUE)   │                   │ 1
-│ hashed_password │       │ description     │                   │
-│ created_at      │       └────────┬────────┘                   │ N
-└─────────────────┘                │ 1              ┌───────────▼───────────┐
-                                   │                │    point_vaccines     │
-                                   └───────────────►├───────────────────────┤
-                                                  N │ point_id (PK, FK)     │
-                                                    │ vaccine_id (PK, FK)   │
-                                                    └───────────────────────┘
+┌─────────────────┐       ┌─────────────────┐       ┌───────────────────────────┐
+│     states      │ 1   N │     cities      │ 1   N │    vaccination_points     │
+├─────────────────┤◄─────►├─────────────────┤◄─────►├───────────────────────────┤
+│ id (PK)         │       │ id (PK)         │       │ id (PK)                   │
+│ name            │       │ state_id (FK)   │       │ city_id (FK)              │
+│ uf (CHAR 2)     │       │ name            │       │ name (UNIQUE c/ city)     │
+└─────────────────┘       └─────────────────┘       │ neighborhood              │
+                                                    │ logradouro                │
+┌─────────────────┐       ┌─────────────────┐       │ number                    │
+│   admin_users   │       │    vaccines     │       │ cep                       │
+├─────────────────┤       ├─────────────────┤       │ address (legado/completo) │
+│ id (PK)         │       │ id (PK)         │       │ latitude                  │
+│ username (UQ)   │       │ name (UNIQUE)   │       │ longitude                 │
+│ hashed_password │       │ description     │       │ created_at                │
+│ created_at      │       └────────┬────────┘       └─────────────┬─────────────┘
+└─────────────────┘                │ 1                            │ 1
+                                   │                              │
+                                   │ N              ┌─────────────▼─────────────┐
+                                   └───────────────►│      point_vaccines       │
+                                                    ├───────────────────────────┤
+                                                    │ point_id (PK, FK)         │
+                                                    │ vaccine_id (PK, FK)       │
+                                                    └───────────────────────────┘
 ```
 
 ---
