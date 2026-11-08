@@ -1842,6 +1842,92 @@
               grid.innerHTML = htmlCards;
             }
 
+            // Aplicar Filtros e Ordenação de Postos
+            window.aplicarFiltros = function () {
+              const rawInput = (document.getElementById("bairro-ubs-input")?.value || "").trim();
+              const btnClear = document.getElementById("btn-clear-search");
+              if (btnClear) {
+                btnClear.classList.toggle("hidden", rawInput.length === 0);
+              }
+
+              const termoBusca = rawInput.toLowerCase();
+              const termoNumeros = rawInput.replace(/\D/g, "");
+              const criterioOrdem =
+                document.getElementById("ordenar-select")?.value || "distancia";
+
+              let filtrados = allPoints.filter((p) => {
+                if (!termoBusca) {
+                  const matchesVacina =
+                    filtroVacinaAtual === "todas" ||
+                    (p.vaccines &&
+                      p.vaccines.some((v) =>
+                        v.toLowerCase().includes(filtroVacinaAtual.toLowerCase()),
+                      ));
+                  return matchesVacina;
+                }
+
+                const matchesTexto =
+                  (p.name && p.name.toLowerCase().includes(termoBusca)) ||
+                  (p.neighborhood && p.neighborhood.toLowerCase().includes(termoBusca)) ||
+                  (p.address && p.address.toLowerCase().includes(termoBusca));
+
+                // Busca flexível de CEP (com ou sem hífen)
+                const pNumeros = (p.address || "").replace(/\D/g, "");
+                const matchesNumeros = termoNumeros.length >= 4 && pNumeros.includes(termoNumeros);
+
+                const matchesTermo = matchesTexto || matchesNumeros;
+
+                const matchesVacina =
+                  filtroVacinaAtual === "todas" ||
+                  (p.vaccines &&
+                    p.vaccines.some((v) =>
+                      v.toLowerCase().includes(filtroVacinaAtual.toLowerCase()),
+                    ));
+
+                return matchesTermo && matchesVacina;
+              });
+
+              // Calcular distâncias se geolocalização ativa
+              if (userLatitude && userLongitude) {
+                filtrados = filtrados.map((p) => ({
+                  ...p,
+                  distanceKm: calculateDistanceKm(
+                    userLatitude,
+                    userLongitude,
+                    p.latitude,
+                    p.longitude,
+                  ),
+                }));
+              }
+
+              // Ordenação
+              if (
+                criterioOrdem === "distancia" &&
+                userLatitude &&
+                userLongitude
+              ) {
+                filtrados.sort((a, b) => {
+                  if (a.distanceKm === null || a.distanceKm === undefined)
+                    return 1;
+                  if (b.distanceKm === null || b.distanceKm === undefined)
+                    return -1;
+                  return a.distanceKm - b.distanceKm;
+                });
+              } else if (criterioOrdem === "alfabetico") {
+                filtrados.sort((a, b) => a.name.localeCompare(b.name));
+              }
+
+              renderizarCards(filtrados);
+            };
+
+            // Executar Busca por Município selecionado no modo Cidade
+            window.executarBusca = function () {
+              const selectCidade = document.getElementById("municipio-select");
+              if (selectCidade && selectCidade.value) {
+                carregarPostos(selectCidade.value);
+              }
+            };
+
             window.selecionarVacina = function (vacina) {
               filtroVacinaAtual = vacina;
               const chips = document.querySelectorAll(".chip-vacina");
