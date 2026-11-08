@@ -1,234 +1,182 @@
 # Vacina Alagoas — Consulta Pública e Gestão de Postos de Vacinação
 
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D.svg?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
 [![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
-[![WCAG 2.1 AA/AAA](https://img.shields.io/badge/WCAG%202.1-AA%20%2F%20AAA-success.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG%202.1-AA-success.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 
-Plataforma completa de consulta pública, localização geográfica e administração de postos de vacinação no estado de **Alagoas** (com foco na capital **Maceió** e no agreste em **Arapiraca**), desenvolvida como projeto acadêmico da disciplina **Projeto Integrador IV-B**.
-
-O sistema combina uma **API RESTful assíncrona** de alta performance em **FastAPI**, persistência relacional em **PostgreSQL 16**, interface web servida via **Nginx** com renderização e estilização em Tailwind CSS, suporte à geolocalização com cálculo de distância em tempo real (Fórmula de Haversine), mapas interativos com **Leaflet**, geração de rotas no **Google Maps** e módulo de auditoria com mineração de dados via **OpenStreetMap (Overpass API)** com fluxo de prévia e confirmação.
+Plataforma unificada para localização geográfica, consulta pública e administração de postos de vacinação no estado de **Alagoas** (foco em **Maceió** e **Arapiraca**). O projeto foi concebido para simplificar o acesso da população às salas de vacina ativas do SUS e prover aos gestores ferramentas para auditoria, cadastro e integração de dados territoriais.
 
 ---
 
 ## Recursos Principais
 
-### Para o Cidadão (Acesso Aberto e Anônimo)
-- **Consulta Ágil por Município e Bairro:** Seleção de cidades atendidas (`Maceió`, `Arapiraca`) com busca instantânea por bairros e nomes de postos.
-- **Geolocalização "Meu GPS":** Detecção sob demanda das coordenadas geográficas do usuário via navegador com cálculo dinâmico de distâncias e ordenação do posto mais próximo para o mais distante.
-- **Mapa Interativo (Leaflet):** Visualização de marcadores com destaque automático ao focar ou selecionar unidades no mapa.
-- **Integração com Google Maps:** Botão dedicado para traçar rotas de navegação ponto a ponto até a unidade de saúde selecionada.
-- **Acessibilidade e WCAG 2.1 (AA / AAA):** Contraste calibrado (Paleta Azul Petróleo e Âmbar), tipografia escalável, suporte a leitores de tela e navegação por teclado.
-- **Canais de Apoio Integrados:** Acesso rápido ao Disque Saúde (`136`) e calendários de campanhas vigentes.
+### Consulta Pública (Cidadão)
+* **Busca Multi-critério em Tempo Real:** Filtre unidades de saúde por município, bairro, endereço, CEP ou tipo de imunobiológico em estoque.
+* **Geolocalização "Meu GPS":** Detecção da posição do usuário no navegador com cálculo de distância (Fórmula de Haversine) e ordenação por proximidade.
+* **Mapa Interativo (Leaflet / OpenStreetMap):** Visualização de marcadores dinâmicos, enquadramento automático de raio de cobertura e traçado de rotas ponto a ponto no Google Maps.
+* **Acessibilidade e Usabilidade:** Interface construída com base nas diretrizes WCAG 2.1 (AA), contrastes adequados, navegação por teclado e semântica institucional limpa.
+* **Canais de Apoio:** Acesso rápido ao Disque Saúde (136), calendário vacinal completo e orientações para grupos prioritários.
 
-### Para o Administrador (Acesso Autenticado)
-- **Painel Administrativo Seguro:** Login protegido com JWT (JSON Web Tokens) e senhas criptografadas via `bcrypt`.
-- **Cadastro Rápido de Postos:** Formulário com seleção de município, nome, endereço, coordenadas geográficas e vinculação de vacinas do catálogo oficial.
-- **Bot de Mineração OpenStreetMap (OSM):**
-  - **Pesquisa e Prévia:** O bot consulta a *Overpass API* e exibe uma tabela de prévia com os postos de saúde de Maceió encontrados sem gravá-los de imediato.
-  - **Confirmação Manual:** O administrador seleciona quais unidades deseja efetivar no banco de dados.
+### Gestão e Auditoria (Painel Administrativo)
+* **CRUD Completo de Unidades:** Inclusão, edição cadastral, detalhamento e exclusão lógica de postos de saúde com proteção via JWT (OAuth2 Bearer).
+* **Autocompletar por CEP (ViaCEP):** Preenchimento automático de logradouro e bairro ao informar o código postal da unidade.
+* **Bot de Enriquecimento Territorial (OpenStreetMap / Overpass API):** Mineração de dados públicos de unidades de saúde com fluxo seguro de pré-visualização antes da confirmação e persistência no banco.
+* **Exportação de Dados:** Download de relatórios tabulares em CSV ou camadas espaciais em GeoJSON para uso em SIG e epidemiologia.
+* **Proteção contra Força Bruta:** Middleware de limitação de taxa (*Rate Limiting*) para mitigar tentativas abusivas nos endpoints sensíveis.
 
 ---
 
-## Arquitetura da Aplicação
+## Arquitetura da Solução
 
-O sistema foi estruturado seguindo o padrão de **Arquitetura em Camadas (Layered Architecture)**, o padrão **Repository** com isolamento do SQLAlchemy 2.0 assíncrono e separação de responsabilidades em microsserviços conteinerizados:
+O sistema é dividido em três serviços conteinerizados via Docker, garantindo isolamento e reprodutibilidade:
 
-```text
-                              ┌───────────────────────────────────┐
-                              │    Navegador do Usuário / Cidadão │
-                              └─────────────────┬─────────────────┘
-                                                │
-                     ┌──────────────────────────┴──────────────────────────┐
-                     │                                                     │
-           HTTP (Porta 3005)                                     REST JSON (Porta 8085)
-                     │                                                     │
-                     ▼                                                     ▼
-        ┌─────────────────────────┐                           ┌─────────────────────────┐
-        │     Frontend Nginx      │                           │     Backend FastAPI     │
-        │  (vacinacao_frontend_web)│                          │ (vacinacao_backend_api) │
-        │                         │                           │                         │
-        │ • index.html (Cidadão)  │                           │ • /cities (RF-01, RF-02)│
-        │ • admin.html (Painel)   │                           │ • /vaccination-points   │
-        │ • Leaflet & Tailwind CSS│                           │ • /auth (OAuth2 JWT)    │
-        └─────────────────────────┘                           │ • /admin/enrichment     │
-                                                              └────────────┬────────────┘
-                                                                           │
-                                                                   Asyncpg (Porta 5435)
-                                                                           │
-                                                                           ▼
-                                                              ┌─────────────────────────┐
-                                                              │      PostgreSQL 16      │
-                                                              │   (vacinacao_pg_db)     │
-                                                              │                         │
-                                                              │ • states & cities       │
-                                                              │ • vaccination_points    │
-                                                              │ • vaccines & relations  │
-                                                              │ • admin_users           │
-                                                              └─────────────────────────┘
+```
+                            ┌───────────────────────────────────┐
+                            │    Navegador do Usuário / Cidadão │
+                            └─────────────────┬─────────────────┘
+                                              │
+                   ┌──────────────────────────┴──────────────────────────┐
+                   │                                                     │
+         HTTP (Porta 3005)                                     REST JSON (Porta 8085)
+                   │                                                     │
+                   ▼                                                     ▼
+      ┌─────────────────────────┐                           ┌─────────────────────────┐
+      │     Frontend Nginx      │                           │     Backend FastAPI     │
+      │  (vacinacao_frontend_web)│                          │ (vacinacao_backend_api) │
+      │                         │                           │                         │
+      │ • Vue 3 (CDN Reativo)   │                           │ • /cities               │
+      │ • Leaflet & Tailwind CSS│                           │ • /vaccination-points   │
+      │ • Portal Público & Admin│                           │ • /auth (OAuth2 JWT)    │
+      └─────────────────────────┘                           │ • /enrichment (OSM Bot) │
+                                                            └────────────┬────────────┘
+                                                                         │
+                                                                 Asyncpg (Porta 5435)
+                                                                         │
+                                                                         ▼
+                                                            ┌─────────────────────────┐
+                                                            │      PostgreSQL 16      │
+                                                            │   (vacinacao_pg_db)     │
+                                                            │                         │
+                                                            │ • states & cities       │
+                                                            │ • vaccination_points    │
+                                                            │ • vaccines & relations  │
+                                                            │ • admin_users           │
+                                                            └─────────────────────────┘
 ```
 
----
+### Mapeamento de Portas e Serviços
 
-## Mapeamento de Portas e Serviços
-
-Para garantir execução simultânea sem conflitos com serviços já em execução no host, o ambiente utiliza portas customizadas:
-
-| Serviço | Contêiner | Porta Host | Porta Contêiner | Finalidade |
+| Serviço | Contêiner | Porta Host | Porta Interna | Descrição |
 | :--- | :--- | :---: | :---: | :--- |
-| **Frontend Web** | `vacinacao_frontend_web` | `3005` | `80` | Interface do Cidadão e Painel Administrativo Nginx |
-| **Backend REST** | `vacinacao_backend_api` | `8085` | `8000` | API FastAPI, Swagger e ReDoc |
-| **Banco de Dados** | `vacinacao_pg_db` | `5435` | `5432` | PostgreSQL 16 com volume persistente |
+| **Frontend** | `vacinacao_frontend_web` | `3005` | `80` | Interface pública e painel administrativo servidos via Nginx |
+| **Backend** | `vacinacao_backend_api` | `8085` | `8000` | API assíncrona FastAPI, documentação Swagger e ReDoc |
+| **Banco de Dados** | `vacinacao_pg_db` | `5435` | `5432` | PostgreSQL 16 com volume persistente e scripts de seed |
 
 ---
 
 ## Como Executar
 
-### Opção 1: Via Docker Compose (Recomendado)
+### Pré-requisitos
+* [Docker](https://docs.docker.com/get-docker/) e [Docker Compose](https://docs.docker.com/compose/) instalados.
 
-#### Pré-requisitos
-- [Docker Engine](https://docs.docker.com/engine/install/) e [Docker Compose](https://docs.docker.com/compose/) v2+.
+### 1. Clonar e Configurar Variáveis de Ambiente
 
-#### 1. Configurar o ambiente
 ```bash
-git clone https://github.com/LeonardoNasL/projeto-integrador-iv-b.git
-cd projeto-integrador-iv-b
+git clone https://github.com/leonardonasls-stack/PI-4B.git
+cd PI-4B
 cp .env.example .env
 ```
 
-#### 2. Subir os contêineres
+> [!NOTE]
+> O arquivo `.env.example` já inclui configurações seguras para execução em ambiente de desenvolvimento local.
+
+### 2. Subir os Contêineres
+
 ```bash
-docker compose up --build
+docker compose up -d --build
 ```
 
-O compose aguarda o banco estar pronto via *healthcheck*, executa o `sql/init.sql` e o `sql/seed.sql`, constrói a API e disponibiliza a aplicação imediatamente.
+O Docker Compose aguardará a saúde do banco de dados (`vacinacao_pg_db`) através do *healthcheck*, executará as migrações/seed e inicializará o backend e o frontend automaticamente.
 
-> [!TIP]
-> Caso queira rodar em segundo plano, utilize `docker compose up -d`. Para verificar os logs de um serviço específico, use `docker compose logs -f backend`.
+### 3. Acessar os Serviços
 
-#### 3. URLs de Acesso
-- **Portal Cidadão:** [http://localhost:3005](http://localhost:3005)
-- **Painel Administrativo:** [http://localhost:3005/admin.html](http://localhost:3005/admin.html)
-  - **Usuário:** `admin`
-  - **Senha:** `admin123`
-- **Documentação Interativa (Swagger UI):** [http://localhost:8085/docs](http://localhost:8085/docs)
-- **Documentação ReDoc:** [http://localhost:8085/redoc](http://localhost:8085/redoc)
+* **Portal Público do Cidadão:** [http://localhost:3005](http://localhost:3005)
+* **Painel Administrativo:** [http://localhost:3005/admin.html](http://localhost:3005/admin.html)
+  * **Usuário Padrão:** `admin`
+  * **Senha Padrão:** `admin123`
+* **Swagger OpenAPI:** [http://localhost:8085/docs](http://localhost:8085/docs)
+* **ReDoc:** [http://localhost:8085/redoc](http://localhost:8085/redoc)
 
 ---
 
-### Opção 2: Execução Local (Sem Docker)
+## Execução Local (Sem Docker)
 
-#### 1. Banco de Dados
-Tenha o PostgreSQL 16 rodando e crie a base:
+Caso prefira executar sem contêineres:
+
+### 1. Banco de Dados
+Certifique-se de ter uma instância do PostgreSQL 16 ativa e execute:
 ```bash
 createdb -U postgres vacinacao_al
 psql -U postgres -d vacinacao_al -f sql/init.sql
 psql -U postgres -d vacinacao_al -f sql/seed.sql
 ```
 
-#### 2. Backend (FastAPI)
+### 2. Backend (FastAPI)
 ```bash
 cd backend
 python -m venv venv
 
-# No Windows:
+# Windows
 .\venv\Scripts\activate
 
-# No Linux / macOS:
+# Linux / macOS
 source venv/bin/activate
 
 pip install -r requirements.txt
-uvicorn src.app.main:app --reload --port 8000
+uvicorn src.app.main:app --reload --port 8085
 ```
 
-#### 3. Frontend
-Sirva os arquivos de `frontend/public` através do seu servidor estático preferido (Live Server no VS Code ou `python -m http.server 3000`).
+### 3. Frontend
+Sirva a pasta `frontend/public` com um servidor estático:
+```bash
+cd frontend/public
+python -m http.server 3005
+```
 
 ---
 
-## Contrato da API RESTful
+## Contratos da API RESTful
 
-A API segue os padrões RESTful com respostas em JSON e códigos de status HTTP semânticos:
+A API adota respostas padronizadas em JSON e códigos de status HTTP semânticos:
 
-### 1. Municípios (`cities`)
-- **`GET /cities`**
-  - **Status:** `200 OK`
-  - **Retorno:** Array com identificador e nome das cidades cadastradas.
-  ```json
-  [
-    { "id": 1, "name": "Maceió" },
-    { "id": 2, "name": "Arapiraca" }
-  ]
-  ```
+### Municípios (`/cities`)
+* `GET /cities` — Retorna os municípios monitorados com id e nome.
+* `GET /cities/{id}` — Retorna os detalhes de um município específico.
 
-- **`GET /cities/{id}`**
-  - **Status:** `200 OK`
-  - **Retorno:** Detalhes da cidade com o estado associado.
-  - **Erros:** `404 Not Found` (caso o ID não exista) e `422 Unprocessable Entity` (caso o ID não seja numérico).
-  ```json
-  {
-    "id": 1,
-    "name": "Maceió",
-    "state": "Alagoas"
-  }
-  ```
+### Postos de Vacinação (`/vaccination-points`)
+* `GET /vaccination-points/{city_id}` — Lista todos os postos de um município com coordenadas e lista de imunobiológicos.
+* `GET /vaccination-points/detail/{point_id}` — Retorna os dados completos de um único posto de saúde.
+* `POST /vaccination-points` — Cadastra um novo posto de vacinação. *(Requer autenticação JWT)*
+* `PUT /vaccination-points/{point_id}` — Atualiza os dados de um posto existente. *(Requer autenticação JWT)*
+* `DELETE /vaccination-points/{point_id}` — Remove um posto de saúde do cadastro. *(Requer autenticação JWT)*
 
-### 2. Pontos de Vacinação (`vaccination-points`)
-- **`GET /vaccination-points/{city_id}`**
-  - **Status:** `200 OK`
-  - **Retorno:** Postos de vacinação pertencentes à cidade informada, incluindo coordenadas geográficas e catálogo de vacinas disponíveis.
-  ```json
-  [
-    {
-      "id": 1,
-      "name": "UBS Jacintinho (Dr. José Tenório de Albuquerque)",
-      "neighborhood": "Jacintinho",
-      "address": "Av. Cleto Campelo, s/n, Jacintinho",
-      "latitude": -9.63842,
-      "longitude": -35.71761,
-      "vaccines": ["Influenza", "Covid-19 Bivalente", "Tríplice Viral", "Febre Amarela", "Hepatite B"]
-    }
-  ]
-  ```
+### Autenticação Administrativa (`/auth`)
+* `POST /auth/login` — Autentica as credenciais do gestor e retorna o token `Bearer` no formato JWT.
 
-- **`POST /vaccination-points`** *(Requer autenticação JWT)*
-  - **Status:** `201 Created`
-  - **Payload:**
-  ```json
-  {
-    "city_id": 1,
-    "name": "USF Guaxuma",
-    "neighborhood": "Guaxuma",
-    "address": "Rua Principal, s/n",
-    "latitude": -9.57530,
-    "longitude": -35.67210,
-    "vaccine_ids": [1, 2, 3]
-  }
-  ```
-
-### 3. Autenticação Administrativa (`auth`)
-- **`POST /auth/login`**
-  - **Status:** `200 OK`
-  - **Retorno:** Token Bearer no formato `application/x-www-form-urlencoded` ou JSON.
-  ```json
-  {
-    "access_token": "eyJhbGciOiJIUzI1NiIsIn...",
-    "token_type": "bearer"
-  }
-  ```
-
-### 4. Bot de Enriquecimento OpenStreetMap (`admin/enrichment`)
-- **`GET /admin/enrichment/preview-osm`** *(Requer JWT)*: Executa mineração na *Overpass API* e retorna prévia dos postos de saúde de Maceió.
-- **`POST /admin/enrichment/confirm-save`** *(Requer JWT)*: Persiste no banco de dados apenas os postos validados pelo administrador, evitando duplicidades por nome e cidade.
+### Mineração de Dados (`/admin/enrichment`)
+* `GET /admin/enrichment/preview-osm` — Consulta a API pública do OpenStreetMap e exibe postos descobertos para conferência. *(Requer JWT)*
+* `POST /admin/enrichment/confirm-save` — Persiste no banco PostgreSQL apenas as unidades selecionadas pelo administrador. *(Requer JWT)*
 
 ---
 
-## Modelo de Dados Relacional (PostgreSQL 16)
+## Modelo de Dados
 
-A modelagem de dados assegura integridade referencial com chaves estrangeiras, índices e restrições de unicidade:
+O banco relacional modela a integridade referencial com chaves primárias, estrangeiras e restrições de unicidade:
 
-```text
+```
 ┌─────────────────┐       ┌─────────────────┐       ┌───────────────────────┐
 │     states      │ 1   N │     cities      │ 1   N │  vaccination_points   │
 ├─────────────────┤◄─────►├─────────────────┤◄─────►├───────────────────────┤
@@ -254,68 +202,30 @@ A modelagem de dados assegura integridade referencial com chaves estrangeiras, �
 
 ---
 
-## Documentação do Projeto
-
-Toda a documentação técnica, especificações e relatórios de auditoria foram organizados e estruturados no diretório [docs/](docs/README.md):
-
-- 📘 [**Relatório Técnico de Implementação**](docs/relatorio-implementacao.md) — Relatório estruturado de melhorias, CRUD completo, polimento visual e testes.
-- 📊 [**Relatório de Auditoria CRUD (100% Conforme)**](docs/auditoria-crud.md) — Matriz completa de persistência e validação técnica.
-- 🔌 [**Documentação da API RESTful**](docs/api.md) — Especificação detalhada de rotas, contratos JSON e autenticação.
-- 🏛️ [**Arquitetura Técnica (TRD)**](docs/arquitetura.md) — Modelagem física de banco, PostGIS, microsserviços e Docker.
-- 📋 [**Requisitos de Produto (PRD)**](docs/requisitos.md) — Casos de uso, personas e regras de negócio da SESAU.
-- ♿ [**Design System e Acessibilidade (WCAG)**](docs/design-wcag.md) — Diretrizes de inclusão, contraste e tokens visuais.
-- 🎨 [**Manual de Design Humano (Anti-IA)**](docs/anti-ia-polimento.md) — Eliminação de artefatos visuais sintéticos e padrões de qualidade.
-- 📜 [**Histórico de Melhorias**](docs/historico-melhorias.md) — Linha do tempo de commits e decisões de projeto.
-
----
-
-## Estrutura de Diretórios do Projeto
-
-```text
-.
-├── backend/
-│   ├── src/
-│   │   ├── api/v1/                  # Endpoints REST e roteadores modulares
-│   │   │   ├── endpoints/
-│   │   │   │   ├── auth.py          # Login e geração de JWT
-│   │   │   │   ├── cities.py        # Endpoints /cities e /cities/{id}
-│   │   │   │   ├── points.py        # Endpoints /vaccination-points
-│   │   │   │   └── enrichment.py    # Rotas do Bot OSM (preview e confirmação)
-│   │   │   └── api.py               # Agrupador do versionamento v1
-│   │   ├── app/                     # Configurações de ambiente e instância FastAPI
-│   │   ├── core/                    # Serviços de negócio e segurança
-│   │   │   ├── security.py          # Validação JWT e Hashing Bcrypt
-│   │   │   └── services/            # CityService, PointService, EnrichmentService
-│   │   ├── database/                # Modelos SQLAlchemy e sessão assíncrona
-│   │   └── schemas/                 # Schemas de entrada e saída Pydantic v2
-│   ├── Dockerfile                   # Build conteinerizado da API Python
-│   └── requirements.txt             # Dependências da aplicação backend
-├── frontend/
-│   ├── public/                      # Aplicação web estática
-│   │   ├── index.html               # Portal público com mapa e busca por GPS
-│   │   └── admin.html               # Painel administrativo e mineração OSM
-│   ├── nginx.conf                   # Configurações do servidor HTTP Nginx
-│   └── Dockerfile                   # Build do contêiner Nginx
-├── sql/
-│   ├── init.sql                     # Script DDL com tabelas, índices e FKs
-│   └── seed.sql                     # Dados iniciais reais de Maceió e Arapiraca
-├── docker-compose.yml               # Orquestrador dos contêineres db, backend e frontend
-├── CHANGELOG.md                     # Histórico detalhado de commits e melhorias
-└── README.md                        # Documentação técnica e guia da aplicação
-```
-
----
-
 ## Testes Automatizados
 
-O backend conta com suíte de testes utilizando `pytest` e `httpx`:
+A suíte de testes assíncrona valida a conformidade dos contratos da API e regras de autorização:
 
 ```bash
 cd backend
-pytest tests/ -v
+python -m pytest tests/ -v
 ```
 
-Os testes cobrem:
-- Validação dos status HTTP de `/cities` e `/cities/{id}` (sucesso, 404 e 422).
-- Listagem e integridade do contrato JSON de `/vaccination-points/{city_id}`.
-- Autenticação com credenciais corretas e bloqueio com credenciais inválidas.
+Cenários cobertos pelos testes:
+* Integridade dos contratos de `/cities` e tratamento de IDs inexistentes (`404`) ou inválidos (`422`).
+* Validação de retorno e serialização correta de `/vaccination-points/{city_id}`.
+* Operações completas de CRUD de postos (criação, edição e exclusão).
+* Autenticação e bloqueio de acesso a rotas restritas sem token JWT.
+
+---
+
+## Documentação Técnica Aprofundada
+
+Para especificações detalhadas de arquitetura, requisitos e relatórios de conformidade, consulte o diretório [docs/](docs/README.md):
+
+* [**Relatório Técnico de Implementação**](docs/relatorio-implementacao.md) — Visão detalhada de sprints, arquitetura e entrega.
+* [**Relatório de Auditoria CRUD**](docs/auditoria-crud.md) — Matriz de verificação de conformidade técnica e persistência.
+* [**Especificação da API RESTful**](docs/api.md) — Contratos JSON, parâmetros e códigos de retorno.
+* [**Documento de Arquitetura Técnica (TRD)**](docs/arquitetura.md) — Decisões de arquitetura, modelagem e escalabilidade.
+* [**Documento de Requisitos de Produto (PRD)**](docs/requisitos.md) — Casos de uso e regras de negócio.
+* [**Diretrizes de Acessibilidade e Design (WCAG)**](docs/design-wcag.md) — Padrões de acessibilidade, cores e contrastes.
