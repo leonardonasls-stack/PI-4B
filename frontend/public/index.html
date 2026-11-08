@@ -323,11 +323,11 @@
       </a>
       <a
         class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
-        href="#calendario-vacinas"
-        onclick="window.rolarPara('calendario-vacinas', event)"
+        href="#vacinas-por-idade"
+        onclick="window.rolarPara('vacinas-por-idade', event)"
       >
-        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>Calendário</span>
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Vacinas por Idade</span>
       </a>
       <a
         class="hidden md:flex px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer items-center gap-1.5"
@@ -808,9 +808,9 @@
             </button>
           </div>
         </section>
-        <!-- SEÇÃO: CALENDÁRIO NACIONAL DE IMUNIZAÇÃO (PNI ALAGOAS) -->
+        <!-- SEÇÃO: ESQUEMA DE VACINAS POR IDADE (PNI ALAGOAS) -->
         <section
-          id="calendario-vacinas"
+          id="vacinas-por-idade"
           class="py-space-2xl px-margin-sm lg:px-margin bg-white border-t border-slate-200/80 scroll-mt-24"
         >
           <div class="max-w-7xl mx-auto">
@@ -818,14 +818,14 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-space-xl">
               <div>
                 <span class="font-label-sm text-label-sm uppercase tracking-wider text-emerald-700 font-bold flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Calendário Oficial SUS • PNI Alagoas
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Esquema Oficial SUS • PNI Alagoas
                 </span>
                 <h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-slate-900 font-extrabold tracking-tight mt-1">
-                  Calendário Nacional de Vacinação
+                  Vacinas por Idade e Fase da Vida
                 </h2>
                 <p class="text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                  Consulte os esquemas recomendados pelo Ministério da Saúde e SUS Alagoas para cada fase da vida e encontre postos que disponibilizam os imunizantes.
+                  Consulte a relação completa de vacinas recomendadas pelo Ministério da Saúde para cada etapa da vida (da infância à terceira idade) e encontre onde se vacinar.
                 </p>
               </div>
 
@@ -838,7 +838,7 @@
                   title="Imprimir ou Salvar em PDF"
                 >
                   <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                  <span>Imprimir Calendário (PDF)</span>
+                  <span>Imprimir Guia por Idade (PDF)</span>
                 </button>
               </div>
             </div>
@@ -1362,9 +1362,9 @@
                   <button
                     type="button"
                     class="font-label-md text-label-md text-primary hover:text-primary-container font-bold inline-flex items-center gap-space-xs cursor-pointer bg-transparent border-0 p-0"
-                    onclick="window.abrirModalCalendario()"
+                    onclick="window.rolarPara('vacinas-por-idade', event)"
                   >
-                    <span>Consultar Calendário Completo</span>
+                    <span>Consultar Vacinas por Faixa Etária</span>
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                   </button>
                 </div>
@@ -2854,6 +2854,9 @@
               let el = document.getElementById(targetId);
               if (!el && (targetId === "search-form" || targetId === "secao-busca")) {
                 el = document.getElementById("secao-busca") || document.getElementById("search-form");
+              }
+              if (!el && (targetId === "vacinas-por-idade" || targetId === "calendario-vacinas")) {
+                el = document.getElementById("vacinas-por-idade") || document.getElementById("calendario-vacinas");
               }
               if (el) {
                 const headerHeight = 112; // Altura do cabeçalho fixo
