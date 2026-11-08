@@ -306,9 +306,9 @@
     <!-- Menu Simplificado com Ícones -->
     <nav class="flex items-center gap-1 sm:gap-2">
       <a
-        class="px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
-        href="#search-form"
-        onclick="window.rolarPara('search-form', event)"
+        class="px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#secao-busca"
+        onclick="window.navegarParaBusca(event)"
       >
         <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span>Buscar Postos</span>
@@ -323,11 +323,19 @@
       </a>
       <a
         class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+        href="#calendario-vacinas"
+        onclick="window.rolarPara('calendario-vacinas', event)"
+      >
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Calendário</span>
+      </a>
+      <a
+        class="hidden md:flex px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors cursor-pointer items-center gap-1.5"
         href="#guia-cidadao"
         onclick="window.rolarPara('guia-cidadao', event)"
       >
         <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>Calendário</span>
+        <span>Guia & FAQ</span>
       </a>
     </nav>
 
@@ -392,7 +400,8 @@
 
             <!-- BARRA DE PESQUISA UNIFICADA E ESTRUTURADA (ABAS DE INTENÇÃO E ZERO REDUNDÂNCIAS) -->
             <div
-              class="bg-surface-container-lowest text-on-surface rounded-2xl p-space-md lg:p-space-lg shadow-lg border border-outline-variant/40 relative z-20 space-y-space-md"
+              id="secao-busca"
+              class="bg-surface-container-lowest text-on-surface rounded-2xl p-space-md lg:p-space-lg shadow-lg border border-outline-variant/40 relative z-20 space-y-space-md scroll-mt-28"
             >
               <!-- 1. SELETOR DE MODOS DE INTENÇÃO (Abas Pílula) -->
               <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
@@ -799,6 +808,398 @@
             </button>
           </div>
         </section>
+        <!-- SEÇÃO: CALENDÁRIO NACIONAL DE IMUNIZAÇÃO (PNI ALAGOAS) -->
+        <section
+          id="calendario-vacinas"
+          class="py-space-2xl px-margin-sm lg:px-margin bg-white border-t border-slate-200/80 scroll-mt-24"
+        >
+          <div class="max-w-7xl mx-auto">
+            <!-- Cabeçalho da Seção -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-space-xl">
+              <div>
+                <span class="font-label-sm text-label-sm uppercase tracking-wider text-emerald-700 font-bold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Calendário Oficial SUS • PNI Alagoas
+                </span>
+                <h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-slate-900 font-extrabold tracking-tight mt-1">
+                  Calendário Nacional de Vacinação
+                </h2>
+                <p class="text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                  Consulte os esquemas recomendados pelo Ministério da Saúde e SUS Alagoas para cada fase da vida e encontre postos que disponibilizam os imunizantes.
+                </p>
+              </div>
+
+              <!-- Ação de Impressão -->
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  onclick="window.print()"
+                  class="px-4 py-2 rounded-xl border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+                  title="Imprimir ou Salvar em PDF"
+                >
+                  <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  <span>Imprimir Calendário (PDF)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Abas Seletoras por Faixa Etária -->
+            <div class="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 rounded-2xl mb-space-lg">
+              <button
+                type="button"
+                id="aba-cal-criancas"
+                onclick="window.alternarAbaCalendario('criancas')"
+                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer bg-white text-emerald-800 shadow-xs"
+              >
+                <span>👶</span>
+                <span>Crianças (0 a 10 anos)</span>
+              </button>
+              <button
+                type="button"
+                id="aba-cal-adolescentes"
+                onclick="window.alternarAbaCalendario('adolescentes')"
+                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span>🧒</span>
+                <span>Adolescentes (11 a 19 anos)</span>
+              </button>
+              <button
+                type="button"
+                id="aba-cal-adultos"
+                onclick="window.alternarAbaCalendario('adultos')"
+                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span>🧑</span>
+                <span>Adultos & Idosos (20+ anos)</span>
+              </button>
+              <button
+                type="button"
+                id="aba-cal-gestantes"
+                onclick="window.alternarAbaCalendario('gestantes')"
+                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span>🤰</span>
+                <span>Gestantes</span>
+              </button>
+            </div>
+
+            <!-- PAINEL 1: CRIANÇAS -->
+            <div id="painel-cal-criancas" class="space-y-3">
+              <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-3 px-4 w-36">Idade / Período</th>
+                      <th class="py-3 px-4">Vacina Oficial</th>
+                      <th class="py-3 px-4">Doenças Prevenidas</th>
+                      <th class="py-3 px-4 text-right">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">Ao Nascer</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">BCG + Hepatite B</td>
+                      <td class="py-3 px-4 text-slate-600">Formas graves de tuberculose (miliar e meníngea) e infecção por hepatite B</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('BCG')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">2 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Pentavalente, VIP (Pólio), Pneumo 10, Rotavírus</td>
+                      <td class="py-3 px-4 text-slate-600">Difteria, tétano, coqueluche, pólio, meningite bacteriana, pneumonias e rotavírus</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Pólio')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">3 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Meningocócica C (1ª dose)</td>
+                      <td class="py-3 px-4 text-slate-600">Meningite e infecções provocadas por meningococo do sorogrupo C</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">4 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Pentavalente, VIP, Pneumo 10, Rotavírus (2ª dose)</td>
+                      <td class="py-3 px-4 text-slate-600">Segunda dose de proteção contra poliomielite, coqueluche, tétano e diarreias graves</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Pólio')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">5 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Meningocócica C (2ª dose)</td>
+                      <td class="py-3 px-4 text-slate-600">Complementação da imunização primária contra meningite C</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">6 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Pentavalente (3ª dose) + VIP (3ª dose) + Covid-19</td>
+                      <td class="py-3 px-4 text-slate-600">Conclusão do esquema básico inicial da primeira infância</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Covid-19')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">9 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Febre Amarela (Dose inicial)</td>
+                      <td class="py-3 px-4 text-slate-600">Prevenção contra a febre amarela silvestre e urbana</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Febre Amarela')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">12 Meses (1 ano)</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Tríplice Viral (Sarampo, Caxumba, Rubéola) + Pneumo 10 Reforço</td>
+                      <td class="py-3 px-4 text-slate-600">Eliminação do sarampo, rubéola congênita e infecções respiratórias</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Sarampo')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">15 Meses</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">DTP (reforço), Pólio (reforço), Hepatite A, Tetra Viral</td>
+                      <td class="py-3 px-4 text-slate-600">Reforço imunológico e proteção contra hepatite A e varicela (catapora)</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">4 Anos</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">DTP (2º reforço) + VIP (2º reforço) + Varicela</td>
+                      <td class="py-3 px-4 text-slate-600">Garantia de imunidade consolidada para a entrada na fase escolar</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Pólio')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- PAINEL 2: ADOLESCENTES -->
+            <div id="painel-cal-adolescentes" class="hidden space-y-3">
+              <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-3 px-4 w-36">Idade / Período</th>
+                      <th class="py-3 px-4">Vacina Oficial</th>
+                      <th class="py-3 px-4">Doenças Prevenidas</th>
+                      <th class="py-3 px-4 text-right">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">9 a 14 Anos</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">HPV Quadrivalente (Meninos e Meninas)</td>
+                      <td class="py-3 px-4 text-slate-600">Prevenção de câncer de colo de útero, pênis, ânus, garganta e verrugas genitais (Dose única no SUS)</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">11 a 14 Anos</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Meningocócica ACWY (Conjugada)</td>
+                      <td class="py-3 px-4 text-slate-600">Proteção contra quatro sorogrupos de meningite e meningococcemia grave</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">A cada 10 anos</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Dupla Adulto (dT)</td>
+                      <td class="py-3 px-4 text-slate-600">Reforço contínuo contra difteria e tétano acidental</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">Atualização</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Hepatite B, Tríplice Viral e Febre Amarela</td>
+                      <td class="py-3 px-4 text-slate-600">Garantir comprovação de esquemas iniciados na infância (se não vacinado, iniciar 3 doses de Hep B)</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Hepatite B')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- PAINEL 3: ADULTOS & IDOSOS -->
+            <div id="painel-cal-adultos" class="hidden space-y-3">
+              <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-3 px-4 w-36">Idade / Período</th>
+                      <th class="py-3 px-4">Vacina Oficial</th>
+                      <th class="py-3 px-4">Doenças Prevenidas</th>
+                      <th class="py-3 px-4 text-right">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">Anual</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Influenza (Gripe sazonal)</td>
+                      <td class="py-3 px-4 text-slate-600">Infecções respiratórias graves por cepas circulantes A (H1N1, H3N2) e B (Prioritário para idosos 60+)</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Influenza')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">Periódico</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Covid-19 (Monovalente XBB)</td>
+                      <td class="py-3 px-4 text-slate-600">Dose semestral/anual para maiores de 60 anos, imunocomprometidos e profissionais de saúde</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Covid-19')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">A cada 10 anos</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Dupla Adulto (dT)</td>
+                      <td class="py-3 px-4 text-slate-600">Reforço vital contra difteria e tétano por contaminação e ferimentos acidentais</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">60+ Anos</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Pneumocócica 23 Valente</td>
+                      <td class="py-3 px-4 text-slate-600">Pneumonias bacterianas, bacteremias e meningites em idosos acamados ou comorbidades</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- PAINEL 4: GESTANTES -->
+            <div id="painel-cal-gestantes" class="hidden space-y-3">
+              <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-3 px-4 w-36">Idade / Período</th>
+                      <th class="py-3 px-4">Vacina Oficial</th>
+                      <th class="py-3 px-4">Doenças Prevenidas</th>
+                      <th class="py-3 px-4 text-right">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">A partir da 20ª sem.</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">dTpa (Tríplice Acelular Gestante)</td>
+                      <td class="py-3 px-4 text-slate-600">Dose única a cada gestação. Transfere anticorpos para o bebê contra coqueluche, tétano neonatal e difteria</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('todas')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">Qualquer período</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Influenza (Gripe)</td>
+                      <td class="py-3 px-4 text-slate-600">Imunização anual para proteção materna contra complicações respiratórias graves</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Influenza')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-3 px-4 font-bold text-emerald-800 whitespace-nowrap">Qualquer período</td>
+                      <td class="py-3 px-4 font-semibold text-slate-900">Hepatite B (3 doses)</td>
+                      <td class="py-3 px-4 text-slate-600">Prevenção da transmissão vertical (mãe para o feto) do vírus da hepatite B</td>
+                      <td class="py-3 px-4 text-right">
+                        <button type="button" onclick="window.buscarVacinaDoCalendario('Hepatite B')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 cursor-pointer transition-colors">
+                          <span>Buscar Postos</span>
+                          <span>→</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Rodapé Informativo da Seção de Calendário -->
+            <div class="mt-space-md p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-600">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span>Todas as vacinas acima são disponibilizadas <strong>gratuitamente pelo SUS</strong> nas Unidades Básicas de Saúde de Alagoas.</span>
+              </div>
+              <a href="#secao-busca" onclick="window.navegarParaBusca(event)" class="text-emerald-700 hover:text-emerald-900 font-bold inline-flex items-center gap-1 whitespace-nowrap">
+                <span>Encontrar UBS mais próxima</span>
+                <span>↑</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
         <!-- SEÇÃO COMPLEMENTAR: ORIENTAÇÃO AO CIDADÃO & CANAIS PÚBLICOS -->
         <section
           id="guia-cidadao"
@@ -2409,10 +2810,51 @@
               }
             };
 
+            // Navegação e foco inteligente para a barra de busca
+            window.navegarParaBusca = function (ev) {
+              if (ev) ev.preventDefault();
+              window.rolarPara("secao-busca", ev);
+              setTimeout(() => {
+                const painelTexto = document.getElementById("painel-busca-texto");
+                if (painelTexto && !painelTexto.classList.contains("hidden")) {
+                  const inp = document.getElementById("bairro-ubs-input");
+                  if (inp) inp.focus();
+                }
+              }, 350);
+            };
+
+            // Alternância de abas do Calendário de Vacinação
+            window.alternarAbaCalendario = function (faixa) {
+              const abas = ["criancas", "adolescentes", "adultos", "gestantes"];
+              const classeAtiva = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer bg-white text-emerald-800 shadow-xs";
+              const classeInativa = "px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-2 cursor-pointer";
+
+              abas.forEach((a) => {
+                const btn = document.getElementById(`aba-cal-${a}`);
+                const painel = document.getElementById(`painel-cal-${a}`);
+                if (btn) btn.className = a === faixa ? classeAtiva : classeInativa;
+                if (painel) painel.classList.toggle("hidden", a !== faixa);
+              });
+            };
+
+            // Atalho do calendário para busca e filtro por imunizante
+            window.buscarVacinaDoCalendario = function (nomeVacina) {
+              if (window.selecionarVacina) {
+                window.selecionarVacina(nomeVacina);
+              }
+              const secaoResultados = document.getElementById("titulo-resultados") || document.getElementById("secao-busca");
+              if (secaoResultados) {
+                secaoResultados.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            };
+
             // Rolagem suave e precisa para seções da página com offset de cabeçalho
             window.rolarPara = function (targetId, ev) {
               if (ev) ev.preventDefault();
-              const el = document.getElementById(targetId);
+              let el = document.getElementById(targetId);
+              if (!el && (targetId === "search-form" || targetId === "secao-busca")) {
+                el = document.getElementById("secao-busca") || document.getElementById("search-form");
+              }
               if (el) {
                 const headerHeight = 112; // Altura do cabeçalho fixo
                 const elementPosition = el.getBoundingClientRect().top;
