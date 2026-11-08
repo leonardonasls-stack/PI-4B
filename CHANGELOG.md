@@ -6,6 +6,9 @@ Histórico detalhado de commits e evolução do projeto **Vacina Alagoas — Pro
 
 | Código do Commit | Data / Hora | Autor | Descrição das Alterações |
 | :--- | :---: | :---: | :--- |
+| [`c7afbe6`](https://github.com/leonardonasls-stack/PI-4B/commit/c7afbe69fdb80f884f966a07c4987c8870209af1) | 08/11/2026 11:34 | Leonardo Nascimento | **Proteção de rota e redirecionamento automático por expiração de sessão**<br>• Bloqueio preventivo no cabeçalho de `admin.html`: se não houver token ou se o JWT já estiver expirado, a tela de administração nem sequer é renderizada, redirecionando instantaneamente ao portal (`index.html?sessao=expirada`).<br>• Novo endpoint `GET /auth/verify` no FastAPI para checagem ativa da integridade do token no ciclo de vida `onMounted` do painel.<br>• Interceptação unificada de respostas `401 Unauthorized` em todas as rotas restritas (OSM, CRUD de postos, remoção), invalidando o token local e acionando o redirecionamento.<br>• Recepção no portal com abertura automática do modal de login acompanhado de alerta explicativo para reautenticação. |
+| [`e0441fd`](https://github.com/leonardonasls-stack/PI-4B/commit/e0441fdd5961972d62fd36529a1a33d620f23451) | 08/11/2026 01:11 | Leonardo Nascimento | **Ajuste de arquivos ignorados no repositório**<br>• Inclusão de arquivos auxiliares de IA e digests no `.gitignore`. |
+| [`a025257`](https://github.com/leonardonasls-stack/PI-4B/commit/a025257ca6f65839ce6952467d0f98beae0a0f67) | 08/11/2026 01:08 | Leonardo Nascimento | **Atualização da documentação principal com normalização de endereços**<br>• Atualização do `README.md` com diagramação ASCII do banco de dados refletindo as colunas `logradouro`, `number` e `cep`. |
 | [`9990f84`](https://github.com/leonardonasls-stack/PI-4B/commit/9990f8467c20e296951e9796dc8994eda19337cf) | 08/11/2026 01:05 | Leonardo Nascimento | **Normalização de campos de endereço (Logradouro, Número, CEP)**<br>• Adição das colunas atômicas `logradouro`, `number` e `cep` na tabela `vaccination_points` e nos schemas Pydantic.<br>• Extração automática de código postal e número predial pelo robô do OpenStreetMap / Nominatim.<br>• Reformulação do formulário no painel administrativo com inputs dedicados para cada componente de endereço.<br>• Migração e atualização dos registros existentes e do script `sql/seed.sql`. |
 | [`f226fd6`](https://github.com/leonardonasls-stack/PI-4B/commit/f226fd6d03d523776f47175716485ce2be3b94a0) | 08/11/2026 00:17 | Leonardo Nascimento | **Integração de atualizações entre branches (main & luiz)**<br>• Sincronização do README.md refatorado, documentação e conciliação do histórico do projeto. |
 | [`b022e13`](https://github.com/leonardonasls-stack/PI-4B/commit/b022e13ec736424d8cd3e6391bbc5e058fcc04ae) | 07/11/2026 22:56 | Luiz | **Unificação do painel de filtros, inclusão de cidade nos endereços e correção do ícone de detalhes**<br>• Eliminação da barra de filtros flutuante solta, integrando título dos resultados, indicador de auditoria em tempo real, controles de ordenação/visão e chips de imunizantes em um único painel coeso.<br>• Inclusão formal do nome do município em todos os endereços (`Bairro, Cidade • Logradouro`), tanto no Card Herói quanto nos cards padrão do grid.<br>• Substituição do ícone SVG distorcido do botão *Detalhes* por um ícone vetorial padronizado. |
@@ -76,6 +79,9 @@ Histórico detalhado de commits e evolução do projeto **Vacina Alagoas — Pro
 
 ### Resumo dos Identificadores de Commit (Hash Completo)
 
+- `c7afbe69fdb80f884f966a07c4987c8870209af1`
+- `e0441fdd5961972d62fd36529a1a33d620f23451`
+- `a025257ca6f65839ce6952467d0f98beae0a0f67`
 - `9990f8467c20e296951e9796dc8994eda19337cf`
 - `f226fd6d03d523776f47175716485ce2be3b94a0`
 - `b022e13ec736424d8cd3e6391bbc5e058fcc04ae`
