@@ -61,6 +61,7 @@ class PointService:
             VaccinationPointResponse(
                 id=r["id"],
                 name=r["name"],
+                city_name=city.name,
                 neighborhood=r["neighborhood"],
                 address=r["address"],
                 latitude=float(r["latitude"]) if r["latitude"] is not None else None,
@@ -75,6 +76,7 @@ class PointService:
             SELECT 
                 vp.id,
                 vp.name,
+                c.name AS city_name,
                 vp.neighborhood,
                 vp.address,
                 vp.latitude,
@@ -84,10 +86,11 @@ class PointService:
                     '{}'
                 ) AS vaccines
             FROM vaccination_points vp
+            JOIN cities c ON vp.city_id = c.id
             LEFT JOIN point_vaccines pv ON vp.id = pv.point_id
             LEFT JOIN vaccines v ON pv.vaccine_id = v.id
             WHERE vp.id = :point_id
-            GROUP BY vp.id, vp.name, vp.neighborhood, vp.address, vp.latitude, vp.longitude;
+            GROUP BY vp.id, vp.name, c.name, vp.neighborhood, vp.address, vp.latitude, vp.longitude;
         """)
         result = await self.db.execute(query, {"point_id": point_id})
         r = result.mappings().first()
@@ -100,6 +103,7 @@ class PointService:
         return VaccinationPointResponse(
             id=r["id"],
             name=r["name"],
+            city_name=r["city_name"],
             neighborhood=r["neighborhood"],
             address=r["address"],
             latitude=float(r["latitude"]) if r["latitude"] is not None else None,

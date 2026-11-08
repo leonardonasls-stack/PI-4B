@@ -22,6 +22,7 @@ class VaccinationPointUpdate(BaseModel):
 class VaccinationPointResponse(BaseModel):
     id: int
     name: str
+    city_name: Optional[str] = None
     neighborhood: Optional[str] = None
     address: Optional[str] = None
     latitude: Optional[float] = None

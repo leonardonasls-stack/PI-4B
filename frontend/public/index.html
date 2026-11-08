@@ -558,168 +558,153 @@
         <section
           class="max-w-7xl mx-auto px-margin-sm lg:px-margin w-full py-space-xl"
         >
-          <!-- BARRA DE FILTROS RÁPIDOS POR IMUNIZANTE -->
+          <!-- PAINEL UNIFICADO: RESULTADOS, CONTROLE E FILTRO POR VACINA -->
           <div
-            class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm mb-space-lg"
+            class="bg-surface-container-lowest p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm mb-space-lg space-y-4"
           >
-            <div
-              class="flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-sm"
-            >
-              <div class="flex items-center gap-space-xs">
-                <span
-                  class="font-label-lg text-label-lg font-bold text-on-surface"
-                  >Filtrar por Vacina Disponível</span
-                >
-              </div>
-              <!-- Indicador de Monitoramento em Tempo Real -->
-              <div
-                class="flex flex-wrap items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant"
-              >
-                <span class="flex items-center gap-space-xs">
-                  <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
-                  <strong
-                    class="text-on-surface"
-                    id="contador-postos-abertos"
-                    aria-live="polite"
-                    >--</strong
+            <!-- 1. Linha Superior: Título dos Resultados + Monitoramento e Controles -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h2
+                    class="font-headline-md text-base sm:text-lg text-slate-900 font-extrabold tracking-tight"
+                    id="titulo-resultados"
                   >
-                  postos abertos agora
-                </span>
-                <span class="opacity-40">•</span>
-                <span class="flex items-center gap-space-xs">
-                  Estoque auditado hoje às 08:30
-                </span>
+                    Postos em Destaque
+                  </h2>
+                  <span
+                    class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-xs"
+                    id="badge-total-postos"
+                    aria-live="polite"
+                    aria-atomic="true"
+                  ></span>
+                </div>
+                <!-- Indicador de Monitoramento em Tempo Real -->
+                <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span><strong id="contador-postos-abertos" class="text-slate-800">--</strong> postos em atendimento</span>
+                  <span class="text-slate-300">•</span>
+                  <span>Estoque auditado hoje às 08:30</span>
+                </div>
+              </div>
+
+              <!-- Controles de Ação: Ordenação e Alternador de Visão -->
+              <div class="flex items-center gap-2 shrink-0">
+                <!-- Seletor de Ordenação -->
+                <div class="relative">
+                  <label class="sr-only" for="ordenar-select">Ordenar por</label>
+                  <select
+                    class="h-9 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-600 transition-colors shadow-2xs"
+                    id="ordenar-select"
+                    onchange="window.reordenarLista(this.value)"
+                  >
+                    <option value="distancia">Mais próximos de mim</option>
+                    <option value="alfabetico">Ordem alfabética (A-Z)</option>
+                  </select>
+                  <svg class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+
+                <!-- Alternador de Visão: Lista x Mapa -->
+                <div class="flex items-center p-0.5 bg-slate-100 rounded-xl border border-slate-200/50">
+                  <button
+                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                    id="btn-visao-lista"
+                    onclick="window.alternarVisao('lista')"
+                    title="Ver unidades em lista detalhada"
+                    type="button"
+                  >
+                    <svg class="w-3.5 h-3.5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    <span>Lista</span>
+                  </button>
+                  <button
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer transition-all"
+                    id="btn-visao-mapa"
+                    onclick="window.alternarVisao('mapa')"
+                    title="Ver mapa interativo dos postos"
+                    type="button"
+                  >
+                    <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                    <span>Mapa Integrado</span>
+                  </button>
+                </div>
               </div>
             </div>
-            <!-- Chips de Filtros -->
-            <div
-              class="flex items-center gap-space-xs overflow-x-auto pb-space-xs"
-              id="container-chips"
-            >
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-primary-container text-on-primary whitespace-nowrap shadow-sm focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="todas"
-                onclick="window.selecionarVacina('todas')"
-                type="button"
-              >
-                Todas as Vacinas
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="Covid-19"
-                onclick="window.selecionarVacina('Covid-19')"
-                type="button"
-              >
-                Covid-19
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="Influenza"
-                onclick="window.selecionarVacina('Influenza')"
-                type="button"
-              >
-                Influenza (Gripe)
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="Pólio"
-                onclick="window.selecionarVacina('Pólio')"
-                type="button"
-              >
-                Pólio (Gotinha)
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="Sarampo"
-                onclick="window.selecionarVacina('Sarampo')"
-                type="button"
-              >
-                Sarampo (Tríplice)
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="BCG"
-                onclick="window.selecionarVacina('BCG')"
-                type="button"
-              >
-                BCG
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="Febre Amarela"
-                onclick="window.selecionarVacina('Febre Amarela')"
-                type="button"
-              >
-                Febre Amarela
-              </button>
-              <button
-                class="chip-vacina px-space-md py-2 min-h-[42px] flex items-center rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none"
-                data-chip="Hepatite B"
-                onclick="window.selecionarVacina('Hepatite B')"
-                type="button"
-              >
-                Hepatite B
-              </button>
-            </div>
-          </div>
-          <!-- CABEÇALHO DOS RESULTADOS & ALTERNADOR DE VISÃO -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md mb-space-lg"
-          >
-            <div class="flex items-baseline gap-space-sm">
-              <h2
-                class="font-headline-md text-headline-md text-on-surface font-bold"
-                id="titulo-resultados"
-              >
-                Postos em Destaque
-              </h2>
-              <span
-                class="font-body-sm text-body-sm text-on-surface-variant"
-                id="badge-total-postos"
-                aria-live="polite"
-                aria-atomic="true"
-              ></span>
-            </div>
-            <div class="flex items-center gap-space-sm">
-              <!-- Seletor de Ordenação -->
+
+            <!-- 2. Linha Inferior: Filtros de Vacina Integrados -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 pt-0.5">
+              <span class="text-xs font-bold text-slate-700 whitespace-nowrap flex items-center gap-1.5 shrink-0">
+                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                <span>Filtrar por Vacina:</span>
+              </span>
+
+              <!-- Chips de Filtros -->
               <div
-                class="flex items-center gap-space-xs bg-surface-container-lowest px-space-md py-space-xs rounded-lg shadow-sm"
-              >
-                <svg class="w-4 h-4 text-on-surface-variant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="8" y2="18"/></svg>
-                <label class="sr-only" for="ordenar-select">Ordenar por</label>
-                <select
-                  class="bg-transparent font-label-sm text-label-sm text-on-surface focus:outline-none cursor-pointer"
-                  id="ordenar-select"
-                  onchange="window.reordenarLista(this.value)"
-                >
-                  <option value="distancia">Mais próximos de mim</option>
-                  <option value="horario">Horário ampliado</option>
-                  <option value="alfabetico">Ordem alfabética (A-Z)</option>
-                </select>
-              </div>
-              <!-- Alternador de Visão: Lista x Mapa -->
-              <div
-                class="flex items-center bg-surface-container-low p-space-xs rounded-lg"
+                class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 flex-1"
+                id="container-chips"
               >
                 <button
-                  class="px-space-md py-space-xs rounded-lg font-label-sm text-label-sm flex items-center gap-space-xs bg-surface-container-lowest text-on-surface shadow-sm transition-all cursor-pointer"
-                  id="btn-visao-lista"
-                  onclick="window.alternarVisao('lista')"
-                  title="Ver unidades em lista detalhada"
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-bold bg-primary-container text-on-primary whitespace-nowrap shadow-xs cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="todas"
+                  onclick="window.selecionarVacina('todas')"
                   type="button"
                 >
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                  <span>Lista</span>
+                  Todas as Vacinas
                 </button>
                 <button
-                  class="px-space-md py-space-xs rounded-lg font-label-sm text-label-sm flex items-center gap-space-xs text-on-surface-variant hover:text-on-surface transition-all cursor-pointer"
-                  id="btn-visao-mapa"
-                  onclick="window.alternarVisao('mapa')"
-                  title="Ver mapa interativo dos postos"
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="Covid-19"
+                  onclick="window.selecionarVacina('Covid-19')"
                   type="button"
                 >
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-                  <span>Mapa Integrado</span>
+                  Covid-19
+                </button>
+                <button
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="Influenza"
+                  onclick="window.selecionarVacina('Influenza')"
+                  type="button"
+                >
+                  Influenza (Gripe)
+                </button>
+                <button
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="Pólio"
+                  onclick="window.selecionarVacina('Pólio')"
+                  type="button"
+                >
+                  Pólio (Gotinha)
+                </button>
+                <button
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="Sarampo"
+                  onclick="window.selecionarVacina('Sarampo')"
+                  type="button"
+                >
+                  Sarampo (Tríplice)
+                </button>
+                <button
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="BCG"
+                  onclick="window.selecionarVacina('BCG')"
+                  type="button"
+                >
+                  BCG
+                </button>
+                <button
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="Febre Amarela"
+                  onclick="window.selecionarVacina('Febre Amarela')"
+                  type="button"
+                >
+                  Febre Amarela
+                </button>
+                <button
+                  class="chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                  data-chip="Hepatite B"
+                  onclick="window.selecionarVacina('Hepatite B')"
+                  type="button"
+                >
+                  Hepatite B
                 </button>
               </div>
             </div>
@@ -1921,6 +1906,7 @@
                 if (!res.ok) throw new Error("Erro ao buscar cidades");
                 const cities = await res.json();
 
+                window.listaCidades = cities;
                 select.innerHTML = cities
                   .map(
                     (c, idx) => `
@@ -1931,6 +1917,7 @@
 
                 // Auto-carregar os postos do primeiro município (Maceió)
                 if (cities.length > 0) {
+                  window.nomeCidadeAtual = cities[0].name;
                   carregarPostos(cities[0].id);
                 }
               } catch (err) {
@@ -1961,6 +1948,13 @@
                 );
                 if (!res.ok) throw new Error("Erro ao buscar postos");
                 const points = await res.json();
+                if (window.listaCidades) {
+                  const cidMatch = window.listaCidades.find(c => String(c.id) === String(cityId));
+                  if (cidMatch) window.nomeCidadeAtual = cidMatch.name;
+                }
+                points.forEach(p => {
+                  if (!p.cityName && window.nomeCidadeAtual) p.cityName = window.nomeCidadeAtual;
+                });
                 allPoints = points;
 
                 console.log("Postos recebidos com sucesso:", points.length);
@@ -2095,7 +2089,7 @@
                         <div class="md:col-span-7 space-y-2">
                           <p class="text-xs text-slate-700 flex items-start gap-1.5">
                             <svg class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/></svg>
-                            <span><strong>${campeao.neighborhood ? campeao.neighborhood + " • " : ""}</strong>${campeao.address || "Endereço cadastrado no sistema"}</span>
+                            <span><strong>${(campeao.neighborhood ? campeao.neighborhood + ", " : "") + (campeao.city_name || campeao.cityName || window.nomeCidadeAtual || "Maceió")} • </strong>${campeao.address || "Endereço cadastrado no sistema"}</span>
                           </p>
                           <div class="space-y-1">
                             <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Imunobiológicos em Estoque:</span>
@@ -2106,8 +2100,8 @@
                         </div>
 
                         <div class="md:col-span-5 flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 pt-2 md:pt-0">
-                          <button type="button" onclick="window.abrirModalPorId(${campeao.id})" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                          <button type="button" onclick="window.abrirModalPorId(${campeao.id})" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs">
+                            <svg class="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
                             <span>Horários &amp; Detalhes</span>
                           </button>
                           <a href="${mapsUrlCampeao}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -2192,9 +2186,9 @@
                 ${p.name}
               </h3>
 
-              <p class="text-xs text-slate-700 font-medium my-1.5 flex items-center gap-1.5 truncate" title="${(p.neighborhood ? p.neighborhood + " • " : "") + (p.address || "")}">
+              <p class="text-xs text-slate-700 font-medium my-1.5 flex items-center gap-1.5 truncate" title="${(p.neighborhood ? p.neighborhood + ", " : "") + (p.city_name || p.cityName || window.nomeCidadeAtual || "Maceió") + " • " + (p.address || "")}">
                 <svg class="w-3.5 h-3.5 text-primary-container shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span class="truncate"><strong class="text-on-surface font-semibold">${p.neighborhood ? p.neighborhood + " • " : ""}</strong>${p.address || "Endereço registrado no sistema"}</span>
+                <span class="truncate"><strong class="text-on-surface font-semibold">${(p.neighborhood ? p.neighborhood + ", " : "") + (p.city_name || p.cityName || window.nomeCidadeAtual || "Maceió")} • </strong>${p.address || "Endereço registrado no sistema"}</span>
               </p>
 
               <div class="mt-auto pt-2 border-t border-surface-container-low shrink-0">
@@ -2210,11 +2204,11 @@
             <div class="px-3.5 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-1.5 h-[62px]">
               <button 
                 type="button" 
-                class="text-xs text-slate-700 hover:text-primary font-medium inline-flex items-center gap-1 py-1.5 px-2 rounded hover:bg-slate-200/60 transition-colors cursor-pointer" 
+                class="text-xs text-slate-700 hover:text-primary font-medium inline-flex items-center gap-1.5 py-1.5 px-2.5 rounded-lg hover:bg-slate-200/60 transition-colors cursor-pointer" 
                 onclick="window.abrirModalPorId(${p.id})"
               >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                Detalhes
+                <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                <span>Detalhes</span>
               </button>
               <div class="flex items-center gap-1.5">
                 <button
@@ -2338,10 +2332,10 @@
               chips.forEach((chip) => {
                 if (chip.getAttribute("data-chip") === vacina) {
                   chip.className =
-                    "chip-vacina px-space-md py-space-xs rounded-full font-label-md text-label-md bg-primary-container text-on-primary whitespace-nowrap shadow-sm";
+                    "chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-bold bg-primary-container text-on-primary whitespace-nowrap shadow-xs cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-primary";
                 } else {
                   chip.className =
-                    "chip-vacina px-space-md py-space-xs rounded-full font-label-md text-label-md bg-surface-container-high text-on-surface hover:bg-surface-variant whitespace-nowrap transition-colors";
+                    "chip-vacina px-3 py-1.5 rounded-xl font-label-md text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 whitespace-nowrap cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-primary";
                 }
               });
               window.aplicarFiltros();
