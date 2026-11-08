@@ -24,11 +24,11 @@ INSERT INTO vaccines (id, name, description) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- 4. Postos de Vacinação Verídicos de Maceió (ID da Cidade = 1) e Arapiraca (ID = 2)
-INSERT INTO vaccination_points (id, city_id, name, neighborhood, address, latitude, longitude) VALUES
-(10, 1, 'UBS Jacintinho', 'Jacintinho', 'Av. Cleto Campelo, s/n', -9.6412, -35.7289),
-(11, 1, 'PAM Salgadinho', 'Poço', 'Rua Mizael Domingues, s/n', -9.6645, -35.7312),
-(12, 1, 'USF Ponta Verde', 'Ponta Verde', 'Rua Dep. José Lages, 240', -9.6580, -35.7025),
-(20, 2, 'UBS Primavera Arapiraca', 'Primavera', 'Rua Brasília, 100', -9.7521, -36.6610)
+INSERT INTO vaccination_points (id, city_id, name, neighborhood, logradouro, number, cep, address, latitude, longitude) VALUES
+(10, 1, 'UBS Jacintinho', 'Jacintinho', 'Av. Cleto Campelo', 's/n', '57041-000', 'Av. Cleto Campelo, s/n', -9.6412, -35.7289),
+(11, 1, 'PAM Salgadinho', 'Poço', 'Rua Mizael Domingues', 's/n', '57025-050', 'Rua Mizael Domingues, s/n', -9.6645, -35.7312),
+(12, 1, 'USF Ponta Verde', 'Ponta Verde', 'Rua Dep. José Lages', '240', '57035-330', 'Rua Dep. José Lages, 240', -9.6580, -35.7025),
+(20, 2, 'UBS Primavera Arapiraca', 'Primavera', 'Rua Brasília', '100', '57304-000', 'Rua Brasília, 100', -9.7521, -36.6610)
 ON CONFLICT (id) DO NOTHING;
 
 -- 5. Vinculação das Vacinas Ofertadas em Cada Ponto de Atendimento

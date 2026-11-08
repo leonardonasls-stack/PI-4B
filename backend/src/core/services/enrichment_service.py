@@ -78,6 +78,17 @@ def fetch_osm_health_centers(escopo: str = "alagoas") -> List[Dict[str, Any]]:
                         (display_parts[1].strip() if len(display_parts) > 1 else "Endereço via OpenStreetMap")
                     ).strip()
 
+                    house_number = (addr.get("house_number") or "").strip()
+                    if not house_number:
+                        house_number = "s/n"
+
+                    postcode = (addr.get("postcode") or "").strip()
+
+                    # Composição do address completo
+                    full_address = f"{street}, {house_number}"
+                    if postcode:
+                        full_address += f" - CEP {postcode}"
+
                     lat = item.get("lat")
                     lon = item.get("lon")
 
@@ -85,7 +96,10 @@ def fetch_osm_health_centers(escopo: str = "alagoas") -> List[Dict[str, Any]]:
                         "city_id": city_id,
                         "name": name,
                         "neighborhood": neighborhood,
-                        "address": street,
+                        "logradouro": street,
+                        "number": house_number,
+                        "cep": postcode or None,
+                        "address": full_address,
                         "latitude": float(lat) if lat else None,
                         "longitude": float(lon) if lon else None,
                         "source": "OpenStreetMap Nominatim"
@@ -123,11 +137,21 @@ def fetch_osm_health_centers(escopo: str = "alagoas") -> List[Dict[str, Any]]:
                         seen_names.add(name)
                         lat = el.get("lat") or el.get("center", {}).get("lat")
                         lon = el.get("lon") or el.get("center", {}).get("lon")
+                        street_ov = tags.get("addr:street", "Endereço via OpenStreetMap").strip()
+                        num_ov = tags.get("addr:housenumber", "s/n").strip()
+                        postcode_ov = tags.get("addr:postcode", "").strip()
+                        full_ov = f"{street_ov}, {num_ov}"
+                        if postcode_ov:
+                            full_ov += f" - CEP {postcode_ov}"
+
                         points.append({
                             "city_id": c_id,
                             "name": name.strip(),
                             "neighborhood": tags.get("addr:suburb", "Centro").strip(),
-                            "address": tags.get("addr:street", "Endereço via OpenStreetMap").strip(),
+                            "logradouro": street_ov,
+                            "number": num_ov,
+                            "cep": postcode_ov or None,
+                            "address": full_ov,
                             "latitude": float(lat) if lat else None,
                             "longitude": float(lon) if lon else None,
                             "source": "Overpass API"
@@ -153,8 +177,8 @@ async def save_points_to_database(points_to_save: List[Dict[str, Any]]) -> Dict[
     async with AsyncSessionLocal() as session:
         for p in points_to_save:
             stmt = text("""
-                INSERT INTO vaccination_points (city_id, name, neighborhood, address, latitude, longitude)
-                VALUES (:city_id, :name, :neighborhood, :address, :latitude, :longitude)
+                INSERT INTO vaccination_points (city_id, name, neighborhood, logradouro, number, cep, address, latitude, longitude)
+                VALUES (:city_id, :name, :neighborhood, :logradouro, :number, :cep, :address, :latitude, :longitude)
                 ON CONFLICT (city_id, name) DO NOTHING
                 RETURNING id;
             """)
@@ -163,6 +187,9 @@ async def save_points_to_database(points_to_save: List[Dict[str, Any]]) -> Dict[
                 "city_id": p.get("city_id", 1),
                 "name": p["name"],
                 "neighborhood": p.get("neighborhood", "Maceió"),
+                "logradouro": p.get("logradouro") or p.get("address", "Endereço via OpenStreetMap"),
+                "number": p.get("number", "s/n"),
+                "cep": p.get("cep"),
                 "address": p.get("address", "Endereço via OpenStreetMap"),
                 "latitude": p.get("latitude"),
                 "longitude": p.get("longitude")

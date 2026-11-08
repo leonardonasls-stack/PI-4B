@@ -450,9 +450,9 @@
         <span class="text-xs text-slate-500">Preencha o CEP para autocompletar</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md">
         <!-- Município -->
-        <div>
+        <div class="md:col-span-6">
           <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-municipio">
             Município de Alagoas *
           </label>
@@ -464,9 +464,9 @@
         </div>
 
         <!-- Consulta de CEP -->
-        <div>
+        <div class="md:col-span-6">
           <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-cep">
-            CEP da Unidade (Preenchimento Automático)
+            CEP da Unidade (Preenchimento Automático) *
           </label>
           <div class="relative flex items-center">
             <input v-model="cepInput" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
@@ -481,21 +481,30 @@
         </div>
 
         <!-- Bairro -->
-        <div>
+        <div class="md:col-span-4">
           <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-bairro">
             Bairro / Comunidade *
           </label>
           <input v-model="form.neighborhood" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-bairro" placeholder="Ex: Trapiche da Barra" type="text"/>
-          <span class="text-[11px] text-slate-500 mt-1 block">Região demográfica para geolocalização e rotas.</span>
+          <span class="text-[11px] text-slate-500 mt-1 block">Região demográfica para geolocalização.</span>
         </div>
 
-        <!-- Endereço Completo -->
-        <div>
-          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-endereco">
-            Endereço Completo com Logradouro e Número *
+        <!-- Logradouro -->
+        <div class="md:col-span-5">
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-logradouro">
+            Logradouro (Rua, Avenida, Praça) *
           </label>
-          <input v-model="form.address" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-endereco" placeholder="Ex: Av. Siqueira Campos, 1200" type="text"/>
-          <span class="text-[11px] text-slate-500 mt-1 block">Referência presencial para o cidadão no mapa.</span>
+          <input v-model="form.logradouro" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-logradouro" placeholder="Ex: Av. Siqueira Campos" type="text"/>
+          <span class="text-[11px] text-slate-500 mt-1 block">Nome oficial da via pública.</span>
+        </div>
+
+        <!-- Número / Complemento -->
+        <div class="md:col-span-3">
+          <label class="block font-semibold text-xs text-slate-700 mb-1" for="campo-numero">
+            Número *
+          </label>
+          <input v-model="form.number" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-numero" placeholder="Ex: 120 ou s/n" type="text"/>
+          <span class="text-[11px] text-slate-500 mt-1 block">Número ou s/n.</span>
         </div>
       </div>
 
@@ -838,7 +847,12 @@
       async function pesquisarNoOSM() {
         const token = getAuthToken();
         if (!token) {
-          notificar("Sessão Expirada", "Sessão administrativa expirada. Por favor, autentique-se novamente no portal.", "aviso");
+          confirmarAcao(
+            "Sessão Expirada",
+            "Sua sessão administrativa não foi encontrada ou expirou. Deseja ir para o portal para fazer login?",
+            () => { window.location.href = "index.html"; },
+            "Fazer Login"
+          );
           return;
         }
 
@@ -850,6 +864,16 @@
           });
 
           if (!res.ok) {
+            if (res.status === 401) {
+              localStorage.removeItem("access_token");
+              confirmarAcao(
+                "Sessão Expirada",
+                "Seu token de acesso expirou ou foi invalidado. Deseja realizar login novamente?",
+                () => { window.location.href = "index.html"; },
+                "Fazer Login"
+              );
+              return;
+            }
             const err = await res.json().catch(() => ({}));
             throw new Error(err.detail || "Falha na consulta ao OpenStreetMap.");
           }
@@ -962,6 +986,9 @@
         city_id: 1,
         name: "",
         neighborhood: "",
+        logradouro: "",
+        number: "",
+        cep: "",
         address: "",
         latitude: null,
         longitude: null,
@@ -1048,9 +1075,9 @@
           }
 
           if (data.bairro) form.value.neighborhood = data.bairro;
-          if (data.logradouro) {
-            form.value.address = `${data.logradouro}, nº , CEP ${data.cep} - ${data.localidade}/${data.uf}`;
-          }
+          if (data.logradouro) form.value.logradouro = data.logradouro;
+          if (data.cep) form.value.cep = data.cep;
+          if (!form.value.number) form.value.number = "s/n";
 
           if (data.localidade && data.localidade.toLowerCase().includes("arapiraca")) {
             form.value.city_id = 2;
@@ -1074,6 +1101,7 @@
         } else {
           cepInput.value = v;
         }
+        form.value.cep = cepInput.value;
       }
 
       function editarPosto(p) {
@@ -1081,9 +1109,37 @@
         form.value.city_id = p.city_id || (p.municipio === "Arapiraca" ? 2 : 1);
         form.value.name = p.name;
         form.value.neighborhood = p.neighborhood || "";
+        form.value.logradouro = p.logradouro || "";
+        form.value.number = p.number || "";
+        form.value.cep = p.cep || "";
         form.value.address = p.address || "";
         form.value.latitude = p.latitude || null;
         form.value.longitude = p.longitude || null;
+
+        // Se logradouro ou número estiverem vazios mas o address existir, tenta decompor
+        if (!form.value.logradouro && p.address) {
+          const partes = p.address.split(",");
+          form.value.logradouro = partes[0].trim();
+          if (partes.length > 1) {
+            form.value.number = partes[1].split("-")[0].trim();
+          }
+        }
+
+        // Preenche o campo de CEP a partir do campo dedicado ou do address
+        if (p.cep) {
+          cepInput.value = p.cep;
+          cepStatusHtml.value = '<span class="text-xs text-emerald-600 font-medium">CEP registrado no sistema.</span>';
+        } else {
+          const matchCep = (p.address || "").match(/\b(\d{5}-?\d{3})\b/);
+          if (matchCep) {
+            cepInput.value = matchCep[1].replace(/^(\d{5})(\d{3})$/, "$1-$2");
+            form.value.cep = cepInput.value;
+            cepStatusHtml.value = '<span class="text-xs text-slate-500 font-medium">CEP extraído do registro da unidade.</span>';
+          } else {
+            cepInput.value = "";
+            cepStatusHtml.value = "";
+          }
+        }
 
         const vacinasMapeadas = [];
         if (Array.isArray(p.vaccines)) {
@@ -1105,6 +1161,9 @@
           city_id: 1,
           name: "",
           neighborhood: "",
+          logradouro: "",
+          number: "",
+          cep: "",
           address: "",
           latitude: null,
           longitude: null,
@@ -1134,11 +1193,18 @@
         salvandoPosto.value = true;
         feedbackMsg.value = "";
 
+        const composedAddress = form.value.logradouro.trim() 
+          ? `${form.value.logradouro.trim()}, ${form.value.number.trim() || 's/n'}`
+          : form.value.address.trim();
+
         const payload = {
           city_id: parseInt(form.value.city_id),
           name: form.value.name.trim(),
           neighborhood: form.value.neighborhood.trim(),
-          address: form.value.address.trim() || null,
+          logradouro: form.value.logradouro.trim() || null,
+          number: form.value.number.trim() || null,
+          cep: (form.value.cep || cepInput.value || "").trim() || null,
+          address: composedAddress || null,
           latitude: form.value.latitude ? parseFloat(form.value.latitude) : (form.value.city_id === 2 ? -9.7512 : -9.6650),
           longitude: form.value.longitude ? parseFloat(form.value.longitude) : (form.value.city_id === 2 ? -36.6609 : -35.7420),
           vaccine_ids: form.value.vaccine_ids

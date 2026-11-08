@@ -14,6 +14,9 @@ class OsmPointItem(BaseModel):
     city_id: int = 1
     name: str
     neighborhood: str = "Maceió"
+    logradouro: Optional[str] = None
+    number: Optional[str] = "s/n"
+    cep: Optional[str] = None
     address: str = "Endereço via OpenStreetMap"
     latitude: float | None = None
     longitude: float | None = None

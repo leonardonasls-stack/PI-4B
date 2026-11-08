@@ -26,6 +26,9 @@ class PointService:
                 vp.id,
                 vp.name,
                 vp.neighborhood,
+                vp.logradouro,
+                vp.number,
+                vp.cep,
                 vp.address,
                 vp.latitude,
                 vp.longitude,
@@ -44,13 +47,15 @@ class PointService:
                 AND (
                     vp.name ILIKE :q
                     OR vp.neighborhood ILIKE :q
+                    OR vp.logradouro ILIKE :q
+                    OR vp.cep ILIKE :q
                     OR vp.address ILIKE :q
                 )
             """
             params["q"] = f"%{q.strip()}%"
 
         sql += """
-            GROUP BY vp.id, vp.name, vp.neighborhood, vp.address, vp.latitude, vp.longitude
+            GROUP BY vp.id, vp.name, vp.neighborhood, vp.logradouro, vp.number, vp.cep, vp.address, vp.latitude, vp.longitude
             ORDER BY vp.name ASC;
         """
 
@@ -63,7 +68,10 @@ class PointService:
                 name=r["name"],
                 city_name=city.name,
                 neighborhood=r["neighborhood"],
-                address=r["address"],
+                logradouro=r["logradouro"],
+                number=r["number"],
+                cep=r["cep"],
+                address=r["address"] or (f"{r['logradouro']}, {r['number']}" if r["logradouro"] else None),
                 latitude=float(r["latitude"]) if r["latitude"] is not None else None,
                 longitude=float(r["longitude"]) if r["longitude"] is not None else None,
                 vaccines=r["vaccines"]
@@ -78,6 +86,9 @@ class PointService:
                 vp.name,
                 c.name AS city_name,
                 vp.neighborhood,
+                vp.logradouro,
+                vp.number,
+                vp.cep,
                 vp.address,
                 vp.latitude,
                 vp.longitude,
@@ -90,7 +101,7 @@ class PointService:
             LEFT JOIN point_vaccines pv ON vp.id = pv.point_id
             LEFT JOIN vaccines v ON pv.vaccine_id = v.id
             WHERE vp.id = :point_id
-            GROUP BY vp.id, vp.name, c.name, vp.neighborhood, vp.address, vp.latitude, vp.longitude;
+            GROUP BY vp.id, vp.name, c.name, vp.neighborhood, vp.logradouro, vp.number, vp.cep, vp.address, vp.latitude, vp.longitude;
         """)
         result = await self.db.execute(query, {"point_id": point_id})
         r = result.mappings().first()
@@ -105,7 +116,10 @@ class PointService:
             name=r["name"],
             city_name=r["city_name"],
             neighborhood=r["neighborhood"],
-            address=r["address"],
+            logradouro=r["logradouro"],
+            number=r["number"],
+            cep=r["cep"],
+            address=r["address"] or (f"{r['logradouro']}, {r['number']}" if r["logradouro"] else None),
             latitude=float(r["latitude"]) if r["latitude"] is not None else None,
             longitude=float(r["longitude"]) if r["longitude"] is not None else None,
             vaccines=r["vaccines"]
@@ -120,11 +134,18 @@ class PointService:
                 detail="Cidade informada não existe"
             )
 
+        composed_address = payload.address
+        if not composed_address and payload.logradouro:
+            composed_address = f"{payload.logradouro}, {payload.number or 's/n'}"
+
         new_point = VaccinationPoint(
             city_id=payload.city_id,
             name=payload.name,
             neighborhood=payload.neighborhood,
-            address=payload.address,
+            logradouro=payload.logradouro,
+            number=payload.number,
+            cep=payload.cep,
+            address=composed_address,
             latitude=payload.latitude,
             longitude=payload.longitude
         )
@@ -161,8 +182,16 @@ class PointService:
             point.name = payload.name
         if payload.neighborhood is not None:
             point.neighborhood = payload.neighborhood
+        if payload.logradouro is not None:
+            point.logradouro = payload.logradouro
+        if payload.number is not None:
+            point.number = payload.number
+        if payload.cep is not None:
+            point.cep = payload.cep
         if payload.address is not None:
             point.address = payload.address
+        elif payload.logradouro is not None:
+            point.address = f"{payload.logradouro}, {payload.number or point.number or 's/n'}"
         if payload.latitude is not None:
             point.latitude = payload.latitude
         if payload.longitude is not None:

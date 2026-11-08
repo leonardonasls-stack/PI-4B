@@ -5,6 +5,9 @@ class VaccinationPointCreate(BaseModel):
     city_id: int
     name: str
     neighborhood: Optional[str] = None
+    logradouro: Optional[str] = None
+    number: Optional[str] = None
+    cep: Optional[str] = None
     address: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
@@ -14,6 +17,9 @@ class VaccinationPointUpdate(BaseModel):
     city_id: Optional[int] = None
     name: Optional[str] = None
     neighborhood: Optional[str] = None
+    logradouro: Optional[str] = None
+    number: Optional[str] = None
+    cep: Optional[str] = None
     address: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
@@ -24,6 +30,9 @@ class VaccinationPointResponse(BaseModel):
     name: str
     city_name: Optional[str] = None
     neighborhood: Optional[str] = None
+    logradouro: Optional[str] = None
+    number: Optional[str] = None
+    cep: Optional[str] = None
     address: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
