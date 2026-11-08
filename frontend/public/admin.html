@@ -30,7 +30,31 @@
   [v-cloak] {
     display: none !important;
   }
-</style><script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script><script>
+</style>
+<script>
+  (function() {
+    // Verificação Instantânea de Autenticação Antes de Carregar Scripts ou Renderizar
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      window.location.replace('index.html?sessao=expirada');
+      return;
+    }
+    // Verificação de expiração local preliminar do JWT caso possua payload válido
+    try {
+      const payloadBase64 = token.split('.')[1];
+      if (payloadBase64) {
+        const payload = JSON.parse(atob(payloadBase64));
+        if (payload.exp && Date.now() >= payload.exp * 1000) {
+          localStorage.removeItem('access_token');
+          window.location.replace('index.html?sessao=expirada');
+          return;
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
   (function() {
     const origWarn = console.warn;
     console.warn = function(...args) {
@@ -847,12 +871,7 @@
       async function pesquisarNoOSM() {
         const token = getAuthToken();
         if (!token) {
-          confirmarAcao(
-            "Sessão Expirada",
-            "Sua sessão administrativa não foi encontrada ou expirou. Deseja ir para o portal para fazer login?",
-            () => { window.location.href = "index.html"; },
-            "Fazer Login"
-          );
+          expirarSessaoERedirecionar();
           return;
         }
 
@@ -865,13 +884,7 @@
 
           if (!res.ok) {
             if (res.status === 401) {
-              localStorage.removeItem("access_token");
-              confirmarAcao(
-                "Sessão Expirada",
-                "Seu token de acesso expirou ou foi invalidado. Deseja realizar login novamente?",
-                () => { window.location.href = "index.html"; },
-                "Fazer Login"
-              );
+              expirarSessaoERedirecionar();
               return;
             }
             const err = await res.json().catch(() => ({}));
@@ -903,7 +916,7 @@
       async function salvarSelecionadosOSM() {
         const token = getAuthToken();
         if (!token) {
-          notificar("Sessão Expirada", "Sua sessão expirou. Faça login novamente.", "aviso");
+          expirarSessaoERedirecionar();
           return;
         }
 
@@ -926,6 +939,10 @@
           });
 
           if (!res.ok) {
+            if (res.status === 401) {
+              expirarSessaoERedirecionar();
+              return;
+            }
             const err = await res.json().catch(() => ({}));
             throw new Error(err.detail || "Erro ao salvar unidades no PostgreSQL.");
           }
@@ -997,6 +1014,32 @@
 
       function getAuthToken() {
         return localStorage.getItem("access_token") || "";
+      }
+
+      function expirarSessaoERedirecionar() {
+        localStorage.removeItem("access_token");
+        window.location.replace("index.html?sessao=expirada");
+      }
+
+      async function verificarAutenticacao() {
+        const token = getAuthToken();
+        if (!token) {
+          expirarSessaoERedirecionar();
+          return false;
+        }
+        try {
+          const res = await fetch(`${API_URL}/auth/verify`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (!res.ok) {
+            expirarSessaoERedirecionar();
+            return false;
+          }
+          return true;
+        } catch (e) {
+          console.warn("Falha na checagem de autenticação online:", e);
+          return true;
+        }
       }
 
       async function carregarPostos() {
@@ -1181,7 +1224,7 @@
       async function salvarPosto() {
         const token = getAuthToken();
         if (!token) {
-          notificar("Sessão Expirada", "Sessão administrativa expirada ou não autenticada. Acesse através do login.", "aviso");
+          expirarSessaoERedirecionar();
           return;
         }
 
@@ -1225,7 +1268,7 @@
           });
 
           if (res.status === 401) {
-            notificar("Sessão Expirada", "Sua sessão expirou. Faça login novamente.", "aviso");
+            expirarSessaoERedirecionar();
             return;
           }
 
@@ -1256,7 +1299,7 @@
           async () => {
             const token = getAuthToken();
             if (!token) {
-              notificar("Sessão Expirada", "Sessão administrativa expirada ou não autenticada.", "aviso");
+              expirarSessaoERedirecionar();
               return;
             }
 
@@ -1267,6 +1310,11 @@
                   "Authorization": `Bearer ${token}`
                 }
               });
+
+              if (res.status === 401) {
+                expirarSessaoERedirecionar();
+                return;
+              }
 
               if (res.ok) {
                 notificar("Unidade Desativada", `Posto #${p.id} (${p.name}) removido com sucesso do catálogo ativo.`, "sucesso");
@@ -1347,8 +1395,11 @@
         document.body.removeChild(link);
       }
 
-      onMounted(() => {
-        carregarPostos();
+      onMounted(async () => {
+        const autenticado = await verificarAutenticacao();
+        if (autenticado) {
+          carregarPostos();
+        }
         window.exportarCSV = exportarCSV;
         window.exportarGeoJSON = exportarGeoJSON;
       });

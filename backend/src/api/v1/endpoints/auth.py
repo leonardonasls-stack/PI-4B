@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from src.database.connection import get_db
-from src.core.security import verify_password, create_access_token
+from src.core.security import verify_password, create_access_token, get_current_admin
 from src.database.models.entities import AdminUser
 from src.schemas.auth import Token
 
@@ -28,3 +28,7 @@ async def login_for_access_token(
 
     access_token = create_access_token(data={"sub": admin.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/verify", summary="Verificar validade do token JWT")
+async def verify_token(current_admin: str = Depends(get_current_admin)):
+    return {"status": "ok", "user": current_admin}
