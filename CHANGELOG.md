@@ -6,6 +6,7 @@ Histórico detalhado de commits e evolução do projeto **Vacina Alagoas — Pro
 
 | Código do Commit | Data / Hora | Autor | Descrição das Alterações |
 | :--- | :---: | :---: | :--- |
+| [`9990f84`](https://github.com/leonardonasls-stack/PI-4B/commit/9990f8467c20e296951e9796dc8994eda19337cf) | 08/11/2026 01:05 | Leonardo Nascimento | **Normalização de campos de endereço (Logradouro, Número, CEP)**<br>• Adição das colunas atômicas `logradouro`, `number` e `cep` na tabela `vaccination_points` e nos schemas Pydantic.<br>• Extração automática de código postal e número predial pelo robô do OpenStreetMap / Nominatim.<br>• Reformulação do formulário no painel administrativo com inputs dedicados para cada componente de endereço.<br>• Migração e atualização dos registros existentes e do script `sql/seed.sql`. |
 | [`f226fd6`](https://github.com/leonardonasls-stack/PI-4B/commit/f226fd6d03d523776f47175716485ce2be3b94a0) | 08/11/2026 00:17 | Leonardo Nascimento | **Integração de atualizações entre branches (main & luiz)**<br>• Sincronização do README.md refatorado, documentação e conciliação do histórico do projeto. |
 | [`b022e13`](https://github.com/leonardonasls-stack/PI-4B/commit/b022e13ec736424d8cd3e6391bbc5e058fcc04ae) | 07/11/2026 22:56 | Luiz | **Unificação do painel de filtros, inclusão de cidade nos endereços e correção do ícone de detalhes**<br>• Eliminação da barra de filtros flutuante solta, integrando título dos resultados, indicador de auditoria em tempo real, controles de ordenação/visão e chips de imunizantes em um único painel coeso.<br>• Inclusão formal do nome do município em todos os endereços (`Bairro, Cidade • Logradouro`), tanto no Card Herói quanto nos cards padrão do grid.<br>• Substituição do ícone SVG distorcido do botão *Detalhes* por um ícone vetorial padronizado. |
 | [`ce7e147`](https://github.com/leonardonasls-stack/PI-4B/commit/ce7e14762e516a017720edb25328376001df3606) | 07/11/2026 22:33 | Luiz | **Renomeação semântica de Calendário para "Vacinas por Idade"**<br>• Adequação da terminologia na barra de navegação superior (`[Vacinas por Idade]`) com novo ícone vetorial de perfil familiar.<br>• Reestruturação da seção para `id="vacinas-por-idade"` com título *Vacinas por Idade e Fase da Vida*, alinhando com a consulta por faixas etárias do SUS. |
@@ -75,6 +76,7 @@ Histórico detalhado de commits e evolução do projeto **Vacina Alagoas — Pro
 
 ### Resumo dos Identificadores de Commit (Hash Completo)
 
+- `9990f8467c20e296951e9796dc8994eda19337cf`
 - `f226fd6d03d523776f47175716485ce2be3b94a0`
 - `b022e13ec736424d8cd3e6391bbc5e058fcc04ae`
 - `ce7e14762e516a017720edb25328376001df3606`
