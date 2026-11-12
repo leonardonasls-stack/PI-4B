@@ -1,25 +1,22 @@
 # Ficha Atual de Escolhas (`P-16` — Modo Edição)
 
-Valores **observados** no código em 2026-11-12. O usuário decidirá o que fica `mantido`, `ajustar` ou `trocar` após o diagnóstico (`M-3`).
+Atualizada após o diagnóstico (`M-3`) em 2026-11-12. Marque o que deseja confirmar para cada item marcado como `ajustar`.
 
 ## 1. Tipografia
-- **Família principal:** `Public Sans` (Google Fonts) — Status: `observado`
-- **Pesos carregados:** `400`, `600`, `700`, `800` — Status: `observado`
-- **Fallback:** padrão do navegador (`sans-serif` implícito, não declarado no `fontFamily` do `tailwind.config`) — Status: `observado`
-- **Escala:** tokens MD3 (`display-lg` 48px até `label-sm` 12px) misturados com classes utilitárias (`text-xs`, `text-sm`, `text-base`) — Status: `observado`
-- **Medida de linha:** `max-w-2xl` / `max-w-4xl` em textos longos do portal — Status: `observado`
+- **Família principal:** `Public Sans` (`400;600;700;800`) — Proposta: **`mantido`**
+- **Fallback:** explícito `["Public Sans", "system-ui", "-apple-system", "sans-serif"]` no `tailwind.config` — Proposta: **`ajustar`** (atualmente sem fallback explícito)
+- **Escala:** consolidar `display-lg` a `label-sm` e remover os `38` `text-[*px]` arbitrários (`text-[10px]`, `text-[11px]`) — Proposta: **`ajustar`**
+- **Medida de linha:** `max-w-2xl` / `max-w-4xl` — Proposta: **`mantido`**
 
-## 2. Disposição
-- **Container:** `max-w-7xl` (`index.html`) / `max-w-[1280px]` (`admin.html`) — Status: `observado`
-- **Grid / Layout:** Portal com barra fixa dupla (`h-8` + `h-16`), hero de busca, área principal (lista de postos + mapa Leaflet), tabelas do PNI e rodapé; Admin com header fixo (`h-16`), seção Bot OSM, seção Tabela de Postos, modais de cadastro/ajuda/docs/feedback e rodapé escuro — Status: `observado`
-- **Comportamento mobile:** Portal com `flex-col sm:flex-row` e nav visível; Admin oculta `<nav class="hidden md:flex">` sem menu alternativo — Status: `observado`
+## 2. Disposição e Navegação
+- **Container:** unificar sintaxe para `max-w-7xl` (`1280px`) em ambos os arquivos — Proposta: **`ajustar`**
+- **Header e Rodapé (Portal vs. Admin):** unificar tema visual em torno de `#002530` (`primary`) + `surface` claro (`#f9f9ff`), eliminando o bloco escuro `slate-900`/`emerald-600` destoante do Admin — Proposta: **`ajustar`**
+- **Menu Mobile do Admin:** adicionar menu/gaveta acessível para `< 768px` (hoje `hidden md:flex` esconde toda a navegação) — Proposta: **`ajustar`**
 
 ## 3. Itens e Componentes
-- **Cartões:** Cards brancos com `rounded-xl` / `rounded-2xl`, `shadow-sm`, bordas `slate-200` — Status: `observado`
-- **Botões:** Estilos mistos (`bg-primary`, `bg-emerald-600`, `bg-emerald-700`, `bg-slate-800`, `bg-rose-600/20`) — Status: `observado`
-- **Ícones:** 56 SVGs inline no portal; 30 SVGs inline + 4 `Material Symbols Outlined` no admin — Status: `observado`
-- **Formulários:** Inputs nativos estilizados com Tailwind (`rounded-xl`, `border`) — Status: `observado`
-- **Modais:** Modais nativos controlados via JS/Vue (`z-50` a `z-[100]`) — Status: `observado`
+- **Raios (`borderRadius`):** restaurar `rounded-full: 9999px` (corrigindo o override `0.75rem`) e padronizar `rounded-xl` (`0.75rem`) / `rounded-lg` (`0.5rem`) nos cards e botões — Proposta: **`ajustar`**
+- **Ícones:** remover `Material Symbols Outlined` duplicado do Admin e padronizar em SVGs limpos e coerentes, removendo ícones puramente decorativos — Proposta: **`ajustar`**
+- **Botões e Estados:** padronizar `focus-visible:ring-2 focus-visible:ring-primary` em ambos os arquivos e remover `animate-pulse` decorativo — Proposta: **`ajustar`**
 
 ## 4. Referências de Biblioteca
-- **Base:** HTML5 + Tailwind CSS CDN + Vue 3 CDN (sem biblioteca de componentes externa como shadcn/coss ui) — Status: `observado`
+- **Base:** HTML5 + Tailwind CSS CDN + Vue 3 CDN + Leaflet 1.9.4 — Proposta: **`mantido`**
