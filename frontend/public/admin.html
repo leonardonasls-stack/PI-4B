@@ -310,6 +310,46 @@
   </div>
 </div>
 </div>
+<!-- KPIs Operacionais Calculados no Frontend -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-space-sm" aria-label="Resumo operacional dos postos">
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
+    <div>
+      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Total Homologados</span>
+      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ postos.length }}</span>
+    </div>
+    <span class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
+      <i class="ph-duotone ph-buildings text-xl" aria-hidden="true"></i>
+    </span>
+  </div>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
+    <div>
+      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Maceió</span>
+      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.maceio }}</span>
+    </div>
+    <span class="w-10 h-10 rounded-xl bg-secondary text-white flex items-center justify-center shrink-0">
+      <i class="ph-duotone ph-map-pin text-xl" aria-hidden="true"></i>
+    </span>
+  </div>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
+    <div>
+      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Arapiraca</span>
+      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.arapiraca }}</span>
+    </div>
+    <span class="w-10 h-10 rounded-xl bg-primary-container text-white flex items-center justify-center shrink-0">
+      <i class="ph-duotone ph-navigation-arrow text-xl" aria-hidden="true"></i>
+    </span>
+  </div>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
+    <div>
+      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Vacinas Ofertadas</span>
+      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.vacinasUnicas }}</span>
+    </div>
+    <span class="w-10 h-10 rounded-xl bg-secondary-container text-secondary flex items-center justify-center shrink-0">
+      <i class="ph-duotone ph-syringe text-xl" aria-hidden="true"></i>
+    </span>
+  </div>
+</div>
+
 <!-- Barra de Filtros e Busca Rápida -->
 <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
 <div class="md:col-span-6 relative">
@@ -341,10 +381,30 @@
 <table class="w-full text-left font-body-sm text-body-sm" id="tabela-postos-auditoria">
 <thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
 <tr>
-<th class="py-3 px-4 w-14 text-center">ID</th>
-<th class="py-3 px-4 min-w-[200px]">Nome da Unidade</th>
-<th class="py-3 px-4">Município / Bairro</th>
-<th class="py-3 px-4">Imunobiológicos em Estoque</th>
+<th class="py-3 px-4 w-20 text-center">
+  <button type="button" @click="alternarOrdenacao('id')" class="inline-flex items-center justify-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>ID</span>
+    <i :class="ordenarPor === 'id' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
+<th class="py-3 px-4 min-w-[200px]">
+  <button type="button" @click="alternarOrdenacao('name')" class="inline-flex items-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>Nome da Unidade</span>
+    <i :class="ordenarPor === 'name' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
+<th class="py-3 px-4">
+  <button type="button" @click="alternarOrdenacao('municipio')" class="inline-flex items-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>Município / Bairro</span>
+    <i :class="ordenarPor === 'municipio' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
+<th class="py-3 px-4">
+  <button type="button" @click="alternarOrdenacao('vaccines')" class="inline-flex items-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>Imunobiológicos em Estoque</span>
+    <i :class="ordenarPor === 'vaccines' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
 <th class="py-3 px-4 min-w-[180px]">Endereço / Referência</th>
 <th class="py-3 px-4 text-right">Ações de Gestão</th>
 </tr>
@@ -356,7 +416,7 @@
 <tr v-else-if="postosFiltrados.length === 0">
   <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
 </tr>
-<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
+<tr v-for="p in postosPaginados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
 <td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
 <td class="py-3.5 px-4">
 <div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
@@ -395,7 +455,44 @@
 </div>
 <!-- Paginação e Meta Informação -->
 <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
-<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
+  <span>
+    Exibindo <strong>{{ postosPaginados.length }}</strong> de <strong>{{ postosFiltrados.length }} filtrados</strong> (total: <strong>{{ postos.length }}</strong> postos).
+  </span>
+  <div class="flex flex-wrap items-center gap-2">
+    <label class="inline-flex items-center gap-1.5 text-xs">
+      <span>Por página:</span>
+      <select v-model.number="itensPorPagina" aria-label="Itens por página" class="px-2 py-1 rounded border border-outline-variant bg-white text-on-surface text-xs font-semibold cursor-pointer">
+        <option :value="10">10</option>
+        <option :value="25">25</option>
+        <option :value="50">50</option>
+      </select>
+    </label>
+    <div class="inline-flex items-center gap-1">
+      <button
+        type="button"
+        @click="paginaAtual = Math.max(1, paginaAtual - 1)"
+        :disabled="paginaAtual <= 1"
+        aria-label="Página anterior"
+        class="px-2.5 py-1 rounded border border-outline-variant bg-white text-on-surface hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-xs font-semibold inline-flex items-center gap-1"
+      >
+        <i class="ph-bold ph-caret-left text-xs" aria-hidden="true"></i>
+        <span>Anterior</span>
+      </button>
+      <span class="px-2 text-xs font-semibold text-on-surface tabular-nums">
+        {{ paginaAtual }} / {{ totalPaginas }}
+      </span>
+      <button
+        type="button"
+        @click="paginaAtual = Math.min(totalPaginas, paginaAtual + 1)"
+        :disabled="paginaAtual >= totalPaginas"
+        aria-label="Próxima página"
+        class="px-2.5 py-1 rounded border border-outline-variant bg-white text-on-surface hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-xs font-semibold inline-flex items-center gap-1"
+      >
+        <span>Próxima</span>
+        <i class="ph-bold ph-caret-right text-xs" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
 </div>
 </section>
 
@@ -769,7 +866,7 @@
 </div>
 
 <script>
-  const { createApp, ref, computed, onMounted } = Vue;
+  const { createApp, ref, computed, watch, onMounted } = Vue;
 
   createApp({
     setup() {
@@ -783,6 +880,10 @@
       const filtroTexto = ref("");
       const filtroCidade = ref("todos");
       const filtroVacina = ref("todas");
+      const ordenarPor = ref("id");
+      const ordemAsc = ref(true);
+      const paginaAtual = ref(1);
+      const itensPorPagina = ref(10);
 
       const cepInput = ref("");
       const cepStatusHtml = ref("");
@@ -1072,6 +1173,38 @@
         }
       }
 
+      const kpiStats = computed(() => {
+        const lista = postos.value || [];
+        let maceio = 0;
+        let arapiraca = 0;
+        const vacinasSet = new Set();
+
+        for (const p of lista) {
+          const mun = (p.municipio || (p.city_id === 1 ? "Maceió" : "Arapiraca")).toLowerCase();
+          if (mun.includes("macei")) maceio++;
+          else if (mun.includes("arapiraca")) arapiraca++;
+          for (const v of (p.vaccines || [])) {
+            if (v) vacinasSet.add(v.trim());
+          }
+        }
+
+        return {
+          maceio,
+          arapiraca,
+          vacinasUnicas: vacinasSet.size
+        };
+      });
+
+      function alternarOrdenacao(campo) {
+        if (ordenarPor.value === campo) {
+          ordemAsc.value = !ordemAsc.value;
+        } else {
+          ordenarPor.value = campo;
+          ordemAsc.value = true;
+        }
+        paginaAtual.value = 1;
+      }
+
       const postosFiltrados = computed(() => {
         let lista = postos.value;
 
@@ -1094,7 +1227,38 @@
           });
         }
 
-        return lista;
+        const dir = ordemAsc.value ? 1 : -1;
+        const campo = ordenarPor.value;
+        return [...lista].sort((a, b) => {
+          if (campo === "id") {
+            return ((Number(a.id) || 0) - (Number(b.id) || 0)) * dir;
+          }
+          if (campo === "vaccines") {
+            return (((a.vaccines || []).length) - ((b.vaccines || []).length)) * dir;
+          }
+          if (campo === "municipio") {
+            const va = `${a.municipio || ""} ${a.neighborhood || ""}`.toLowerCase();
+            const vb = `${b.municipio || ""} ${b.neighborhood || ""}`.toLowerCase();
+            return va.localeCompare(vb, "pt-BR") * dir;
+          }
+          const va = (a.name || "").toLowerCase();
+          const vb = (b.name || "").toLowerCase();
+          return va.localeCompare(vb, "pt-BR") * dir;
+        });
+      });
+
+      const totalPaginas = computed(() => {
+        const total = Math.ceil(postosFiltrados.value.length / itensPorPagina.value);
+        return Math.max(1, total);
+      });
+
+      const postosPaginados = computed(() => {
+        const inicio = (paginaAtual.value - 1) * itensPorPagina.value;
+        return postosFiltrados.value.slice(inicio, inicio + itensPorPagina.value);
+      });
+
+      watch([filtroTexto, filtroCidade, filtroVacina, itensPorPagina], () => {
+        paginaAtual.value = 1;
       });
 
       async function buscarCep() {
@@ -1412,11 +1576,19 @@
         filtroTexto,
         filtroCidade,
         filtroVacina,
+        ordenarPor,
+        ordemAsc,
+        paginaAtual,
+        itensPorPagina,
+        kpiStats,
+        alternarOrdenacao,
         cepInput,
         cepStatusHtml,
         catalogoVacinas,
         form,
         postosFiltrados,
+        totalPaginas,
+        postosPaginados,
         buscarCep,
         consultarCEP: buscarCep,
         formatarCep,
