@@ -30,4 +30,21 @@
 
 **Veredito (`pós-camada 1`):** **NÃO PASSA** (itens de coesão visual programados para a Camada 2).
 
+---
+
+## Momento: `final` (2026-11-12)
+**Alvo:** `frontend/public/index.html` e `frontend/public/admin.html` (pós-Camada 2)
+
+| Sinal | Camada | Onde | Evidência | Severidade | Correção | Status |
+|---|---|---|---|---|---|---|
+| Descolamento visual Portal vs. Admin | VISUAL | `admin.html` | Header, barra superior (`bg-primary`), rodapé (`bg-surface-container-low`), botões (`bg-primary`/`bg-secondary`) e container (`max-w-7xl`) unificados com `index.html` | **Alta** | Unificação aplicada na Camada 2 | **Resolvido** |
+| Ícones duplicados (`Material Symbols` 2x + SVGs) | VISUAL | `admin.html` | `0` ocorrências de `Material Symbols` (`<link>` e classes removidos; 4 ícones unificados em SVG inline) | **Média** | Padronizado em SVG inline | **Resolvido** |
+| `borderRadius.full: 0.75rem` e fallback tipográfico ausente | CÓDIGO | `index.html`, `admin.html` | `borderRadius.full: "9999px"` e `fontFamily.sans` com fallback explícito em ambos | **Média** | Corrigido na Camada 2 | **Resolvido** |
+| `animate-pulse` decorativo e falta de `prefers-reduced-motion` | COMPORTAMENTO | `admin.html`, `index.html` | `0` `animate-pulse` em `admin.html`; `@media (prefers-reduced-motion: reduce)` ativo em ambos | **Média** | Corrigido nas Camadas 1 e 2 | **Resolvido** |
+| Tag `<html>` malformada | CÓDIGO | `index.html:3` | `<html lang="pt-BR">` | **Alta** | Corrigido na Camada 1 | **Resolvido** |
+| Onda SVG decorativa no fundo do Hero | VISUAL | `index.html:354-366` | Mantida (baixa opacidade, não bloqueante) | **Baixa** | Listada para revisão futura se desejado | **Mantido** |
+
+**Veredito (`final`):** **PASSA** (nenhum sinal de severidade Alta ou Média pendente).
+
+
 

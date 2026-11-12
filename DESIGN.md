@@ -54,12 +54,11 @@ Definidas de forma idêntica em `frontend/public/index.html` (L65-L113) e `front
 - `index.html`: ~104 ocorrências de `transition-*` / `animate-*` / `hover:scale*` / `hover:-translate*`.
 - `admin.html`: ~38 ocorrências (`group-hover:scale-105`, `animate-pulse` no botão "Ver Portal", `animate-spin` em loading).
 
-## 5. Inconsistências Observadas (Portal vs. Admin)
+## 5. Inconsistências Resolvidas na Melhoria M2 (2026-11-12)
 
-1. **Header e Tema Visual:** `index.html` usa header claro (`bg-white/95` + barra utilitária `bg-slate-900` + botões `bg-primary` `#002530`), enquanto `admin.html` usa header escuro fixo (`bg-slate-900/95`) com acentos `emerald-600`/`emerald-400` e `rose-600`, ignorando os tokens `primary` e `secondary` declarados no próprio `tailwind.config`.
-2. **Tokens vs. Cores Hardcoded:** ambos declaram paleta MD3 completa, mas usam extensivamente `slate-*`, `emerald-*`, `rose-*` e `white` fora dos tokens semânticos.
-3. **Ícones:** `index.html` usa 56 SVGs inline (0 Material Symbols); `admin.html` carrega `Material Symbols Outlined` **duas vezes** no `<head>` (L3 e L4), mas usa apenas 4 vezes no corpo e 30 SVGs inline.
-4. **Navegação Mobile:** `admin.html` oculta o `<nav>` em telas menores que `md` (`hidden md:flex` na L92) sem oferecer menu mobile/gaveta alternativa.
-5. **Scrollbar:** `index.html` oculta a barra de rolagem (`::-webkit-scrollbar { display: none; }` L41-43), enquanto `admin.html` estiliza uma scrollbar de `8px`.
-6. **Bug HTML em `index.html` (L3):** `<html> lang="pt-BR">` possui fechamento `>` prematuro antes do atributo `lang`.
-7. **Largura de `borderRadius`:** `tailwind.config` sobrescreve `lg`/`xl`/`full` com valores muito pequenos (`0.25rem`, `0.5rem`, `0.75rem`), enquanto componentes usam `rounded-2xl` (padrão Tailwind `1rem`) e `rounded-full` (que vira `0.75rem`, quebrando círculos verdadeiros em avatares/badges se dependerem de `rounded-full`). `[confirmar]`
+1. **Header e Tema Visual:** `admin.html` unificado ao tema claro do portal (`bg-white/95`, barra superior `#002530`, acentos `primary`/`secondary`, rodapé `bg-surface-container-low` com contraste corrigido).
+2. **Ícones:** `Material Symbols Outlined` duplicado removido de `admin.html`; ícones padronizados em SVG inline.
+3. **Navegação Mobile:** menu `#menu-mobile-admin` adicionado abaixo de `768px` em `admin.html`.
+4. **Scrollbar e Movimento Reduzido:** scrollbar visível restaurada no portal e `@media (prefers-reduced-motion: reduce)` adicionado em ambos.
+5. **HTML e Raios:** `<html lang="pt-BR">` corrigido em `index.html:3`; `borderRadius.full` restaurado para `9999px` e fallback de `Public Sans` adicionado em ambos.
+
