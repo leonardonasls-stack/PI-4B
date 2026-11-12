@@ -126,36 +126,38 @@
 <!-- PROTAGONISTA: BOT DE MINERAÇÃO E SINCRONIZAÇÃO OPENSTREETMAP (OSM) -->
 <section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm border border-outline-variant/60 space-y-space-lg">
   <!-- Cabeçalho do Robô -->
-  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md border-b border-outline-variant/40">
-    <div class="space-y-1">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-secondary text-on-secondary flex items-center justify-center font-bold text-xs shadow-xs">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <h2 class="font-headline-md text-headline-md font-bold text-on-surface">
-          Bot de Mineração Geográfica (OpenStreetMap)
-        </h2>
-        <span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-fixed-variant text-xs font-bold">1-Click Sync</span>
+  <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-md border-b border-outline-variant/40">
+    <div class="flex items-start gap-3 min-w-0">
+      <div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+        <i class="ph-duotone ph-globe-hemisphere-west text-lg" aria-hidden="true"></i>
       </div>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">
-        Varra o território alagoano automaticamente em busca de unidades de saúde e postos vacinais com coordenadas georreferenciadas.
-      </p>
+      <div class="space-y-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2">
+          <h2 class="font-headline-md text-headline-md font-bold text-on-surface leading-snug">
+            Bot de Mineração Geográfica (OpenStreetMap)
+          </h2>
+          <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/50 text-secondary border border-secondary/20 text-[11px] font-bold whitespace-nowrap shrink-0">1-Click Sync</span>
+        </div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">
+          Varra o território alagoano automaticamente em busca de unidades de saúde e postos vacinais com coordenadas georreferenciadas.
+        </p>
+      </div>
     </div>
 
     <!-- Seletor de Escopo e Disparo -->
-    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-      <div class="flex items-center gap-2 bg-surface-container-low border border-outline-variant/60 px-3 py-1.5 rounded-xl">
-        <label for="escopo-osm-select" class="text-xs font-semibold text-on-surface-variant">Escopo:</label>
-        <select id="escopo-osm-select" v-model="escopoOsm" class="bg-transparent text-xs font-bold text-on-surface rounded cursor-pointer">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+      <div class="h-10 flex items-center gap-2 bg-surface-container-low border border-outline-variant/70 px-3 rounded-xl">
+        <label for="escopo-osm-select" class="text-xs font-semibold text-on-surface-variant whitespace-nowrap">Escopo:</label>
+        <select id="escopo-osm-select" v-model="escopoOsm" class="bg-transparent border-0 text-xs font-bold text-on-surface cursor-pointer pr-1 focus:outline-none">
           <option value="alagoas">Todo o Estado de Alagoas</option>
           <option value="maceio">Apenas Maceió (Capital)</option>
           <option value="arapiraca">Apenas Arapiraca (Agreste)</option>
         </select>
       </div>
 
-      <button type="button" @click="pesquisarNoOSM" :disabled="minerandoOsm" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-xs shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-        <svg v-if="minerandoOsm" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="3"/></svg>
-        <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <button type="button" @click="pesquisarNoOSM" :disabled="minerandoOsm" class="h-10 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-xs shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap disabled:opacity-50">
+        <i v-if="minerandoOsm" class="ph-bold ph-spinner-gap text-base animate-spin" aria-hidden="true"></i>
+        <i v-else class="ph-bold ph-magnifying-glass text-base" aria-hidden="true"></i>
         <span>{{ minerandoOsm ? 'Varrendo OpenStreetMap...' : 'Pesquisar Unidades no OSM' }}</span>
       </button>
     </div>
