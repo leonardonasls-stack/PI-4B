@@ -520,6 +520,38 @@
             </h3>
           </div>
 
+          <!-- BARRA DE RESUMO DE FILTROS E FAVORITOS -->
+          <div
+            id="barra-resumo-filtros"
+            class="mb-space-md flex flex-wrap items-center justify-between gap-3 bg-surface-container-low border border-surface-container-high rounded-xl px-4 py-2.5 text-xs"
+          >
+            <div class="flex flex-wrap items-center gap-2 text-on-surface-variant">
+              <i class="ph-bold ph-funnel text-primary text-sm" aria-hidden="true"></i>
+              <span id="resumo-filtros-texto" class="font-medium">Exibindo todos os postos da cidade</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                id="btn-filtro-favoritos"
+                type="button"
+                onclick="window.alternarFiltroFavoritos()"
+                aria-pressed="false"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-white text-on-surface hover:border-secondary hover:text-secondary transition-colors font-semibold cursor-pointer"
+              >
+                <i id="icon-filtro-favoritos" class="ph-bold ph-bookmark-simple text-sm" aria-hidden="true"></i>
+                <span>Meus Favoritos (<span id="contador-favoritos">0</span>)</span>
+              </button>
+              <button
+                id="btn-limpar-filtros-barra"
+                type="button"
+                onclick="window.limparTodosOsFiltros()"
+                class="hidden inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline-variant bg-white text-on-surface-variant hover:text-primary hover:border-primary transition-colors font-semibold cursor-pointer"
+              >
+                <i class="ph-bold ph-x text-xs" aria-hidden="true"></i>
+                <span>Limpar filtros</span>
+              </button>
+            </div>
+          </div>
+
           <!-- GRID DE CARDS DOS POSTOS (PADRÃO 2 - INSTITUCIONAL ALAGOAS) -->
           <div
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg"
@@ -1534,8 +1566,28 @@
               </div>
             </div>
             <div
-              class="p-space-lg bg-surface-container-low flex items-center justify-end gap-space-sm"
+              class="p-space-lg bg-surface-container-low flex flex-wrap items-center justify-between gap-space-sm"
             >
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  id="btn-modal-favorito"
+                  class="px-3 py-2 rounded-lg border border-outline-variant bg-white text-on-surface hover:border-secondary hover:text-secondary transition-all font-label-md text-label-md inline-flex items-center gap-1.5 cursor-pointer"
+                  onclick="window.alternarFavoritoModal()"
+                  type="button"
+                >
+                  <i id="icon-modal-favorito" class="ph-bold ph-bookmark-simple text-base" aria-hidden="true"></i>
+                  <span id="texto-modal-favorito">Favoritar</span>
+                </button>
+                <button
+                  id="btn-modal-compartilhar"
+                  class="px-3 py-2 rounded-lg border border-outline-variant bg-white text-on-surface hover:border-primary hover:text-primary transition-all font-label-md text-label-md inline-flex items-center gap-1.5 cursor-pointer"
+                  onclick="window.compartilharPostoAtual()"
+                  type="button"
+                >
+                  <i class="ph-bold ph-share-network text-base" aria-hidden="true"></i>
+                  <span id="texto-modal-compartilhar">Compartilhar</span>
+                </button>
+              </div>
               <button
                 class="px-space-lg py-space-sm bg-slate-900 text-white rounded-lg font-label-md text-label-md hover:bg-slate-800 transition-all shadow-sm cursor-pointer"
                 onclick="window.fecharModalDetalhes()"
@@ -1923,6 +1975,11 @@
                           .join(" ")
                       : '<span class="text-[10px] text-on-surface-variant italic">Consulte a equipe</span>';
 
+                  const isFav = typeof window.ehFavorito === "function" && window.ehFavorito(p.id);
+                  const favIconClass = isFav
+                    ? "ph-duotone ph-bookmark-simple text-secondary"
+                    : "ph-bold ph-bookmark-simple text-slate-400 hover:text-secondary";
+
                   return `
           <article class="card-posto-item bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container-high hover:border-primary-container/40 flex flex-col justify-between overflow-hidden transition-all hover:shadow-md h-[270px]">
             <div class="p-4 flex flex-col h-[208px]">
@@ -1931,7 +1988,19 @@
                   <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
                   Unidade Básica SUS
                 </span>
-                ${distBadge}
+                <div class="flex items-center gap-1.5">
+                  ${distBadge}
+                  <button
+                    type="button"
+                    onclick="event.stopPropagation(); window.alternarFavorito(${p.id})"
+                    aria-label="${isFav ? "Remover dos favoritos" : "Salvar nos favoritos"}"
+                    aria-pressed="${isFav}"
+                    title="${isFav ? "Remover dos favoritos" : "Salvar nos favoritos"}"
+                    class="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-surface-container-low transition-colors cursor-pointer"
+                  >
+                    <i class="${favIconClass} text-base" aria-hidden="true"></i>
+                  </button>
+                </div>
               </div>
 
               <h3 class="font-headline-sm text-sm text-on-surface font-extrabold leading-snug line-clamp-2 min-h-[2.5rem]" title="${p.name}">
@@ -2006,6 +2075,11 @@
                 document.getElementById("ordenar-select")?.value || "distancia";
 
               let filtrados = allPoints.filter((p) => {
+                const matchesFavorito =
+                  !apenasFavoritos ||
+                  (typeof window.ehFavorito === "function" && window.ehFavorito(p.id));
+                if (!matchesFavorito) return false;
+
                 if (!termoBusca) {
                   const matchesVacina =
                     filtroVacinaAtual === "todas" ||
@@ -2036,6 +2110,10 @@
 
                 return matchesTermo && matchesVacina;
               });
+
+              if (typeof window.atualizarBarraResumoFiltros === "function") {
+                window.atualizarBarraResumoFiltros(filtrados.length, rawInput);
+              }
 
               // Calcular distâncias se geolocalização ativa
               if (userLatitude && userLongitude) {
@@ -2255,9 +2333,174 @@
               );
             };
 
+            // Estado e Helpers de Favoritos & Compartilhamento (100% Frontend / localStorage)
+            const STORAGE_FAVORITOS_KEY = "vacina_al_favoritos";
+            let apenasFavoritos = false;
+            let postoAtualModal = null;
+
+            function lerFavoritos() {
+              try {
+                const raw = localStorage.getItem(STORAGE_FAVORITOS_KEY);
+                const arr = raw ? JSON.parse(raw) : [];
+                return Array.isArray(arr) ? arr : [];
+              } catch (e) {
+                return [];
+              }
+            }
+
+            function salvarFavoritos(lista) {
+              try {
+                localStorage.setItem(STORAGE_FAVORITOS_KEY, JSON.stringify(lista));
+              } catch (e) {}
+            }
+
+            window.ehFavorito = function (pointId) {
+              return lerFavoritos().includes(String(pointId));
+            };
+
+            function atualizarBotaoModalFavorito() {
+              const btn = document.getElementById("btn-modal-favorito");
+              const icon = document.getElementById("icon-modal-favorito");
+              const txt = document.getElementById("texto-modal-favorito");
+              if (!btn || !icon || !txt || !postoAtualModal) return;
+
+              const isFav = window.ehFavorito(postoAtualModal.id);
+              btn.setAttribute("aria-pressed", isFav ? "true" : "false");
+              if (isFav) {
+                btn.classList.add("border-secondary", "text-secondary", "bg-secondary-container/20");
+                btn.classList.remove("bg-white", "text-on-surface", "border-outline-variant");
+                icon.className = "ph-duotone ph-bookmark-simple text-base text-secondary";
+                txt.textContent = "Salvo nos favoritos";
+              } else {
+                btn.classList.remove("border-secondary", "text-secondary", "bg-secondary-container/20");
+                btn.classList.add("bg-white", "text-on-surface", "border-outline-variant");
+                icon.className = "ph-bold ph-bookmark-simple text-base";
+                txt.textContent = "Favoritar";
+              }
+            }
+
+            window.atualizarBarraResumoFiltros = function (totalExibidos, termoBuscaRaw) {
+              const textoEl = document.getElementById("resumo-filtros-texto");
+              const btnLimpar = document.getElementById("btn-limpar-filtros-barra");
+              const contFav = document.getElementById("contador-favoritos");
+              const btnFav = document.getElementById("btn-filtro-favoritos");
+              const iconFav = document.getElementById("icon-filtro-favoritos");
+
+              const favoritos = lerFavoritos();
+              if (contFav) contFav.textContent = String(favoritos.length);
+
+              if (btnFav && iconFav) {
+                btnFav.setAttribute("aria-pressed", apenasFavoritos ? "true" : "false");
+                if (apenasFavoritos) {
+                  btnFav.classList.add("border-secondary", "bg-secondary", "text-white");
+                  btnFav.classList.remove("bg-white", "text-on-surface", "border-outline-variant");
+                  iconFav.className = "ph-duotone ph-bookmark-simple text-sm";
+                } else {
+                  btnFav.classList.remove("border-secondary", "bg-secondary", "text-white");
+                  btnFav.classList.add("bg-white", "text-on-surface", "border-outline-variant");
+                  iconFav.className = "ph-bold ph-bookmark-simple text-sm";
+                }
+              }
+
+              const partes = [];
+              if (termoBuscaRaw) partes.push('Busca: "' + termoBuscaRaw + '"');
+              if (filtroVacinaAtual && filtroVacinaAtual !== "todas") {
+                partes.push("Vacina: " + filtroVacinaAtual);
+              }
+              if (apenasFavoritos) partes.push("Meus Favoritos");
+
+              if (textoEl) {
+                const sufixo = totalExibidos === 1 ? "posto encontrado" : "postos encontrados";
+                if (partes.length > 0) {
+                  textoEl.textContent =
+                    totalExibidos + " " + sufixo + " • " + partes.join(" • ");
+                } else {
+                  textoEl.textContent =
+                    "Exibindo todos os postos (" + totalExibidos + " " + sufixo + ")";
+                }
+              }
+
+              if (btnLimpar) {
+                btnLimpar.classList.toggle("hidden", partes.length === 0);
+              }
+            };
+
+            window.alternarFavorito = function (pointId) {
+              const idStr = String(pointId);
+              const lista = lerFavoritos();
+              const idx = lista.indexOf(idStr);
+              if (idx >= 0) {
+                lista.splice(idx, 1);
+              } else {
+                lista.push(idStr);
+              }
+              salvarFavoritos(lista);
+              atualizarBotaoModalFavorito();
+              window.aplicarFiltros();
+            };
+
+            window.alternarFavoritoModal = function () {
+              if (!postoAtualModal) return;
+              window.alternarFavorito(postoAtualModal.id);
+            };
+
+            window.alternarFiltroFavoritos = function () {
+              apenasFavoritos = !apenasFavoritos;
+              window.aplicarFiltros();
+            };
+
+            window.compartilharPostoAtual = async function () {
+              if (!postoAtualModal) return;
+              const txtBtn = document.getElementById("texto-modal-compartilhar");
+              const endereco =
+                (postoAtualModal.neighborhood ? "Bairro " + postoAtualModal.neighborhood + " • " : "") +
+                (postoAtualModal.address || "Endereço registrado no sistema");
+              const vacinasTexto =
+                postoAtualModal.vaccines && postoAtualModal.vaccines.length > 0
+                  ? postoAtualModal.vaccines.join(", ")
+                  : "Consulte disponibilidade na unidade";
+              const resumo =
+                "Vacina Alagoas — " +
+                postoAtualModal.name +
+                "\nEndereço: " +
+                endereco +
+                "\nVacinas: " +
+                vacinasTexto +
+                "\n" +
+                window.location.href;
+
+              try {
+                if (navigator.share) {
+                  await navigator.share({
+                    title: postoAtualModal.name + " — Vacina Alagoas",
+                    text: resumo,
+                    url: window.location.href,
+                  });
+                  return;
+                }
+              } catch (err) {
+                if (err && err.name === "AbortError") return;
+              }
+
+              try {
+                await navigator.clipboard.writeText(resumo);
+                if (txtBtn) {
+                  const anterior = txtBtn.textContent;
+                  txtBtn.textContent = "Copiado!";
+                  setTimeout(() => {
+                    txtBtn.textContent = anterior;
+                  }, 2200);
+                }
+              } catch (e) {
+                window.prompt("Copie os dados do posto:", resumo);
+              }
+            };
+
             window.abrirModalPorId = function (pointId) {
               const p = allPoints.find((item) => item.id === pointId);
               if (!p) return;
+              postoAtualModal = p;
+              atualizarBotaoModalFavorito();
               window.abrirModalDetalhes(
                 p.name,
                 (p.neighborhood ? "Bairro " + p.neighborhood + " • " : "") +
@@ -2298,6 +2541,7 @@
             };
 
             window.limparTodosOsFiltros = function () {
+              apenasFavoritos = false;
               const inputBusca = document.getElementById("bairro-ubs-input");
               if (inputBusca) inputBusca.value = "";
               const btnClear = document.getElementById("btn-clear-search");
