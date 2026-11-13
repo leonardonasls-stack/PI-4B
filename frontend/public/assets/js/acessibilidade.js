@@ -3,7 +3,7 @@
   window.alternarAltoContraste = function () {
     const ativo = document.body.classList.toggle("high-contrast-mode");
     localStorage.setItem("alto_contraste", ativo ? "1" : "0");
-    document.body.style.filter = ativo ? "contrast(1.25)" : "";
+    document.body.style.filter = "";
   };
 
   let tamanhoFonteBase = parseInt(localStorage.getItem("tamanho_fonte_base") || "100", 10);
@@ -16,7 +16,7 @@
   function aplicarPreferenciasSalvas() {
     if (localStorage.getItem("alto_contraste") === "1" && document.body) {
       document.body.classList.add("high-contrast-mode");
-      document.body.style.filter = "contrast(1.25)";
+      document.body.style.filter = "";
     }
     const salvo = localStorage.getItem("tamanho_fonte_base");
     if (salvo) {
@@ -30,3 +30,4 @@
     aplicarPreferenciasSalvas();
   }
 })();
+
