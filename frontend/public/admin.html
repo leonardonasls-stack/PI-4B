@@ -177,8 +177,8 @@
       </div>
 
       <button type="button" @click="salvarSelecionadosOSM" :disabled="salvandoOsm || selecionadosOsm.length === 0" class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-container text-white font-bold text-xs shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-        <svg v-if="salvandoOsm" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="3"/></svg>
-        <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <i v-if="salvandoOsm" class="ph-bold ph-spinner-gap text-base animate-spin" aria-hidden="true"></i>
+        <i v-else class="ph-bold ph-floppy-disk text-base" aria-hidden="true"></i>
         <span>Confirmar e Importar para o PostgreSQL</span>
       </button>
     </div>
@@ -280,30 +280,30 @@
 <div class="flex flex-wrap items-center gap-2">
   <!-- Botão Principal de Cadastro -->
   <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
-    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <i class="ph-bold ph-plus text-sm" aria-hidden="true"></i>
     <span>Novo Posto</span>
   </button>
 
   <!-- Botão de Auxílio: Atualizar Dados em Tempo Real -->
   <button type="button" @click="carregarPostos" :disabled="carregandoPostos" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50" title="Sincronizar e recarregar postos do PostgreSQL">
-    <svg class="w-4 h-4 text-emerald-600" :class="{ 'animate-spin': carregandoPostos }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+    <i class="ph-bold ph-arrows-clockwise text-sm text-emerald-600" :class="{ 'animate-spin': carregandoPostos }" aria-hidden="true"></i>
     <span>{{ carregandoPostos ? 'Atualizando...' : 'Atualizar Lista' }}</span>
   </button>
 
   <!-- Botão de Auxílio: Guia do Operador (?) -->
   <button type="button" @click="modalAjudaAberto = true" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer" title="Ver orientações de uso e manual do operador">
-    <div class="w-4 h-4 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">?</div>
+    <i class="ph-bold ph-question text-sm text-slate-600" aria-hidden="true"></i>
     <span>Guia do Operador</span>
   </button>
 
   <!-- Exportação Compacta de Dados -->
   <div class="flex items-center gap-1.5 pl-1 border-l border-slate-200">
     <button class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer" onclick="window.exportarCSV()" type="button" title="Baixar planilha CSV com postos cadastrados">
-      <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <i class="ph-bold ph-download-simple text-sm text-slate-600" aria-hidden="true"></i>
       <span>CSV</span>
     </button>
     <button class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer" onclick="window.exportarGeoJSON()" type="button" title="Exportar dados geoespaciais em padrão GeoJSON RFC 7946">
-      <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <i class="ph-bold ph-code text-sm text-slate-600" aria-hidden="true"></i>
       <span>GeoJSON</span>
     </button>
   </div>
@@ -311,41 +311,21 @@
 </div>
 <!-- KPIs Operacionais Calculados no Frontend -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-space-sm" aria-label="Resumo operacional dos postos">
-  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
-    <div>
-      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Total Homologados</span>
-      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ postos.length }}</span>
-    </div>
-    <span class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
-      <i class="ph-duotone ph-buildings text-xl" aria-hidden="true"></i>
-    </span>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Total Homologados</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ postos.length }}</span>
   </div>
-  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
-    <div>
-      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Maceió</span>
-      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.maceio }}</span>
-    </div>
-    <span class="w-10 h-10 rounded-xl bg-secondary text-white flex items-center justify-center shrink-0">
-      <i class="ph-duotone ph-map-pin text-xl" aria-hidden="true"></i>
-    </span>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Maceió</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.maceio }}</span>
   </div>
-  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
-    <div>
-      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Arapiraca</span>
-      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.arapiraca }}</span>
-    </div>
-    <span class="w-10 h-10 rounded-xl bg-primary-container text-white flex items-center justify-center shrink-0">
-      <i class="ph-duotone ph-navigation-arrow text-xl" aria-hidden="true"></i>
-    </span>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Arapiraca</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.arapiraca }}</span>
   </div>
-  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-3.5 flex items-center justify-between gap-3">
-    <div>
-      <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Vacinas Ofertadas</span>
-      <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.vacinasUnicas }}</span>
-    </div>
-    <span class="w-10 h-10 rounded-xl bg-secondary-container text-secondary flex items-center justify-center shrink-0">
-      <i class="ph-duotone ph-syringe text-xl" aria-hidden="true"></i>
-    </span>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Vacinas Ofertadas</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.vacinasUnicas }}</span>
   </div>
 </div>
 
@@ -521,7 +501,7 @@
     <!-- Botão de Ajuda (?) Acessível -->
     <div class="flex items-center gap-2">
       <button type="button" @click="modalAjudaAberto = true" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 shadow-sm" title="Ajuda sobre o preenchimento">
-        <svg class="w-4 h-4 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <i class="ph-bold ph-question text-sm text-emerald-700" aria-hidden="true"></i>
         <span>Como funciona?</span>
       </button>
     </div>
@@ -589,7 +569,7 @@
           <div class="relative flex items-center">
             <input v-model="cepInput" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
             <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary hover:bg-primary-container text-white rounded-md text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <i class="ph-bold ph-magnifying-glass text-xs" aria-hidden="true"></i>
               <span>Buscar</span>
             </button>
           </div>
@@ -633,7 +613,7 @@
         </button>
         <button type="button" @click="avancarPasso(2)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
           <span>Avançar para Identificação</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <i class="ph-bold ph-caret-right text-sm" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -669,12 +649,12 @@
       <!-- Navegação da Etapa 2 -->
       <div class="flex items-center justify-between pt-3 border-t border-slate-200">
         <button type="button" @click="voltarPasso(1)" class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <i class="ph-bold ph-caret-left text-sm" aria-hidden="true"></i>
           <span>Voltar ao Endereço</span>
         </button>
         <button type="button" @click="avancarPasso(3)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
           <span>Avançar para Vacinas</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <i class="ph-bold ph-caret-right text-sm" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -718,7 +698,7 @@
       <!-- Navegação da Etapa 3 e Botão de Salvar Final -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
         <button type="button" @click="voltarPasso(2)" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <i class="ph-bold ph-caret-left text-sm" aria-hidden="true"></i>
           <span>Voltar para Identificação</span>
         </button>
 
@@ -727,7 +707,7 @@
             Cancelar
           </button>
           <button type="button" @click="salvarPosto" :disabled="salvandoPosto" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <i class="ph-bold ph-floppy-disk text-sm" aria-hidden="true"></i>
             <span>{{ form.id ? `Confirmar Atualização (#${form.id})` : 'Salvar no PostgreSQL' }}</span>
           </button>
         </div>
@@ -736,7 +716,7 @@
 
     <!-- Feedback de Sucesso/Alerta -->
     <div v-if="feedbackMsg" class="p-3.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold flex items-center gap-2">
-      <svg class="w-4 h-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <i class="ph-duotone ph-check-circle text-base shrink-0 text-emerald-600" aria-hidden="true"></i>
       <span>{{ feedbackMsg }}</span>
     </div>
   </form>
@@ -765,7 +745,7 @@
         <div class="space-y-1">
           <div class="flex items-center justify-between">
             <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI</span>
-            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <i class="ph-bold ph-arrow-square-out text-base text-slate-400 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
           </div>
           <p class="text-xs text-slate-300">Interface interativa para testar endpoints e parâmetros em tempo real.</p>
         </div>
@@ -777,7 +757,7 @@
         <div class="space-y-1">
           <div class="flex items-center justify-between">
             <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">ReDoc Spec</span>
-            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <i class="ph-bold ph-arrow-square-out text-base text-slate-400 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
           </div>
           <p class="text-xs text-slate-300">Especificação detalhada de contratos, respostas HTTP e schemas Pydantic.</p>
         </div>
@@ -810,16 +790,16 @@
     <div class="flex items-start gap-3.5">
       <!-- Ícone dinâmico -->
       <div v-if="modalFeedback.tipo === 'sucesso'" class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <i class="ph-duotone ph-check-circle text-2xl" aria-hidden="true"></i>
       </div>
       <div v-else-if="modalFeedback.tipo === 'erro'" class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <i class="ph-duotone ph-x-circle text-2xl" aria-hidden="true"></i>
       </div>
       <div v-else-if="modalFeedback.tipo === 'confirmacao'" class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <i class="ph-duotone ph-warning text-2xl" aria-hidden="true"></i>
       </div>
       <div v-else class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <i class="ph-duotone ph-info text-2xl" aria-hidden="true"></i>
       </div>
 
       <div class="space-y-1 flex-1">
@@ -854,7 +834,7 @@
         <span class="text-xs text-on-surface-variant font-medium">Projeto Integrador IV-B • Alagoas (PostGIS, FastAPI, Leaflet)</span>
       </div>
       <button type="button" @click="abrirModalDocs" onclick="window.abrirModalDocs && window.abrirModalDocs()" class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer shadow-xs" title="Abrir Swagger, ReDoc e especificações do PostgreSQL">
-        <svg class="w-4 h-4 text-primary-fixed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <i class="ph-bold ph-book-open text-base text-primary-fixed" aria-hidden="true"></i>
         <span>Ver Documentação da API &amp; Banco</span>
       </button>
     </div>
