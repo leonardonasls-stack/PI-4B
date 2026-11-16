@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Text, Table, func
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Text, Table, UniqueConstraint, func
 from sqlalchemy.orm import relationship
 from src.database.models.base import Base
 
@@ -47,6 +47,9 @@ class Vaccine(Base):
 
 class VaccinationPoint(Base):
     __tablename__ = "vaccination_points"
+    __table_args__ = (
+        UniqueConstraint("city_id", "name", name="uq_city_point_name"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     city_id = Column(Integer, ForeignKey("cities.id", ondelete="CASCADE"), nullable=False, index=True)

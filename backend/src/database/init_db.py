@@ -17,7 +17,19 @@ async def init_database():
         # 1. Criação de tabelas a partir dos modelos SQLAlchemy
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        logger.info("[DB INIT] Tabelas verificadas/criadas com sucesso.")
+            # Garante a constraint única (city_id, name) caso a tabela já tenha sido criada anteriormente sem ela
+            await conn.execute(text("""
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM pg_constraint WHERE conname = 'uq_city_point_name'
+                    ) THEN
+                        ALTER TABLE vaccination_points 
+                        ADD CONSTRAINT uq_city_point_name UNIQUE (city_id, name);
+                    END IF;
+                END $$;
+            """))
+        logger.info("[DB INIT] Tabelas e constraints verificadas/criadas com sucesso.")
 
         # 2. Localização do arquivo de seed.sql
         possible_seed_paths = [
