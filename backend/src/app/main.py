@@ -50,12 +50,18 @@ app.include_router(enrichment.router, prefix="/admin/enrichment", tags=["Bot de 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # 3. Suporte a Frontend Integrado em Contêiner Único (Deploy Simplificado / Render)
-STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "public")
-if not os.path.exists(STATIC_DIR):
-    # Fallback caso executado a partir da raiz do repositório
-    STATIC_DIR = os.path.join(os.getcwd(), "frontend", "public")
+# Busca a pasta frontend/public em múltiplos locais possíveis (desenvolvimento local, Docker raiz ou /app)
+POSSIBLE_STATIC_DIRS = [
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), "frontend", "public"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "public"),
+    os.path.join(os.getcwd(), "frontend", "public"),
+    os.path.join(os.path.dirname(os.getcwd()), "frontend", "public"),
+    "/app/frontend/public"
+]
 
-if os.path.exists(STATIC_DIR):
+STATIC_DIR = next((d for d in POSSIBLE_STATIC_DIRS if os.path.isdir(d)), None)
+
+if STATIC_DIR and os.path.exists(STATIC_DIR):
     @app.get("/", include_in_schema=False)
     async def serve_index():
         return FileResponse(os.path.join(STATIC_DIR, "index.html"))
