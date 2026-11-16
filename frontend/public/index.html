@@ -1537,7 +1537,7 @@
           </div>
         </div>
 
-        <!-- MODAL DE TERMOS E PRIVACIDADE (LGPD) -->
+        <!-- MODAL DE TERMOS, PRIVACIDADE E POLÍTICA DE COOKIES (LGPD) -->
         <div
           aria-labelledby="modal-termos-titulo"
           aria-modal="true"
@@ -1545,20 +1545,124 @@
           id="modal-termos"
           role="dialog"
         >
-          <div class="bg-surface-container-lowest rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-outline-variant/40 flex flex-col">
+          <div class="bg-surface-container-lowest rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-outline-variant/40 flex flex-col">
             <div class="p-space-lg bg-primary text-on-primary flex items-center justify-between">
-              <h3 class="font-headline-sm text-base text-white font-bold" id="modal-termos-titulo">Termos de Uso e Política de Privacidade (LGPD)</h3>
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                <h3 class="font-headline-sm text-base text-white font-bold" id="modal-termos-titulo">Transparência, Privacidade e Política de Armazenamento Local (LGPD)</h3>
+              </div>
               <button class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer" onclick="window.fecharModalTermos()" type="button" aria-label="Fechar">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
-            <div class="p-space-lg space-y-3 text-xs text-slate-700 leading-relaxed max-h-[60vh] overflow-y-auto">
-              <p><strong>1. Finalidade do Portal:</strong> Plataforma pública oficial da Plataforma de Vacinação para localização de unidades de saúde, consulta de horários e transparência de imunobiológicos.</p>
-              <p><strong>2. Privacidade e LGPD (Lei 13.709/2018):</strong> Esta interface de consulta pública não coleta dados pessoais, prontuários ou cadastros médicos de cidadãos. As coordenadas GPS utilizadas na busca por proximidade permanecem exclusivamente no navegador do usuário e não são armazenadas em servidores.</p>
-              <p><strong>3. Dados Abertos:</strong> Informações de postos e estoques são sincronizadas com as bases oficiais do SUS e podem ser consumidas livremente via API REST.</p>
+            <div class="p-space-lg space-y-4 text-xs text-slate-700 leading-relaxed max-h-[65vh] overflow-y-auto">
+              <div>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm">1. Finalidade do Portal</h4>
+                <p>Plataforma pública para localização de unidades de saúde, consulta de horários e transparência de imunobiológicos no Estado de Alagoas. O acesso dos cidadãos é 100% público, gratuito e não exige cadastro ou criação de conta.</p>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm">2. Política de Cookies e Armazenamento (Guia ANPD)</h4>
+                <p class="mb-2">Este portal <strong>não utiliza cookies de rastreamento, marketing ou perfilamento comportamental de terceiros</strong>. Utilizamos exclusivamente o <em>armazenamento local do navegador (localStorage)</em> para finalidades estritamente necessárias e funcionais:</p>
+                <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-100 text-slate-800 font-semibold border-b border-slate-200">
+                      <tr>
+                        <th class="p-2">Item / Chave</th>
+                        <th class="p-2">Categoria</th>
+                        <th class="p-2">Finalidade</th>
+                        <th class="p-2">Público</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      <tr>
+                        <td class="p-2 font-mono text-slate-800 font-medium">alto_contraste</td>
+                        <td class="p-2 text-emerald-700 font-medium">Necessário</td>
+                        <td class="p-2">Memoriza a preferência de acessibilidade visual ativada pelo cidadão.</td>
+                        <td class="p-2">Cidadãos</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-slate-800 font-medium">tamanho_fonte_base</td>
+                        <td class="p-2 text-emerald-700 font-medium">Necessário</td>
+                        <td class="p-2">Memoriza o tamanho da fonte ampliado/reduzido pelo cidadão.</td>
+                        <td class="p-2">Cidadãos</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-slate-800 font-medium">vacina_al_user_location</td>
+                        <td class="p-2 text-blue-700 font-medium">Preferência Voluntária</td>
+                        <td class="p-2">Guarda as últimas coordenadas (lat/long) apenas se o cidadão optar por acelerar a busca de postos próximos. Não é enviada para gravação no servidor.</td>
+                        <td class="p-2">Cidadãos</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-slate-800 font-medium">access_token</td>
+                        <td class="p-2 text-purple-700 font-medium">Segurança / Sessão</td>
+                        <td class="p-2">Token JWT de autenticação restrito a <strong>gestores e administradores</strong> autorizados do sistema para manutenção de postos. Não se aplica aos cidadãos.</td>
+                        <td class="p-2">Administradores</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-slate-800 font-medium">cookie_consent_aceito</td>
+                        <td class="p-2 text-slate-600 font-medium">Informativo</td>
+                        <td class="p-2">Registra o fechamento do banner informativo de transparência da LGPD.</td>
+                        <td class="p-2">Cidadãos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm">3. Privacidade e Proteção de Dados (Lei nº 13.709/2018 - LGPD)</h4>
+                <p>Nenhum dado sensível de saúde (prontuários, diagnósticos ou vacinas tomadas) é coletado ou transitado por esta plataforma. O módulo administrativo com login é destinado exclusivamente a servidores e operadores credenciados da saúde pública estadual e municipal.</p>
+              </div>
+
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                <div>
+                  <span class="font-bold text-slate-800 block">Gerenciar dados locais neste dispositivo</span>
+                  <span class="text-slate-500 text-[11px]">Você pode limpar a qualquer momento a geolocalização e as preferências salvas em seu navegador.</span>
+                </div>
+                <button type="button" onclick="window.limparPreferenciasLocais()" class="px-3 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded text-xs font-semibold cursor-pointer transition-colors whitespace-nowrap">
+                  Limpar Preferências
+                </button>
+              </div>
             </div>
             <div class="p-space-md bg-slate-100 flex items-center justify-end">
               <button class="px-5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-md cursor-pointer transition-colors" onclick="window.fecharModalTermos()" type="button">Compreendido</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BANNER INFORMATIVO DE COOKIES E ARMAZENAMENTO LOCAL (LGPD) -->
+        <div
+          id="banner-cookies-lgpd"
+          class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-lg z-50 bg-slate-900/95 backdrop-blur-md text-white border border-slate-700/80 rounded-2xl shadow-2xl p-4 transition-all duration-300"
+          role="region"
+          aria-label="Aviso de Privacidade e Armazenamento Local"
+        >
+          <div class="flex items-start gap-3">
+            <div class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div class="flex-1 text-xs leading-relaxed">
+              <h4 class="font-bold text-white text-sm mb-1">Privacidade e Armazenamento Local</h4>
+              <p class="text-slate-300 mb-3">
+                Este portal <strong>não utiliza cookies de rastreamento ou publicidade</strong>. Empregamos apenas dados locais estritamente necessários para acessibilidade (alto contraste/fonte) e geolocalização voluntária de postos próximos, em conformidade com a <strong>LGPD (Lei 13.709/2018)</strong>. O login no sistema é restrito a administradores.
+              </p>
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onclick="window.aceitarCookiesBanner()"
+                  class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs cursor-pointer transition-colors shadow-sm"
+                >
+                  Entendido
+                </button>
+                <button
+                  type="button"
+                  onclick="window.abrirModalTermos()"
+                  class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 rounded-lg text-xs font-medium cursor-pointer transition-colors"
+                >
+                  Ver Detalhes da Política
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -2624,6 +2728,31 @@
             window.abrirModalPrivacidade = function () {
               window.abrirModalTermos();
             };
+
+            // Banner LGPD de Cookies e Armazenamento Local
+            window.aceitarCookiesBanner = function () {
+              localStorage.setItem("cookie_consent_aceito", "true");
+              const b = document.getElementById("banner-cookies-lgpd");
+              if (b) { b.classList.add("hidden"); }
+            };
+
+            window.limparPreferenciasLocais = function () {
+              localStorage.removeItem("vacina_al_user_location");
+              localStorage.removeItem("alto_contraste");
+              localStorage.removeItem("tamanho_fonte_base");
+              document.body.classList.remove("high-contrast-mode");
+              document.body.style.filter = "";
+              document.documentElement.style.fontSize = "100%";
+              alert("Suas preferências de acessibilidade e geolocalização salvas neste dispositivo foram limpas com sucesso.");
+            };
+
+            // Exibe o banner apenas se ainda não aceito
+            if (!localStorage.getItem("cookie_consent_aceito")) {
+              setTimeout(function () {
+                const b = document.getElementById("banner-cookies-lgpd");
+                if (b) { b.classList.remove("hidden"); }
+              }, 1200);
+            }
 
             // Modal de Login do Administrador
             window.abrirModalLoginAdmin = async function () {
