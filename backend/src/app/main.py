@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+import os
 from src.app.config import settings
 from src.core.rate_limiter import RateLimiterMiddleware
 from src.api.v1.api import api_router
@@ -46,3 +48,28 @@ app.include_router(enrichment.router, prefix="/admin/enrichment", tags=["Bot de 
 
 # 2. Rotas Versionadas (/api/v1/...)
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# 3. Suporte a Frontend Integrado em Contêiner Único (Deploy Simplificado / Render)
+STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "public")
+if not os.path.exists(STATIC_DIR):
+    # Fallback caso executado a partir da raiz do repositório
+    STATIC_DIR = os.path.join(os.getcwd(), "frontend", "public")
+
+if os.path.exists(STATIC_DIR):
+    @app.get("/", include_in_schema=False)
+    async def serve_index():
+        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+
+    @app.get("/index.html", include_in_schema=False)
+    async def serve_index_html():
+        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+
+    @app.get("/admin", include_in_schema=False)
+    async def serve_admin_alias():
+        return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+
+    @app.get("/admin.html", include_in_schema=False)
+    async def serve_admin():
+        return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
