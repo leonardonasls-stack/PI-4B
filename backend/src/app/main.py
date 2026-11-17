@@ -1,10 +1,25 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+import os
+import logging
 from src.app.config import settings
 from src.core.rate_limiter import RateLimiterMiddleware
 from src.api.v1.api import api_router
 from src.api.v1.endpoints import auth, cities, points, enrichment
+from src.database.init_db import init_database
+
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Auto-inicialização de tabelas e carga inicial (seed) no boot da aplicação
+    await init_database()
+    yield
+
 
 app = FastAPI(
     title=f"{settings.PROJECT_NAME} — API REST",
@@ -14,7 +29,8 @@ app = FastAPI(
     Trabalho Acadêmico do Projeto Integrador IV - B (PostgreSQL 16, FastAPI, Jinja2, Tailwind e Docker).
     """,
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Rate Limiter Middleware: Máximo de 5 tentativas de login por minuto por IP (Proteção contra Brute Force)
@@ -46,3 +62,34 @@ app.include_router(enrichment.router, prefix="/admin/enrichment", tags=["Bot de 
 
 # 2. Rotas Versionadas (/api/v1/...)
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# 3. Suporte a Frontend Integrado em Contêiner Único (Deploy Simplificado / Render)
+# Busca a pasta frontend/public em múltiplos locais possíveis (desenvolvimento local, Docker raiz ou /app)
+POSSIBLE_STATIC_DIRS = [
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), "frontend", "public"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "public"),
+    os.path.join(os.getcwd(), "frontend", "public"),
+    os.path.join(os.path.dirname(os.getcwd()), "frontend", "public"),
+    "/app/frontend/public"
+]
+
+STATIC_DIR = next((d for d in POSSIBLE_STATIC_DIRS if os.path.isdir(d)), None)
+
+if STATIC_DIR and os.path.exists(STATIC_DIR):
+    @app.get("/", include_in_schema=False)
+    async def serve_index():
+        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+
+    @app.get("/index.html", include_in_schema=False)
+    async def serve_index_html():
+        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+
+    @app.get("/admin", include_in_schema=False)
+    async def serve_admin_alias():
+        return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+
+    @app.get("/admin.html", include_in_schema=False)
+    async def serve_admin():
+        return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

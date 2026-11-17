@@ -108,11 +108,12 @@ O Docker Compose aguardará a saúde do banco de dados (`vacinacao_pg_db`) atrav
 ### 3. Acessar os Serviços
 
 - **Portal Público do Cidadão:** [http://localhost:3005](http://localhost:3005)
-- **Painel Administrativo:** [http://localhost:3005/admin.html](http://localhost:3005/admin.html)
+- **Painel Administrativo:** [http://localhost:3005/admin.html](http://localhost:3005/admin.html) (ou rota simplificada [http://localhost:3005/admin](http://localhost:3005/admin))
   - **Usuário Padrão:** `admin`
   - **Senha Padrão:** `admin123`
-- **Swagger OpenAPI:** [http://localhost:8085/docs](http://localhost:8085/docs)
-- **ReDoc:** [http://localhost:8085/redoc](http://localhost:8085/redoc)
+- **Swagger OpenAPI:** [http://localhost:3005/docs](http://localhost:3005/docs) (via proxy Nginx) ou [http://localhost:8085/docs](http://localhost:8085/docs) (direto na API)
+- **ReDoc:** [http://localhost:3005/redoc](http://localhost:3005/redoc) ou [http://localhost:8085/redoc](http://localhost:8085/redoc)
+- **OpenAPI JSON Spec:** [http://localhost:3005/openapi.json](http://localhost:3005/openapi.json) ou [http://localhost:8085/openapi.json](http://localhost:8085/openapi.json)
 
 ---
 
@@ -174,14 +175,16 @@ A API adota respostas padronizadas em JSON e códigos de status HTTP semânticos
 - `PUT /vaccination-points/{point_id}` — Atualiza os dados de um posto existente. _(Requer autenticação JWT)_
 - `DELETE /vaccination-points/{point_id}` — Remove um posto de saúde do cadastro. _(Requer autenticação JWT)_
 
-### Autenticação Administrativa (`/auth`)
+### Autenticação e Sessão Administrativa (`/auth`)
 
-- `POST /auth/login` — Autentica as credenciais do gestor e retorna o token `Bearer` no formato JWT.
+- `POST /auth/login` — Autentica as credenciais do gestor e retorna o token `Bearer` no formato JWT. Sujeito a limitação de taxa (máximo de 5 tentativas consecutivas por minuto por IP com resposta `429 Too Many Requests`).
+- `GET /auth/verify` — Valida ativamente a autenticidade e validade do token JWT bearer. Utilizado na proteção de rotas e verificação de expiração de sessão.
 
 ### Mineração de Dados (`/admin/enrichment`)
 
-- `GET /admin/enrichment/preview-osm` — Consulta a API pública do OpenStreetMap e exibe postos descobertos para conferência. _(Requer JWT)_
-- `POST /admin/enrichment/confirm-save` — Persiste no banco PostgreSQL apenas as unidades selecionadas pelo administrador. _(Requer JWT)_
+- `GET /admin/enrichment/preview-osm` — Consulta a API pública do OpenStreetMap via Overpass API e exibe postos descobertos para conferência (suporta parâmetro `escopo`: `alagoas`, `maceio` ou `arapiraca`). _(Requer JWT)_
+- `POST /admin/enrichment/confirm-save` — Persiste no banco PostgreSQL apenas as unidades selecionadas pelo administrador, vinculando as vacinas de rotina e evitando duplicidades (`ON CONFLICT`). _(Requer JWT)_
+- `POST /admin/enrichment/sync-osm` — Endpoint legado para sincronização direta do estado. _(Requer JWT)_
 
 ---
 
@@ -217,31 +220,35 @@ O banco relacional modela a integridade referencial com chaves primárias, estra
 
 ---
 
-## Testes Automatizados
+## Testes Automatizados e Integração Contínua (CI)
 
-A suíte de testes assíncrona valida a conformidade dos contratos da API e regras de autorização:
+A suíte de testes assíncrona valida a conformidade dos contratos da API, integridade de dados e regras de autorização utilizando `pytest` e `httpx`:
 
 ```bash
 cd backend
 python -m pytest tests/ -v
 ```
 
-Cenários cobertos pelos testes:
+Cenários cobertos pelos testes (`backend/tests/api/test_endpoints.py`):
 
-- Integridade dos contratos de `/cities` e tratamento de IDs inexistentes (`404`) ou inválidos (`422`).
-- Validação de retorno e serialização correta de `/vaccination-points/{city_id}`.
-- Operações completas de CRUD de postos (criação, edição e exclusão).
-- Autenticação e bloqueio de acesso a rotas restritas sem token JWT.
+- **Municípios (`/cities`):** Integridade dos contratos, retorno de `Maceió` e `Arapiraca` (`200 OK`) e tratamento de IDs inexistentes (`404 Not Found`) ou inválidos (`422 Unprocessable Entity`).
+- **Postos de Vacinação (`/vaccination-points`):** Serialização correta por cidade (`GET /vaccination-points/{city_id}`) e consulta unitária por ID (`GET /vaccination-points/detail/{point_id}`).
+- **Ciclo Completo de CRUD:** Criação (`POST`), atualização cadastral (`PUT`), leitura e remoção (`DELETE`) de postos de vacinação com verificação de cascata referencial.
+- **Segurança e Autorização:** Autenticação via JWT, expiração de tokens e bloqueio estrito de acesso sem credenciais válidas (`401 Unauthorized`).
+
+O repositório também inclui pipeline de Integração Contínua no GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) que valida os testes com PostgreSQL de serviço e a integridade de build do Docker Compose em cada push ou pull request na branch `main`.
 
 ---
 
 ## Documentação Técnica Aprofundada
 
-Para especificações detalhadas de arquitetura, requisitos e relatórios de conformidade, consulte o diretório [docs/](docs/README.md):
+Para especificações detalhadas de arquitetura, requisitos e relatórios de conformidade, consulte o diretório [docs/](docs/README.md) e o arquivo de auditoria raiz:
 
-- [**Relatório Técnico de Implementação**](docs/relatorio-implementacao.md) — Visão detalhada de sprints, arquitetura e entrega.
-- [**Relatório de Auditoria CRUD**](docs/auditoria-crud.md) — Matriz de verificação de conformidade técnica e persistência.
-- [**Especificação da API RESTful**](docs/api.md) — Contratos JSON, parâmetros e códigos de retorno.
-- [**Documento de Arquitetura Técnica (TRD)**](docs/arquitetura.md) — Decisões de arquitetura, modelagem e escalabilidade.
-- [**Documento de Requisitos de Produto (PRD)**](docs/requisitos.md) — Casos de uso e regras de negócio.
-- [**Diretrizes de Acessibilidade e Design (WCAG)**](docs/design-wcag.md) — Padrões de acessibilidade, cores e contrastes.
+- [**Auditoria Técnica CRUD (100% Conforme)**](AUDITORIA_CRUD.md) — Relatório formal de conformidade com as operações Create, Read, Update e Delete no backend, frontend e testes.
+- [**Relatório Técnico de Implementação**](docs/relatorio-implementacao.md) — Visão detalhada de sprints, arquitetura, conformidade RESTful e entrega.
+- [**Especificação da API RESTful**](docs/api.md) — Contratos JSON, parâmetros, respostas de erro e exemplos com `curl`.
+- [**Documento de Arquitetura Técnica (TRD)**](docs/arquitetura.md) — Decisões de arquitetura, modelagem de dados, PostGIS e escalabilidade.
+- [**Documento de Requisitos de Produto (PRD)**](docs/requisitos.md) — Casos de uso (RF-01 a RF-05, RNF-01 a RNF-04) e regras de negócio.
+- [**Diretrizes de Acessibilidade e Design (WCAG)**](docs/design-wcag.md) — Padrões de acessibilidade WCAG 2.1 AA, contraste e navegação.
+- [**Manual de Design e Polimento Institucional**](docs/anti-ia-polimento.md) — Princípios de identidade visual sóbria, SVGs nativos e padrões de design limpo.
+- [**Histórico de Melhorias e Decisões**](docs/historico-melhorias.md) — Linha do tempo de evolução técnica e registros de decisões arquiteturais.
