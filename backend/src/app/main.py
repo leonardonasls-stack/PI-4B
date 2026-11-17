@@ -92,4 +92,7 @@ if STATIC_DIR and os.path.exists(STATIC_DIR):
     async def serve_admin():
         return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
 
+    ASSETS_DIR = os.path.join(STATIC_DIR, "assets")
+    if os.path.isdir(ASSETS_DIR):
+        app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
