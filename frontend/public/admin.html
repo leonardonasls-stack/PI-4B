@@ -1,36 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta name="description" content="Painel Administrativo da Rede de Vacinação de Alagoas — Gestão de postos e mineração OSM."/><meta content="web_standard" name="shell-type"/><title>Vacina Alagoas — Painel Administrativo</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
-  html {
-    scroll-behavior: smooth;
-    overflow-y: scroll;
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    overflow-x: hidden;
-    overflow-y: visible;
-  }
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #f1f5f9;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-  }
-  [v-cloak] {
-    display: none !important;
-  }
-</style>
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta name="description" content="Painel Administrativo da Rede de Vacinação de Alagoas — Gestão de postos e mineração OSM."/><meta content="web_standard" name="shell-type"/><title>Vacina Alagoas — Painel Administrativo</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/><link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/><link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css"/><link rel="stylesheet" href="assets/css/theme.css"/>
 <script>
   (function() {
     // Verificação Instantânea de Autenticação Antes de Carregar Scripts ou Renderizar
@@ -54,110 +24,137 @@
   })();
 </script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script>
-  (function() {
-    const origWarn = console.warn;
-    console.warn = function(...args) {
-      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
-        return;
-      }
-      origWarn.apply(console, args);
-    };
-  })();
-</script><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-variant": "#d8e3fb", "primary-fixed": "#c0e9fc", "inverse-on-surface": "#ecf1ff", "on-secondary": "#ffffff", "surface-tint": "#3c6474", "tertiary-fixed": "#ffdcc3", "primary-fixed-dim": "#a4cddf", "on-surface-variant": "#41484b", "on-primary-container": "#7da5b7", "background": "#f9f9ff", "on-tertiary-fixed-variant": "#6e3900", "surface-bright": "#f9f9ff", "on-primary-fixed": "#001f29", "secondary-container": "#82f5c1", "tertiary": "#371900", "error": "#ba1a1a", "secondary-fixed": "#85f8c4", "surface-container-lowest": "#ffffff", "surface-container-high": "#dee8ff", "on-tertiary-fixed": "#2f1500", "on-error": "#ffffff", "primary-container": "#0e3b4a", "on-secondary-container": "#00714e", "on-surface": "#111c2d", "primary": "#002530", "on-error-container": "#93000a", "on-secondary-fixed": "#002114", "tertiary-fixed-dim": "#ffb77d", "secondary": "#006c4a", "on-primary-fixed-variant": "#234c5b", "surface-dim": "#cfdaf2", "outline-variant": "#c1c7cb", "on-primary": "#ffffff", "surface": "#f9f9ff", "surface-container-low": "#f0f3ff", "on-tertiary-container": "#eb851c", "tertiary-container": "#562b00", "inverse-surface": "#263143", "on-secondary-fixed-variant": "#005137", "on-background": "#111c2d", "error-container": "#ffdad6", "inverse-primary": "#a4cddf", "secondary-fixed-dim": "#68dba9", "surface-container-highest": "#d8e3fb", "outline": "#71787c", "on-tertiary": "#ffffff", "surface-container": "#e7eeff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter-sm": "1rem", "margin": "2rem", "space-2xl": "3rem", "gutter": "1.5rem", "margin-sm": "1rem", "space-xl": "2rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-xl-mobile": [ "Public Sans" ], "display-lg": [ "Public Sans" ], "headline-lg": [ "Public Sans" ], "label-sm": [ "Public Sans" ], "body-lg": [ "Public Sans" ], "headline-xl": [ "Public Sans" ], "label-lg": [ "Public Sans" ], "headline-sm": [ "Public Sans" ], "label-md": [ "Public Sans" ], "display-lg-mobile": [ "Public Sans" ], "body-sm": [ "Public Sans" ], "headline-md": [ "Public Sans" ], "body-md": [ "Public Sans" ] }, "fontSize": { "headline-xl-mobile": [ "26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "display-lg": [ "48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "headline-lg": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" } ], "body-lg": [ "18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-xl": [ "36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "headline-sm": [ "18px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" } ], "label-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "display-lg-mobile": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "800" } ], "body-sm": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-md": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/js/tailwind-config.js"></script>
+<script src="assets/js/acessibilidade.js" defer></script>
+</head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
 <div id="admin-app" v-cloak class="min-h-screen flex flex-col bg-surface">
-<header class="fixed top-0 left-0 right-0 w-full z-50 bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-800 shadow-sm">
-  <div class="h-16 w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-gutter">
+<header class="fixed top-0 left-0 right-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-outline-variant/60 shadow-sm">
+  <!-- Barra Superior Institucional + Acessibilidade (coesa com o Portal Público) -->
+  <div class="bg-primary text-on-primary text-xs">
+    <div class="max-w-7xl mx-auto px-margin-sm lg:px-margin h-8 flex items-center justify-between">
+      <div class="flex items-center gap-space-md">
+        <span class="tracking-wide uppercase text-xs font-semibold text-primary-fixed-dim">Painel Administrativo • Alagoas</span>
+      </div>
+      <div class="flex items-center gap-space-md">
+        <button class="text-primary-fixed-dim hover:text-white transition-colors flex items-center gap-1 cursor-pointer focus-visible:outline-white" onclick="window.alternarAltoContraste()" title="Alternar Alto Contraste" type="button">
+          <i class="ph-duotone ph-circle-half text-sm" aria-hidden="true"></i>
+          <span class="hidden md:inline">Alto Contraste</span>
+        </button>
+        <div class="flex items-center gap-1 font-bold">
+          <button class="text-primary-fixed-dim hover:text-white px-1 cursor-pointer focus-visible:outline-white" onclick="window.alterarTamanhoFonte(-1)" title="Diminuir Fonte" type="button">A-</button>
+          <button class="text-primary-fixed-dim hover:text-white px-1 cursor-pointer focus-visible:outline-white" onclick="window.alterarTamanhoFonte(1)" title="Aumentar Fonte" type="button">A+</button>
+        </div>
+        <button class="text-primary-fixed-dim hover:text-white hidden lg:inline-block cursor-pointer bg-transparent border-0 p-0 text-inherit text-xs focus-visible:outline-white" onclick="window.abrirModalAcessibilidade()" type="button">Acessibilidade</button>
+      </div>
+    </div>
+  </div>
+  <div class="h-16 w-full max-w-7xl mx-auto px-margin-sm lg:px-margin flex items-center justify-between gap-gutter">
     <!-- Brand / Logo -->
     <div class="flex items-center gap-space-md shrink-0">
       <a href="admin.html" class="flex items-center gap-2.5 group">
-        <div class="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <path d="M12 8v8"/>
-            <path d="M8 12h8"/>
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-primary/5 border border-primary/15 shadow-xs transition-transform group-hover:scale-105">
+          <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16 3C10.477 3 6 7.477 6 13c0 7.25 10 16 10 16s10-8.75 10-16c0-5.523-4.477-10-10-10z" fill="#002530"/>
+            <path d="M16 5.5c-4.142 0-7.5 3.358-7.5 7.5 0 5.1 6.1 11.4 7.5 12.7 1.4-1.3 7.5-7.6 7.5-12.7 0-4.142-3.358-7.5-7.5-7.5z" fill="#006c4a"/>
+            <path d="M14.75 9.5h2.5v2.25H19.5v2.5h-2.25V16.5h-2.5v-2.25H12.5v-2.5h2.25V9.5z" fill="#ffffff"/>
           </svg>
         </div>
         <div class="flex flex-col">
           <div class="flex items-center gap-1.5">
-            <span class="font-bold text-base tracking-tight text-white">Vacina Alagoas</span>
-            <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Admin</span>
+            <span class="font-bold text-base tracking-tight text-on-surface leading-tight">Vacina Alagoas</span>
+            <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-primary text-on-primary">Admin</span>
           </div>
-          <span class="text-xs text-slate-400 hidden sm:block">Painel de Gestão</span>
+          <span class="text-xs text-on-surface-variant hidden sm:block leading-tight">Painel de Gestão</span>
         </div>
       </a>
     </div>
 
-    <!-- Navegação Integrada e Sanitizada -->
-    <nav class="hidden md:flex items-center gap-2">
-      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="#secao-osm">
-        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    <!-- Navegação Integrada (tema unificado ao Portal) -->
+    <nav class="hidden md:flex items-center gap-1.5" aria-label="Navegação principal do painel">
+      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-md transition-colors flex items-center gap-1.5" href="#secao-osm">
+        <i class="ph-duotone ph-globe-hemisphere-west text-base text-secondary" aria-hidden="true"></i>
         <span>Robô OSM</span>
       </a>
-      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-md transition-colors flex items-center gap-1.5" href="#tabela-postos-auditoria">
-        <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <a class="px-3 py-1.5 text-xs lg:text-sm font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-md transition-colors flex items-center gap-1.5" href="#tabela-postos-auditoria">
+        <i class="ph-duotone ph-hospital text-base text-primary" aria-hidden="true"></i>
         <span>Postos Homologados</span>
       </a>
-      <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-3 py-1.5 text-xs lg:text-sm font-semibold text-slate-200 bg-slate-800/90 hover:bg-slate-800 hover:text-white border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs" title="Cadastrar nova unidade de saúde manualmente">
-        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-3.5 py-1.5 text-xs lg:text-sm font-semibold text-on-primary bg-primary hover:bg-primary-container rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs" title="Cadastrar nova unidade de saúde manualmente">
+        <i class="ph-bold ph-plus text-sm" aria-hidden="true"></i>
         <span>Novo Posto</span>
       </button>
-      <a class="px-3.5 py-1.5 text-xs lg:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg shadow-sm border border-emerald-500/50 transition-all flex items-center gap-2 cursor-pointer group" href="index.html" target="_blank" title="Abrir o Portal Público de Vacinação (Visão do Cidadão)">
-        <svg class="w-4 h-4 text-emerald-100 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <a class="px-3.5 py-1.5 text-xs lg:text-sm font-bold text-on-secondary bg-secondary hover:bg-on-secondary-container rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer" href="index.html" target="_blank" title="Abrir o Portal Público de Vacinação (Visão do Cidadão)">
         <span>Ver Portal</span>
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+        <i class="ph-bold ph-arrow-square-out text-sm" aria-hidden="true"></i>
       </a>
     </nav>
 
-    <!-- Usuário e Logout -->
+    <!-- Usuário, Menu Mobile e Logout -->
     <div class="flex items-center gap-space-sm shrink-0">
-      <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded bg-slate-800/80 border border-slate-700/60 text-xs">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span class="text-slate-300 font-medium">Administrador</span>
+      <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-low border border-outline-variant/60 text-xs">
+        <span class="w-2 h-2 rounded-full bg-secondary" aria-hidden="true"></span>
+        <span class="text-on-surface font-medium">Administrador</span>
       </div>
-      <button type="button" onclick="localStorage.removeItem('access_token'); window.location.href='index.html';" class="px-3 py-1.5 rounded-md bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer" title="Encerrar Sessão">
+      <button type="button" onclick="localStorage.removeItem('access_token'); window.location.href='index.html';" class="px-3 py-1.5 rounded-md bg-error-container hover:bg-error text-on-error-container hover:text-on-error font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer" title="Encerrar Sessão">
         <span>Sair</span>
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <i class="ph-bold ph-sign-out text-sm" aria-hidden="true"></i>
+      </button>
+      <button type="button" @click="menuMobileAberto = !menuMobileAberto" :aria-expanded="menuMobileAberto" aria-controls="menu-mobile-admin" aria-label="Abrir menu de navegação" class="md:hidden p-2 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container border border-outline-variant/60 cursor-pointer">
+        <i v-if="!menuMobileAberto" class="ph-bold ph-list text-lg" aria-hidden="true"></i>
+        <i v-else class="ph-bold ph-x text-lg" aria-hidden="true"></i>
       </button>
     </div>
   </div>
+  <!-- Menu Mobile (< 768px) -->
+  <nav v-if="menuMobileAberto" id="menu-mobile-admin" aria-label="Navegação mobile do painel" class="md:hidden bg-white border-t border-outline-variant/60 px-margin-sm py-3 flex flex-col gap-2 shadow-md">
+    <a @click="menuMobileAberto = false" class="px-3 py-2 text-sm font-medium text-on-surface hover:bg-surface-container-low rounded-lg" href="#secao-osm">Robô OSM</a>
+    <a @click="menuMobileAberto = false" class="px-3 py-2 text-sm font-medium text-on-surface hover:bg-surface-container-low rounded-lg" href="#tabela-postos-auditoria">Postos Homologados</a>
+    <button type="button" @click="menuMobileAberto = false; cancelarEdicao(true); modalCadastroAberto = true" class="px-3 py-2 text-left text-sm font-semibold text-on-primary bg-primary hover:bg-primary-container rounded-lg cursor-pointer">Novo Posto</button>
+    <a @click="menuMobileAberto = false" class="px-3 py-2 text-sm font-bold text-on-secondary bg-secondary hover:bg-on-secondary-container rounded-lg" href="index.html" target="_blank">Ver Portal</a>
+  </nav>
 </header>
-<main class="w-full pt-20 bg-surface flex-1 flex flex-col"><div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col w-full gap-space-xl">
+<main class="w-full pt-24 bg-surface flex-1 flex flex-col"><div class="w-full max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="flex flex-col w-full gap-space-xl">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Painel de Gestão — Rede de Vacinação</h1>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Administração de postos homologados e sincronização territorial em Alagoas.</p>
+    </div>
+  </div>
 
 
 <!-- PROTAGONISTA: BOT DE MINERAÇÃO E SINCRONIZAÇÃO OPENSTREETMAP (OSM) -->
-<section id="secao-osm" class="bg-white rounded-2xl p-space-lg lg:p-space-xl shadow-sm border border-slate-200/90 space-y-space-lg">
+<section id="secao-osm" class="bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm border border-outline-variant/60 space-y-space-lg">
   <!-- Cabeçalho do Robô -->
-  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md border-b border-slate-100">
-    <div class="space-y-1">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <h2 class="font-headline-md text-headline-md font-bold text-slate-900">
+  <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-md border-b border-outline-variant/40">
+    <div class="flex items-start gap-3 min-w-0">
+      <div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+        <i class="ph-duotone ph-globe-hemisphere-west text-lg" aria-hidden="true"></i>
+      </div>
+      <div class="space-y-1 min-w-0">
+        <h2 class="font-headline-md text-headline-md font-bold text-on-surface leading-snug">
           Bot de Mineração Geográfica (OpenStreetMap)
         </h2>
-        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">1-Click Sync</span>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">
+          Varra o território alagoano automaticamente em busca de unidades de saúde e postos vacinais com coordenadas georreferenciadas.
+        </p>
       </div>
-      <p class="font-body-sm text-body-sm text-slate-600">
-        Varra o território alagoano automaticamente em busca de unidades de saúde e postos vacinais com coordenadas georreferenciadas.
-      </p>
     </div>
 
     <!-- Seletor de Escopo e Disparo -->
-    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-      <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">
-        <label for="escopo-osm-select" class="text-xs font-semibold text-slate-600">Escopo:</label>
-        <select id="escopo-osm-select" v-model="escopoOsm" class="bg-transparent text-xs font-bold text-slate-800 outline-none cursor-pointer">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+      <div class="h-10 flex items-center gap-2 bg-surface-container-low border border-outline-variant/70 px-3 rounded-xl">
+        <label for="escopo-osm-select" class="text-xs font-semibold text-on-surface-variant whitespace-nowrap">Escopo:</label>
+        <select id="escopo-osm-select" v-model="escopoOsm" class="bg-transparent border-0 text-xs font-bold text-on-surface cursor-pointer pr-1 focus:outline-none">
           <option value="alagoas">Todo o Estado de Alagoas</option>
           <option value="maceio">Apenas Maceió (Capital)</option>
           <option value="arapiraca">Apenas Arapiraca (Agreste)</option>
         </select>
       </div>
 
-      <button type="button" @click="pesquisarNoOSM" :disabled="minerandoOsm" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-        <svg v-if="minerandoOsm" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="3"/></svg>
-        <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <button type="button" @click="pesquisarNoOSM" :disabled="minerandoOsm" class="h-10 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-xs shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap disabled:opacity-50">
+        <i v-if="minerandoOsm" class="ph-bold ph-spinner-gap text-base animate-spin" aria-hidden="true"></i>
+        <i v-else class="ph-bold ph-magnifying-glass text-base" aria-hidden="true"></i>
         <span>{{ minerandoOsm ? 'Varrendo OpenStreetMap...' : 'Pesquisar Unidades no OSM' }}</span>
       </button>
     </div>
@@ -180,8 +177,8 @@
       </div>
 
       <button type="button" @click="salvarSelecionadosOSM" :disabled="salvandoOsm || selecionadosOsm.length === 0" class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-container text-white font-bold text-xs shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-        <svg v-if="salvandoOsm" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="3"/></svg>
-        <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <i v-if="salvandoOsm" class="ph-bold ph-spinner-gap text-base animate-spin" aria-hidden="true"></i>
+        <i v-else class="ph-bold ph-floppy-disk text-base" aria-hidden="true"></i>
         <span>Confirmar e Importar para o PostgreSQL</span>
       </button>
     </div>
@@ -283,39 +280,59 @@
 <div class="flex flex-wrap items-center gap-2">
   <!-- Botão Principal de Cadastro -->
   <button type="button" @click="cancelarEdicao(true); modalCadastroAberto = true" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
-    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <i class="ph-bold ph-plus text-sm" aria-hidden="true"></i>
     <span>Novo Posto</span>
   </button>
 
   <!-- Botão de Auxílio: Atualizar Dados em Tempo Real -->
   <button type="button" @click="carregarPostos" :disabled="carregandoPostos" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50" title="Sincronizar e recarregar postos do PostgreSQL">
-    <svg class="w-4 h-4 text-emerald-600" :class="{ 'animate-spin': carregandoPostos }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+    <i class="ph-bold ph-arrows-clockwise text-sm text-emerald-600" :class="{ 'animate-spin': carregandoPostos }" aria-hidden="true"></i>
     <span>{{ carregandoPostos ? 'Atualizando...' : 'Atualizar Lista' }}</span>
   </button>
 
   <!-- Botão de Auxílio: Guia do Operador (?) -->
   <button type="button" @click="modalAjudaAberto = true" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer" title="Ver orientações de uso e manual do operador">
-    <div class="w-4 h-4 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">?</div>
+    <i class="ph-bold ph-question text-sm text-slate-600" aria-hidden="true"></i>
     <span>Guia do Operador</span>
   </button>
 
   <!-- Exportação Compacta de Dados -->
   <div class="flex items-center gap-1.5 pl-1 border-l border-slate-200">
     <button class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer" onclick="window.exportarCSV()" type="button" title="Baixar planilha CSV com postos cadastrados">
-      <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <i class="ph-bold ph-download-simple text-sm text-slate-600" aria-hidden="true"></i>
       <span>CSV</span>
     </button>
     <button class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer" onclick="window.exportarGeoJSON()" type="button" title="Exportar dados geoespaciais em padrão GeoJSON RFC 7946">
-      <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <i class="ph-bold ph-code text-sm text-slate-600" aria-hidden="true"></i>
       <span>GeoJSON</span>
     </button>
   </div>
 </div>
 </div>
+<!-- KPIs Operacionais Calculados no Frontend -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-space-sm" aria-label="Resumo operacional dos postos">
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Total Homologados</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ postos.length }}</span>
+  </div>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Maceió</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.maceio }}</span>
+  </div>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Arapiraca</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.arapiraca }}</span>
+  </div>
+  <div class="rounded-xl bg-surface-container-low border border-outline-variant/60 px-4 py-3">
+    <span class="block text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Vacinas Ofertadas</span>
+    <span class="text-2xl font-bold text-on-surface tabular-nums">{{ kpiStats.vacinasUnicas }}</span>
+  </div>
+</div>
+
 <!-- Barra de Filtros e Busca Rápida -->
 <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
 <div class="md:col-span-6 relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-[20px]">search</span>
+<i class="ph-bold ph-magnifying-glass text-base absolute left-3 top-3.5 text-on-surface-variant pointer-events-none" aria-hidden="true"></i>
 <input aria-label="Filtrar por nome do posto, bairro ou ID" class="w-full h-11 pl-10 pr-4 rounded bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none shadow-sm" v-model="filtroTexto" placeholder="Filtrar por nome do posto, bairro, endereço ou CEP..." type="text"/>
 </div>
 <div class="md:col-span-3">
@@ -343,10 +360,30 @@
 <table class="w-full text-left font-body-sm text-body-sm" id="tabela-postos-auditoria">
 <thead class="bg-surface-container font-label-sm text-label-sm text-on-surface uppercase tracking-wider">
 <tr>
-<th class="py-3 px-4 w-14 text-center">ID</th>
-<th class="py-3 px-4 min-w-[200px]">Nome da Unidade</th>
-<th class="py-3 px-4">Município / Bairro</th>
-<th class="py-3 px-4">Imunobiológicos em Estoque</th>
+<th class="py-3 px-4 w-20 text-center">
+  <button type="button" @click="alternarOrdenacao('id')" class="inline-flex items-center justify-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>ID</span>
+    <i :class="ordenarPor === 'id' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
+<th class="py-3 px-4 min-w-[200px]">
+  <button type="button" @click="alternarOrdenacao('name')" class="inline-flex items-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>Nome da Unidade</span>
+    <i :class="ordenarPor === 'name' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
+<th class="py-3 px-4">
+  <button type="button" @click="alternarOrdenacao('municipio')" class="inline-flex items-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>Município / Bairro</span>
+    <i :class="ordenarPor === 'municipio' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
+<th class="py-3 px-4">
+  <button type="button" @click="alternarOrdenacao('vaccines')" class="inline-flex items-center gap-1 font-bold uppercase tracking-wider hover:text-primary cursor-pointer">
+    <span>Imunobiológicos em Estoque</span>
+    <i :class="ordenarPor === 'vaccines' ? (ordemAsc ? 'ph-bold ph-caret-up text-primary' : 'ph-bold ph-caret-down text-primary') : 'ph-bold ph-arrows-down-up text-on-surface-variant/70'" aria-hidden="true"></i>
+  </button>
+</th>
 <th class="py-3 px-4 min-w-[180px]">Endereço / Referência</th>
 <th class="py-3 px-4 text-right">Ações de Gestão</th>
 </tr>
@@ -358,7 +395,7 @@
 <tr v-else-if="postosFiltrados.length === 0">
   <td colspan="6" class="py-8 text-center text-on-surface-variant font-medium">Nenhum posto de vacinação encontrado com os filtros selecionados.</td>
 </tr>
-<tr v-for="p in postosFiltrados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
+<tr v-for="p in postosPaginados" :key="p.id" class="hover:bg-surface-container-low transition-colors posto-row">
 <td class="py-3.5 px-4 text-center font-mono font-bold text-primary">#{{ p.id }}</td>
 <td class="py-3.5 px-4">
 <div class="font-label-md text-label-md font-bold text-on-surface">{{ p.name }}</div>
@@ -377,17 +414,17 @@
 </td>
 <td class="py-3.5 px-4">
 <div class="text-label-sm text-on-surface font-medium">{{ p.address || '-' }}</div>
-<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-0.5">
-  <span class="material-symbols-outlined text-[14px]">check</span> Validado no SUS
+<span class="text-label-sm text-secondary font-bold inline-flex items-center gap-1">
+  <i class="ph-bold ph-check-circle text-sm" aria-hidden="true"></i> Validado no SUS
 </span>
 </td>
 <td class="py-3.5 px-4 text-right">
 <div class="inline-flex items-center gap-1">
-<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" type="button" @click="editarPosto(p)">
-<span class="material-symbols-outlined text-[18px]">edit</span>
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Unidade" aria-label="Editar Unidade" type="button" @click="editarPosto(p)">
+<i class="ph-duotone ph-pencil-simple text-lg" aria-hidden="true"></i>
 </button>
-<button class="p-1.5 rounded hover:bg-surface-container-high text-error hover:bg-error-container transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" type="button">
-<span class="material-symbols-outlined text-[18px]">block</span>
+<button class="p-1.5 rounded hover:bg-error-container text-error transition-colors cursor-pointer" @click="desativarPosto(p)" title="Desativar Unidade" aria-label="Desativar Unidade" type="button">
+<i class="ph-duotone ph-prohibit text-lg" aria-hidden="true"></i>
 </button>
 </div>
 </td>
@@ -397,7 +434,44 @@
 </div>
 <!-- Paginação e Meta Informação -->
 <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs font-body-sm text-body-sm text-on-surface-variant">
-<span>Exibindo <strong>{{ postosFiltrados.length }} postos em tela</strong> de um total de <strong>{{ postos.length }} postos cadastrados</strong>.</span>
+  <span>
+    Exibindo <strong>{{ postosPaginados.length }}</strong> de <strong>{{ postosFiltrados.length }} filtrados</strong> (total: <strong>{{ postos.length }}</strong> postos).
+  </span>
+  <div class="flex flex-wrap items-center gap-2">
+    <label class="inline-flex items-center gap-1.5 text-xs">
+      <span>Por página:</span>
+      <select v-model.number="itensPorPagina" aria-label="Itens por página" class="px-2 py-1 rounded border border-outline-variant bg-white text-on-surface text-xs font-semibold cursor-pointer">
+        <option :value="10">10</option>
+        <option :value="25">25</option>
+        <option :value="50">50</option>
+      </select>
+    </label>
+    <div class="inline-flex items-center gap-1">
+      <button
+        type="button"
+        @click="paginaAtual = Math.max(1, paginaAtual - 1)"
+        :disabled="paginaAtual <= 1"
+        aria-label="Página anterior"
+        class="px-2.5 py-1 rounded border border-outline-variant bg-white text-on-surface hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-xs font-semibold inline-flex items-center gap-1"
+      >
+        <i class="ph-bold ph-caret-left text-xs" aria-hidden="true"></i>
+        <span>Anterior</span>
+      </button>
+      <span class="px-2 text-xs font-semibold text-on-surface tabular-nums">
+        {{ paginaAtual }} / {{ totalPaginas }}
+      </span>
+      <button
+        type="button"
+        @click="paginaAtual = Math.min(totalPaginas, paginaAtual + 1)"
+        :disabled="paginaAtual >= totalPaginas"
+        aria-label="Próxima página"
+        class="px-2.5 py-1 rounded border border-outline-variant bg-white text-on-surface hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-xs font-semibold inline-flex items-center gap-1"
+      >
+        <span>Próxima</span>
+        <i class="ph-bold ph-caret-right text-xs" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
 </div>
 </section>
 
@@ -427,7 +501,7 @@
     <!-- Botão de Ajuda (?) Acessível -->
     <div class="flex items-center gap-2">
       <button type="button" @click="modalAjudaAberto = true" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 shadow-sm" title="Ajuda sobre o preenchimento">
-        <svg class="w-4 h-4 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <i class="ph-bold ph-question text-sm text-emerald-700" aria-hidden="true"></i>
         <span>Como funciona?</span>
       </button>
     </div>
@@ -495,7 +569,7 @@
           <div class="relative flex items-center">
             <input v-model="cepInput" class="w-full h-11 px-3 rounded-lg bg-white text-slate-800 text-sm border border-slate-300 focus:border-primary outline-none shadow-sm" id="campo-cep" maxlength="9" @input="formatarCep" @blur="buscarCep" placeholder="Ex: 57010-000" type="text"/>
             <button type="button" @click="buscarCep" class="absolute right-1 px-3 py-1.5 bg-primary hover:bg-primary-container text-white rounded-md text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <i class="ph-bold ph-magnifying-glass text-xs" aria-hidden="true"></i>
               <span>Buscar</span>
             </button>
           </div>
@@ -539,7 +613,7 @@
         </button>
         <button type="button" @click="avancarPasso(2)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
           <span>Avançar para Identificação</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <i class="ph-bold ph-caret-right text-sm" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -575,12 +649,12 @@
       <!-- Navegação da Etapa 2 -->
       <div class="flex items-center justify-between pt-3 border-t border-slate-200">
         <button type="button" @click="voltarPasso(1)" class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <i class="ph-bold ph-caret-left text-sm" aria-hidden="true"></i>
           <span>Voltar ao Endereço</span>
         </button>
         <button type="button" @click="avancarPasso(3)" class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
           <span>Avançar para Vacinas</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <i class="ph-bold ph-caret-right text-sm" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -624,7 +698,7 @@
       <!-- Navegação da Etapa 3 e Botão de Salvar Final -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
         <button type="button" @click="voltarPasso(2)" class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <i class="ph-bold ph-caret-left text-sm" aria-hidden="true"></i>
           <span>Voltar para Identificação</span>
         </button>
 
@@ -633,7 +707,7 @@
             Cancelar
           </button>
           <button type="button" @click="salvarPosto" :disabled="salvandoPosto" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <i class="ph-bold ph-floppy-disk text-sm" aria-hidden="true"></i>
             <span>{{ form.id ? `Confirmar Atualização (#${form.id})` : 'Salvar no PostgreSQL' }}</span>
           </button>
         </div>
@@ -642,7 +716,7 @@
 
     <!-- Feedback de Sucesso/Alerta -->
     <div v-if="feedbackMsg" class="p-3.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold flex items-center gap-2">
-      <svg class="w-4 h-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <i class="ph-duotone ph-check-circle text-base shrink-0 text-emerald-600" aria-hidden="true"></i>
       <span>{{ feedbackMsg }}</span>
     </div>
   </form>
@@ -671,7 +745,7 @@
         <div class="space-y-1">
           <div class="flex items-center justify-between">
             <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">Swagger OpenAPI</span>
-            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <i class="ph-bold ph-arrow-square-out text-base text-slate-400 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
           </div>
           <p class="text-xs text-slate-300">Interface interativa para testar endpoints e parâmetros em tempo real.</p>
         </div>
@@ -683,7 +757,7 @@
         <div class="space-y-1">
           <div class="flex items-center justify-between">
             <span class="font-bold text-sm text-emerald-400 group-hover:text-emerald-300">ReDoc Spec</span>
-            <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <i class="ph-bold ph-arrow-square-out text-base text-slate-400 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
           </div>
           <p class="text-xs text-slate-300">Especificação detalhada de contratos, respostas HTTP e schemas Pydantic.</p>
         </div>
@@ -716,16 +790,16 @@
     <div class="flex items-start gap-3.5">
       <!-- Ícone dinâmico -->
       <div v-if="modalFeedback.tipo === 'sucesso'" class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <i class="ph-duotone ph-check-circle text-2xl" aria-hidden="true"></i>
       </div>
       <div v-else-if="modalFeedback.tipo === 'erro'" class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <i class="ph-duotone ph-x-circle text-2xl" aria-hidden="true"></i>
       </div>
       <div v-else-if="modalFeedback.tipo === 'confirmacao'" class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <i class="ph-duotone ph-warning text-2xl" aria-hidden="true"></i>
       </div>
       <div v-else class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-xs">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <i class="ph-duotone ph-info text-2xl" aria-hidden="true"></i>
       </div>
 
       <div class="space-y-1 flex-1">
@@ -750,28 +824,28 @@
 </div>
 </div>
 
-<footer class="w-full bg-slate-900 text-slate-300 border-t border-slate-800">
-  <div class="w-full max-w-[1280px] mx-auto px-margin-sm lg:px-margin py-space-xl space-y-space-lg">
+<footer class="w-full bg-surface-container-low text-on-surface border-t border-outline-variant/60">
+  <div class="w-full max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-xl space-y-space-lg">
     
     <!-- BARRA COMPACTA COM BOTÃO PARA MODAL DE DOCUMENTAÇÃO -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md p-space-md rounded-xl bg-slate-800/60 border border-slate-700/60">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md p-space-md rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-xs">
       <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-        <span class="text-xs text-slate-300 font-medium">Projeto Integrador IV-B • Alagoas (PostGIS, FastAPI, Leaflet)</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-secondary" aria-hidden="true"></span>
+        <span class="text-xs text-on-surface-variant font-medium">Projeto Integrador IV-B • Alagoas (PostGIS, FastAPI, Leaflet)</span>
       </div>
-      <button type="button" @click="abrirModalDocs" onclick="window.abrirModalDocs && window.abrirModalDocs()" class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer border border-slate-600 shadow-sm" title="Abrir Swagger, ReDoc e especificações do PostgreSQL">
-        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <button type="button" @click="abrirModalDocs" onclick="window.abrirModalDocs && window.abrirModalDocs()" class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer shadow-xs" title="Abrir Swagger, ReDoc e especificações do PostgreSQL">
+        <i class="ph-bold ph-book-open text-base text-primary-fixed" aria-hidden="true"></i>
         <span>Ver Documentação da API &amp; Banco</span>
       </button>
     </div>
 
     <!-- Informações Institucionais do Rodapé -->
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-md border-b border-slate-800"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface">Coordenação de Imunização</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">Sistema de Gestão Territorial de Campanhas e Vigilância Imunológica. Plataforma restrita a gestores autorizados do SUS e municípios alagoanos.</p></div><div class="flex flex-wrap items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Conformidade LGPD (Lei 13.709/2018)</span></div><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Acessibilidade WCAG 2.1 AA</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 Vacina Alagoas • Todos os direitos reservados.</p><div class="flex items-center gap-space-lg"><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalTermos()">Termos de Uso</button><button type="button" class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalPrivacidade()">Política de Privacidade e Cookies</button><a class="hover:text-on-surface transition-colors font-label-sm text-label-sm underline cursor-pointer" href="mailto:dti@saude.al.gov.br?subject=Suporte%20Vacina%20Alagoas">Suporte Técnico DTI (dti@saude.al.gov.br)</a></div></div></div></footer>
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-md border-b border-outline-variant/60"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface">Coordenação de Imunização</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">Sistema de Gestão Territorial de Campanhas e Vigilância Imunológica. Plataforma restrita a gestores autorizados do SUS e municípios alagoanos.</p></div><div class="flex flex-wrap items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Conformidade LGPD (Lei 13.709/2018)</span></div><div class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-highest"><span class="font-label-sm text-label-sm text-on-surface">Acessibilidade WCAG 2.1 AA</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 Vacina Alagoas • Todos os direitos reservados.</p><div class="flex items-center gap-space-lg"><button type="button" class="hover:text-primary transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalTermos()">Termos de Uso</button><button type="button" class="hover:text-primary transition-colors font-label-sm text-label-sm underline cursor-pointer" onclick="window.abrirModalPrivacidade()">Política de Privacidade e Cookies</button><a class="hover:text-primary transition-colors font-label-sm text-label-sm underline cursor-pointer" href="mailto:dti@saude.al.gov.br?subject=Suporte%20Vacina%20Alagoas">Suporte Técnico DTI (dti@saude.al.gov.br)</a></div></div></div></footer>
 </main>
 </div>
 
 <script>
-  const { createApp, ref, computed, onMounted } = Vue;
+  const { createApp, ref, computed, watch, onMounted } = Vue;
 
   createApp({
     setup() {
@@ -785,6 +859,10 @@
       const filtroTexto = ref("");
       const filtroCidade = ref("todos");
       const filtroVacina = ref("todas");
+      const ordenarPor = ref("id");
+      const ordemAsc = ref(true);
+      const paginaAtual = ref(1);
+      const itensPorPagina = ref(10);
 
       const cepInput = ref("");
       const cepStatusHtml = ref("");
@@ -792,6 +870,7 @@
       const modalAjudaAberto = ref(false);
       const modalDocsAberto = ref(false);
       const modalCadastroAberto = ref(false);
+      const menuMobileAberto = ref(false);
 
       // Sistema de Diálogos e Modais de Feedback Personalizados
       const modalFeedback = ref({
@@ -1073,6 +1152,38 @@
         }
       }
 
+      const kpiStats = computed(() => {
+        const lista = postos.value || [];
+        let maceio = 0;
+        let arapiraca = 0;
+        const vacinasSet = new Set();
+
+        for (const p of lista) {
+          const mun = (p.municipio || (p.city_id === 1 ? "Maceió" : "Arapiraca")).toLowerCase();
+          if (mun.includes("macei")) maceio++;
+          else if (mun.includes("arapiraca")) arapiraca++;
+          for (const v of (p.vaccines || [])) {
+            if (v) vacinasSet.add(v.trim());
+          }
+        }
+
+        return {
+          maceio,
+          arapiraca,
+          vacinasUnicas: vacinasSet.size
+        };
+      });
+
+      function alternarOrdenacao(campo) {
+        if (ordenarPor.value === campo) {
+          ordemAsc.value = !ordemAsc.value;
+        } else {
+          ordenarPor.value = campo;
+          ordemAsc.value = true;
+        }
+        paginaAtual.value = 1;
+      }
+
       const postosFiltrados = computed(() => {
         let lista = postos.value;
 
@@ -1095,7 +1206,38 @@
           });
         }
 
-        return lista;
+        const dir = ordemAsc.value ? 1 : -1;
+        const campo = ordenarPor.value;
+        return [...lista].sort((a, b) => {
+          if (campo === "id") {
+            return ((Number(a.id) || 0) - (Number(b.id) || 0)) * dir;
+          }
+          if (campo === "vaccines") {
+            return (((a.vaccines || []).length) - ((b.vaccines || []).length)) * dir;
+          }
+          if (campo === "municipio") {
+            const va = `${a.municipio || ""} ${a.neighborhood || ""}`.toLowerCase();
+            const vb = `${b.municipio || ""} ${b.neighborhood || ""}`.toLowerCase();
+            return va.localeCompare(vb, "pt-BR") * dir;
+          }
+          const va = (a.name || "").toLowerCase();
+          const vb = (b.name || "").toLowerCase();
+          return va.localeCompare(vb, "pt-BR") * dir;
+        });
+      });
+
+      const totalPaginas = computed(() => {
+        const total = Math.ceil(postosFiltrados.value.length / itensPorPagina.value);
+        return Math.max(1, total);
+      });
+
+      const postosPaginados = computed(() => {
+        const inicio = (paginaAtual.value - 1) * itensPorPagina.value;
+        return postosFiltrados.value.slice(inicio, inicio + itensPorPagina.value);
+      });
+
+      watch([filtroTexto, filtroCidade, filtroVacina, itensPorPagina], () => {
+        paginaAtual.value = 1;
       });
 
       async function buscarCep() {
@@ -1413,11 +1555,19 @@
         filtroTexto,
         filtroCidade,
         filtroVacina,
+        ordenarPor,
+        ordemAsc,
+        paginaAtual,
+        itensPorPagina,
+        kpiStats,
+        alternarOrdenacao,
         cepInput,
         cepStatusHtml,
         catalogoVacinas,
         form,
         postosFiltrados,
+        totalPaginas,
+        postosPaginados,
         buscarCep,
         consultarCEP: buscarCep,
         formatarCep,
@@ -1434,6 +1584,7 @@
         cancelarFeedback,
         fecharFeedback,
         modalCadastroAberto,
+        menuMobileAberto,
         escopoOsm,
         minerandoOsm,
         salvandoOsm,
@@ -1453,6 +1604,15 @@
       };
     }
   }).mount('#admin-app');
+
+  // Alto Contraste e A-/A+ carregados via assets/js/acessibilidade.js
+  window.abrirModalAcessibilidade = function() {
+    window.notificar(
+      "Recursos de Acessibilidade (WCAG 2.1 AA/AAA)",
+      "• Alto Contraste: alterne na barra superior para contraste reforçado.\n• Tamanho da Fonte: use A- e A+ para ajustar a escala de texto.\n• Navegação por Teclado: use Tab para percorrer controles com foco visível.\n• Movimento Reduzido: animações respeitam prefers-reduced-motion.",
+      "aviso"
+    );
+  };
 
   window.abrirModalTermos = function() {
     window.notificar(
