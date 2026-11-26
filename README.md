@@ -117,6 +117,28 @@ O Docker Compose aguardará a saúde do banco de dados (`vacinacao_pg_db`) atrav
 
 ---
 
+## Deploy em Produção (Dokploy)
+
+O projeto possui suporte pronto para deploy via **Dokploy** usando o arquivo [`docker-compose.dokploy.yml`](docker-compose.dokploy.yml), que sobe o PostgreSQL 16 (`db`) e a aplicação unificada (`app` — FastAPI + Frontend estático) na porta `8000`.
+
+### 1. Configurar o Compose no Dokploy
+
+1. Crie um novo serviço **Compose** no Dokploy conectado ao repositório.
+2. Em **Compose Path**, informe `docker-compose.dokploy.yml`.
+3. Na aba **Environment**, defina as variáveis de produção:
+   - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
+   - `SECRET_KEY` (gere uma chave segura com `python -c "import secrets; print(secrets.token_hex(32))"`)
+   - `ADMIN_USERNAME`, `ADMIN_PASSWORD`
+4. Na aba **Domains**, aponte o domínio para o serviço **`app`** na **Container Port `8000`**.
+
+### 2. Inicialização Automática do Banco
+
+Ao iniciar o stack, o banco de dados é construído e populado automaticamente:
+- O contêiner `db` executa [`sql/init.sql`](sql/init.sql) e [`sql/seed.sql`](sql/seed.sql) na primeira inicialização.
+- O backend executa `init_database()` no startup (`lifespan`), garantindo a criação das tabelas, constraints e seed de forma idempotente.
+
+---
+
 ## Execução Local (Sem Docker)
 
 Caso prefira executar sem contêineres:
